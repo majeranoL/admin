@@ -1,3 +1,30 @@
+:root {
+  /* Color Variables */
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --success-color: #22c55e;
+  --success-hover: #16a34a;
+  --danger-color: #ef4444;
+  --danger-hover: #dc2626;
+  --warning-color: #f59e0b;
+  --warning-hover: #d97706;
+  --info-color: #06b6d4;
+  --info-hover: #0891b2;
+  
+  /* Background Colors */
+  --background-color: #121212;
+  --card-background: #1e1e1e;
+  --table-header-bg: #2a2a2a;
+  --row-hover-bg: rgba(59, 130, 246, 0.05);
+  
+  /* Text Colors */
+  --text-color: #e5e5e5;
+  --text-secondary: #a1a1a1;
+  
+  /* Border Colors */
+  --border-color: #333333;
+}
+
 * {
   margin: 0;
   padding: 0;

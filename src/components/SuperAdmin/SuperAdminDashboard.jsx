@@ -1,8 +1,9 @@
 import React from 'react'
+import '../../css/SuperAdmin/SuperAdminDashboard.css'
 
 function SuperAdminDashboard() {
   return (
-    <div className="content-section">
+    <div className="super-admin-dashboard">
       <h2>Super Admin Dashboard</h2>
       <p>Super Admin specific features will be implemented here.</p>
       

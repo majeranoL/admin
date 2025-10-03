@@ -1,0 +1,370 @@
+/* RescuedAnimals Component Styles */
+.rescued-animals {
+  padding: 20px;
+  background: #121212;
+  min-height: 100vh;
+}
+
+.rescued-animals .page-header {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.rescued-animals .page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+}
+
+.rescued-animals .page-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* Stats Cards */
+.rescued-animals .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.rescued-animals .stat-card {
+  background: #1e1e1e;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  border-left: 4px solid #4ade80;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rescued-animals .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.rescued-animals .stat-card h3 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.rescued-animals .stat-card p {
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Controls */
+.rescued-animals .controls-section {
+  background: #1e1e1e;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  margin-bottom: 24px;
+}
+
+.rescued-animals .controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rescued-animals .search-box {
+  flex: 1;
+  min-width: 300px;
+  position: relative;
+}
+
+.rescued-animals .search-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.rescued-animals .search-input:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.rescued-animals .search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 18px;
+}
+
+.rescued-animals .filter-select {
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #1e1e1e;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.rescued-animals .filter-select:focus {
+  outline: none;
+  border-color: #4ade80;
+}
+
+.rescued-animals .btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rescued-animals .btn-primary {
+  background: #4ade80;
+  color: white;
+}
+
+.rescued-animals .btn-primary:hover {
+  background: #22c55e;
+  transform: translateY(-1px);
+}
+
+.rescued-animals .btn-secondary {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.rescued-animals .btn-secondary:hover {
+  background: #cbd5e1;
+}
+
+/* Animals Grid */
+.rescued-animals .animals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.rescued-animals .animal-card {
+  background: #1e1e1e;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.rescued-animals .animal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.rescued-animals .animal-image {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #64748b;
+}
+
+.rescued-animals .animal-info {
+  padding: 20px;
+}
+
+.rescued-animals .animal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.rescued-animals .animal-name {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1e293b;
+  margin: 0;
+}
+
+.rescued-animals .animal-breed {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.rescued-animals .status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.rescued-animals .status-available { background: #1a3a1a; color: #4ade80; }
+.rescued-animals .status-adopted { background: #dbeafe; color: #1e40af; }
+.rescued-animals .status-medical-care { background: #3a2f1a; color: #fbbf24; }
+.rescued-animals .status-quarantine { background: #4a1a1a; color: #ff6b6b; }
+
+.rescued-animals .animal-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.rescued-animals .detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.rescued-animals .detail-icon {
+  width: 16px;
+  height: 16px;
+  color: #4ade80;
+}
+
+/* Modal Styles */
+.rescued-animals .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.rescued-animals .modal-content {
+  background: #1e1e1e;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.rescued-animals .modal-header {
+  padding: 24px 24px 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rescued-animals .modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1e293b;
+  margin: 0;
+}
+
+.rescued-animals .modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px;
+  color: #64748b;
+}
+
+.rescued-animals .modal-body {
+  padding: 24px;
+}
+
+.rescued-animals .modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rescued-animals .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rescued-animals .form-label {
+  font-weight: 600;
+  color: #e0e0e0;
+  font-size: 0.9rem;
+}
+
+.rescued-animals .form-input,
+.rescued-animals .form-select,
+.rescued-animals .form-textarea {
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.rescued-animals .form-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.rescued-animals .form-input:focus,
+.rescued-animals .form-select:focus,
+.rescued-animals .form-textarea:focus {
+  outline: none;
+  border-color: #4ade80;
+}
+
+.rescued-animals .modal-actions {
+  padding: 0 24px 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rescued-animals {
+    padding: 16px;
+  }
+
+  .rescued-animals .controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rescued-animals .search-box {
+    min-width: auto;
+  }
+
+  .rescued-animals .animals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rescued-animals .modal-content {
+    margin: 20px;
+    max-width: calc(100vw - 40px);
+  }
+}

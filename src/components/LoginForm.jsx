@@ -103,7 +103,7 @@ function LoginForm() {
           setMessageWithTimeout("Login failed. Please try again.", false)
         }
       } else {
-        setMessageWithTimeout("Invalid username or password. Try: admin/admin123 or superadmin/super123", false)
+        setMessageWithTimeout("Invalid username or password.", false)
       }
     } else {
       setMessageWithTimeout("Please enter both username and password.", false)

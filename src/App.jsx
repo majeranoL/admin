@@ -1,9 +1,13 @@
 import { useEffect } from "react"
 import Dashboard from "./Dashboard"
 import LoginForm from "./components/LoginForm"
+import NotificationSystem from "./components/NotificationSystem"
 import { RoleProvider } from "./contexts/RoleProvider"
+import { DataProvider } from "./contexts/DataContext"
 import { useRole } from "./hooks/useRole"
 import "./css/App.css"
+import "./css/Admin/AdoptionRequests.css"
+import "./css/EnhancedComponents.css"
 
 // Main App Content (inside RoleProvider)
 function AppContent() {
@@ -43,14 +47,21 @@ function AppContent() {
   }
 
   // Show appropriate component based on authentication
-  return isAuthenticated ? <Dashboard /> : <LoginForm />
+  return (
+    <>
+      {isAuthenticated ? <Dashboard /> : <LoginForm />}
+      <NotificationSystem />
+    </>
+  )
 }
 
-// Main App Component (wraps with RoleProvider)
+// Main App Component (wraps with providers)
 function App() {
   return (
     <RoleProvider>
-      <AppContent />
+      <DataProvider>
+        <AppContent />
+      </DataProvider>
     </RoleProvider>
   )
 }

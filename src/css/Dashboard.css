@@ -111,12 +111,20 @@ body {
   flex: 1;
   padding: 2rem;
   background: #121212;
+  overflow-y: auto;
+}
+
+.content-section {
+  height: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .content-section h2 {
   color: #e0e0e0;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
+  flex-shrink: 0;
 }
 
 .stats-grid {
@@ -291,6 +299,9 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
   margin-top: 2rem;
+  flex-shrink: 0;
+  align-items: start;
+  grid-auto-rows: min-content;
 }
 
 .dashboard-card {
@@ -299,6 +310,11 @@ body {
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
+  height: fit-content;
+  max-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-self: start;
 }
 
 .dashboard-card:hover {
@@ -306,17 +322,35 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
+/* Specific override to prevent conflicts with component CSS */
+.dashboard-card.volunteers,
+.dashboard-card.notifications,
+.dashboard-card.settings,
+.dashboard-card.adoption,
+.dashboard-card.pending,
+.dashboard-card.ongoing {
+  min-height: unset !important;
+  height: fit-content !important;
+  padding: 1.5rem !important;
+  background: #1e1e1e !important;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  flex-shrink: 0;
 }
 
 .card-header h3 {
   color: #e0e0e0;
   font-size: 1rem;
   margin: 0;
+}
+
+.card-content {
+  flex-shrink: 0;
 }
 
 .card-icon {
@@ -1151,7 +1185,7 @@ body {
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: #e0e0e0;
   transition: .4s;
   border-radius: 50%;
 }
