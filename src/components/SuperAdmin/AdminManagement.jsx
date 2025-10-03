@@ -1,4 +1,5 @@
 import React from 'react'
+import { RoleBasedRender } from '../RoleAccess'
 
 function AdminManagement() {
   return (
@@ -54,18 +55,27 @@ function AdminManagement() {
         </div>
 
         <div className="management-actions">
-          <button className="action-btn primary">
-            <span className="btn-icon">➕</span>
-            Add New Admin
-          </button>
-          <button className="action-btn secondary">
-            <span className="btn-icon">📊</span>
-            View Admin Activity
-          </button>
-          <button className="action-btn secondary">
-            <span className="btn-icon">⚙️</span>
-            Manage Permissions
-          </button>
+          <RoleBasedRender 
+            permissions={['manage_admins']}
+            fallback={
+              <div className="access-denied">
+                <p>🔒 Insufficient permissions to perform admin management actions</p>
+              </div>
+            }
+          >
+            <button className="action-btn primary">
+              <span className="btn-icon">➕</span>
+              Add New Admin
+            </button>
+            <button className="action-btn secondary">
+              <span className="btn-icon">📊</span>
+              View Admin Activity
+            </button>
+            <button className="action-btn secondary">
+              <span className="btn-icon">⚙️</span>
+              Manage Permissions
+            </button>
+          </RoleBasedRender>
         </div>
       </div>
     </div>

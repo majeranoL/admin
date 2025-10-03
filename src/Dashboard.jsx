@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useRole } from "./hooks/useRole"
 import AdminDashboard from "./components/Admin/AdminDashboard"
 import RescueReports from "./components/Admin/RescueReports"
 import Volunteers from "./components/Admin/Volunteers"
@@ -16,17 +17,7 @@ import "./css/Dashboard.css"
 
 function Dashboard() {
   const [activeSection, setActiveSection] = useState("dashboard")
-  
-  const username = localStorage.getItem('adminUsername')
-  const userRole = localStorage.getItem('userRole')
-
-  const handleLogout = () => {
-    localStorage.removeItem('adminUsername')
-    localStorage.removeItem('userRole')
-    localStorage.removeItem('isLoggedIn')
-    // Reload page to trigger login redirect
-    window.location.reload()
-  }
+  const { userRole, username, logout } = useRole()
 
   useEffect(() => {
     document.body.className = 'dashboard-page'
@@ -114,7 +105,7 @@ function Dashboard() {
           <span className={`role-indicator ${userRole}`}>
             ({userRole === "superadmin" ? "Super Admin" : "Admin"})
           </span>
-          <button className="logout-btn" onClick={handleLogout}>
+          <button className="logout-btn" onClick={logout}>
             Logout
           </button>
         </div>
