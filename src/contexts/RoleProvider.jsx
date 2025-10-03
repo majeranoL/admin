@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import RoleContext from './RoleContext'
+import logger from '../utils/logger'
 
 
 
@@ -27,7 +28,7 @@ export const RoleProvider = ({ children }) => {
           clearAuthData()
         }
       } catch (error) {
-        console.error('Error initializing auth:', error)
+        logger.error('Error initializing auth:', error)
         clearAuthData()
       } finally {
         setIsLoading(false)
@@ -65,9 +66,9 @@ export const RoleProvider = ({ children }) => {
       localStorage.setItem('adminUsername', user)
       localStorage.setItem('isLoggedIn', 'true')
 
-      console.log(`User logged in: ${user} with role: ${role}`)
+      logger.info(`User logged in: ${user} with role: ${role}`)
     } catch (error) {
-      console.error('Login error:', error)
+      logger.error('Login error:', error)
       throw error
     }
   }
@@ -87,7 +88,7 @@ export const RoleProvider = ({ children }) => {
     
     setUserRole(newRole)
     localStorage.setItem('userRole', newRole)
-    console.log(`Role updated to: ${newRole}`)
+    logger.info(`Role updated to: ${newRole}`)
   }
 
   // Permission checker

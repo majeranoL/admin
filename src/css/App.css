@@ -34,10 +34,16 @@ body {
 .app {
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
+}
+
+.login-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
 .login-container {
@@ -107,6 +113,12 @@ body {
   background: #333;
 }
 
+.form-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #1a1a1a;
+}
+
 .form-group input::placeholder {
   color: #888;
 }
@@ -165,6 +177,18 @@ body {
   transform: translateY(0);
 }
 
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  background: #555;
+}
+
+.login-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .register-btn {
   width: 100%;
   background: transparent;
@@ -190,6 +214,19 @@ body {
   transform: translateY(0);
 }
 
+.register-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  background: #2a2a2a;
+}
+
+.register-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+  background: #2a2a2a;
+}
+
 .forgot-password {
   text-align: center;
 }
@@ -207,29 +244,175 @@ body {
 }
 
 .login-message {
-  padding: 12px 20px;
+  padding: 15px 20px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-top: 20px;
   text-align: center;
   font-weight: 500;
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 40px);
-  z-index: 10;
+  width: 100%;
+  animation: slideInFromBottom 0.3s ease-out;
 }
 
 .login-message.success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background-color: #1e3e2e;
+  color: #4caf50;
+  border: 1px solid #388e3c;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 .login-message.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+  background-color: #2d1b1b;
+  color: #ff6b6b;
+  border: 1px solid #d32f2f;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+}
+
+/* External login message - appears below login container */
+.login-message-external {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  text-align: center;
+  font-weight: 500;
+  width: 800px;
+  max-width: 800px;
+  box-sizing: border-box;
+  animation: slideInFromBottom 0.3s ease-out;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease-out;
+  overflow: hidden;
+}
+
+/* Progress bar for message timeout */
+.login-message-external::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.3);
+  animation: progressBar 3s linear;
+  width: 0;
+}
+
+@keyframes progressBar {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+  }
+}
+
+/* Loading overlay for login transition */
+.login-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(18, 18, 18, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeInOverlay 0.3s ease-in;
+}
+
+.loading-content {
+  text-align: center;
+  color: #e0e0e0;
+}
+
+.loading-content h3 {
+  margin: 1.5rem 0 0.5rem 0;
+  color: #e74c3c;
+  font-size: 1.5rem;
+}
+
+.loading-content p {
+  margin: 0;
+  color: #b0b0b0;
+  font-size: 1rem;
+}
+
+.loading-spinner-large {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #333;
+  border-top: 4px solid #e74c3c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+.loading-progress-bar {
+  width: 200px;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  margin: 1.5rem auto 0;
+  overflow: hidden;
+}
+
+.loading-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e74c3c, #ff6b6b);
+  border-radius: 2px;
+  animation: fillProgress 1.5s ease-out;
+  transform-origin: left;
+}
+
+@keyframes fillProgress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.login-message-external.success {
+  background-color: #1e3e2e;
+  color: #4caf50;
+  border: 1px solid #388e3c;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+}
+
+.login-message-external.error {
+  background-color: #2d1b1b;
+  color: #ff6b6b;
+  border: 1px solid #d32f2f;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+}
+
+/* Animation for message appearing */
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .demo-credentials {
@@ -266,6 +449,11 @@ body {
     min-height: 550px;
   }
   
+  .login-message-external {
+    width: 650px;
+    max-width: 650px;
+  }
+  
   .login-form {
     padding: 60px 60px;
     min-height: 550px;
@@ -279,6 +467,11 @@ body {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 
                 0 10px 30px rgba(0, 0, 0, 0.25),
                 0 5px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .login-message-external {
+    width: 550px;
+    max-width: 550px;
   }
   
   .login-form {
@@ -295,6 +488,11 @@ body {
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 
                 0 8px 25px rgba(0, 0, 0, 0.2),
                 0 3px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .login-message-external {
+    width: 400px;
+    max-width: 400px;
   }
   
   .login-form {
