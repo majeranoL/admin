@@ -477,7 +477,7 @@ function Settings() {
                       checked={theme === 'dark'}
                       onChange={toggleTheme}
                     />
-                    <span className="toggle-slider"></span>
+                    <span className="slider"></span>
                   </label>
                 </div>
               </div>
