@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useData } from '../../contexts/DataContext'
 import '../../css/Admin/Settings.css'
+import '../../css/EnhancedComponents.css'
 
 function Settings() {
   const { showNotification } = useData()
@@ -156,10 +157,10 @@ function Settings() {
   }
 
   const tabNavigation = [
-    { id: 'profile', label: '👤 Profile', icon: '👤' },
-    { id: 'system', label: '⚙️ System', icon: '⚙️' },
-    { id: 'security', label: '🔒 Security', icon: '🔒' },
-    { id: 'display', label: '🎨 Display', icon: '🎨' }
+    { id: 'profile', label: 'Profile', icon: 'bi bi-person-circle' },
+    { id: 'system', label: 'System', icon: 'bi bi-gear' },
+    { id: 'security', label: 'Security', icon: 'bi bi-shield-lock' },
+    { id: 'display', label: 'Display', icon: 'bi bi-palette' }
   ]
 
   return (
@@ -167,7 +168,7 @@ function Settings() {
       {/* Header */}
       <div className="component-header">
         <div className="header-left">
-          <h2>⚙️ Settings</h2>
+          <h2><i className="bi bi-gear-fill"></i> Settings</h2>
           <span className="settings-subtitle">Manage your account and system preferences</span>
         </div>
         <div className="header-actions">
@@ -175,7 +176,7 @@ function Settings() {
             className="btn-secondary"
             onClick={handleResetToDefaults}
           >
-            <span className="btn-icon">🔄</span>
+            <i className="btn-icon bi bi-arrow-clockwise"></i>
             Reset to Defaults
           </button>
         </div>
@@ -189,7 +190,7 @@ function Settings() {
             className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
-            <span className="tab-icon">{tab.icon}</span>
+            <i className={`tab-icon ${tab.icon}`}></i>
             {tab.label}
           </button>
         ))}
@@ -201,7 +202,7 @@ function Settings() {
         {activeTab === 'profile' && (
           <div className="settings-section">
             <div className="section-header">
-              <h3>👤 Profile Information</h3>
+              <h3><i className="bi bi-person-circle"></i> Profile Information</h3>
               <p>Manage your personal information and account details</p>
             </div>
 
@@ -263,14 +264,14 @@ function Settings() {
                 onClick={handleSaveProfile}
                 disabled={loading}
               >
-                {loading ? '⏳ Saving...' : '💾 Save Profile'}
+                {loading ? <><i className="bi bi-hourglass-split"></i> Saving...</> : <><i className="bi bi-floppy"></i> Save Profile</>}
               </button>
               
               <button
                 className="btn-secondary"
                 onClick={() => setShowChangePassword(true)}
               >
-                🔑 Change Password
+                <i className="bi bi-key me-2"></i>Change Password
               </button>
             </div>
           </div>
@@ -280,13 +281,13 @@ function Settings() {
         {activeTab === 'system' && (
           <div className="settings-section">
             <div className="section-header">
-              <h3>⚙️ System Preferences</h3>
+              <h3><i className="bi bi-gear"></i> System Preferences</h3>
               <p>Configure system behavior and notifications</p>
             </div>
 
             <div className="settings-list">
               <div className="setting-group">
-                <h4>📧 Notification Settings</h4>
+                <h4><i className="bi bi-envelope"></i> Notification Settings</h4>
                 
                 <div className="setting-toggle">
                   <div className="toggle-info">
@@ -335,7 +336,7 @@ function Settings() {
               </div>
 
               <div className="setting-group">
-                <h4>🔄 Automation Settings</h4>
+                <h4><i className="bi bi-arrow-repeat"></i> Automation Settings</h4>
                 
                 <div className="setting-toggle">
                   <div className="toggle-info">
@@ -390,7 +391,7 @@ function Settings() {
         {activeTab === 'security' && (
           <div className="settings-section">
             <div className="section-header">
-              <h3>🔒 Security Settings</h3>
+              <h3><i className="bi bi-shield-lock"></i> Security Settings</h3>
               <p>Manage security preferences and access controls</p>
             </div>
 
@@ -458,7 +459,7 @@ function Settings() {
         {activeTab === 'display' && (
           <div className="settings-section">
             <div className="section-header">
-              <h3>🎨 Display Preferences</h3>
+              <h3><i className="bi bi-palette"></i> Display Preferences</h3>
               <p>Customize the appearance and behavior of the interface</p>
             </div>
 
@@ -469,9 +470,9 @@ function Settings() {
                   value={displaySettings.theme}
                   onChange={(e) => handleDisplayChange('theme', e.target.value)}
                 >
-                  <option value="light">☀️ Light</option>
-                  <option value="dark">🌙 Dark</option>
-                  <option value="auto">🔄 Auto (System)</option>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                  <option value="auto">Auto (System)</option>
                 </select>
               </div>
 
@@ -534,7 +535,7 @@ function Settings() {
         <div className="modal-overlay" onClick={() => setShowChangePassword(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>🔑 Change Password</h3>
+              <h3><i className="bi bi-key me-2"></i>Change Password</h3>
               <button 
                 className="modal-close"
                 onClick={() => setShowChangePassword(false)}
@@ -593,7 +594,7 @@ function Settings() {
                 onClick={handleChangePassword}
                 disabled={loading || !passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword}
               >
-                {loading ? '⏳ Changing...' : '🔑 Change Password'}
+                {loading ? <><i className="bi bi-hourglass-split"></i> Changing...</> : <><i className="bi bi-key"></i> Change Password</>}
               </button>
               <button 
                 className="btn-secondary"

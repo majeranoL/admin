@@ -515,46 +515,68 @@
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1100;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-width: 400px;
+  gap: 12px;
+  max-width: 420px;
+  pointer-events: none;
+}
+
+.notification-system .notification {
+  pointer-events: all;
 }
 
 .notification {
   display: flex;
   align-items: flex-start;
   gap: 15px;
-  padding: 15px 20px;
-  border-radius: 8px;
-  border: 1px solid;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 2px solid;
   animation: slideInRight 0.3s ease-out;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  min-width: 320px;
+  position: relative;
+  overflow: hidden;
+  transform: translateX(0) scale(1);
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+  max-height: 200px;
+  cursor: pointer;
+}
+
+.notification:hover:not(.notification-exiting) {
+  transform: translateX(-5px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
 }
 
 .notification-success {
-  background: rgba(34, 197, 94, 0.1);
-  border-color: rgba(34, 197, 94, 0.3);
-  color: #22c55e;
+  background: rgba(34, 197, 94, 0.9);
+  border-color: #22c55e;
+  color: white;
+  backdrop-filter: blur(10px);
 }
 
 .notification-error {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.3);
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.9);
+  border-color: #ef4444;
+  color: white;
+  backdrop-filter: blur(10px);
 }
 
 .notification-warning {
-  background: rgba(251, 191, 36, 0.1);
-  border-color: rgba(251, 191, 36, 0.3);
-  color: #f59e0b;
+  background: rgba(251, 191, 36, 0.9);
+  border-color: #f59e0b;
+  color: white;
+  backdrop-filter: blur(10px);
 }
 
 .notification-info {
-  background: rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.3);
-  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.9);
+  border-color: #3b82f6;
+  color: white;
+  backdrop-filter: blur(10px);
 }
 
 .notification-content {
@@ -564,42 +586,91 @@
 .notification-message {
   font-weight: 600;
   margin-bottom: 5px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .notification-details {
   font-size: 0.9rem;
-  opacity: 0.8;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .notification-close {
-  background: none;
+  background: rgba(255, 255, 255, 0.2);
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  color: currentColor;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
+  color: white;
+  border-radius: 50%;
+  transition: all 0.2s ease;
   padding: 0;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .notification-close:hover {
-  opacity: 1;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
 }
 
+/* Notification Animations */
 @keyframes slideInRight {
-  from {
-    transform: translateX(100%);
+  0% {
+    transform: translateX(calc(100% + 40px));
     opacity: 0;
   }
-  to {
+  70% {
+    transform: translateX(-8px);
+    opacity: 1;
+  }
+  100% {
     transform: translateX(0);
     opacity: 1;
   }
+}
+
+@keyframes slideOutRight {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(50px) scale(0.98);
+    opacity: 0.9;
+  }
+  60% {
+    transform: translateX(150px) scale(0.95);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(calc(100% + 80px)) scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* Notification Exit Animation */
+.notification.notification-exiting {
+  animation: slideOutRight 0.4s ease-in-out forwards !important;
+  pointer-events: none !important; /* Prevent interactions during exit */
+  transform: none !important; /* Override any hover transforms */
+}
+
+/* Enhanced notification interaction */
+.notification:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-out;
+}
+
+.notification:hover .notification-close {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Responsive Design */

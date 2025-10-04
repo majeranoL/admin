@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
 import '../../css/SuperAdmin/SystemReports.css'
+import '../../css/EnhancedComponents.css'
 
 function SystemReports() {
-  const { systemReports, loading, generateSystemReport, exportReport } = useData()
+  const { systemReports, loading, generateSystemReport, exportToCSV } = useData()
   
   const [selectedReport, setSelectedReport] = useState(null)
   const [showModal, setShowModal] = useState(false)
@@ -21,7 +22,7 @@ function SystemReports() {
     {
       id: 'performance',
       title: 'Performance Reports',
-      icon: '📈',
+      icon: 'bi-graph-up',
       description: 'System performance and technical metrics',
       reports: [
         'System Response Times',
@@ -35,7 +36,7 @@ function SystemReports() {
     {
       id: 'user_activity',
       title: 'User Activity Reports',
-      icon: '👥',
+      icon: 'bi-people',
       description: 'User engagement and behavior analytics',
       reports: [
         'Daily Active Users',
@@ -49,7 +50,7 @@ function SystemReports() {
     {
       id: 'rescue_operations',
       title: 'Rescue Operations',
-      icon: '🚑',
+      icon: 'bi-truck',
       description: 'Animal rescue and emergency response data',
       reports: [
         'Rescue Success Rate',
@@ -63,7 +64,7 @@ function SystemReports() {
     {
       id: 'adoption_analytics',
       title: 'Adoption Analytics',
-      icon: '🏠',
+      icon: 'bi-house-heart',
       description: 'Adoption process and success metrics',
       reports: [
         'Adoption Success Rate',
@@ -77,7 +78,7 @@ function SystemReports() {
     {
       id: 'financial',
       title: 'Financial Reports',
-      icon: '💰',
+      icon: 'bi-cash-coin',
       description: 'Financial tracking and budget analysis',
       reports: [
         'Donation Analytics',
@@ -91,7 +92,7 @@ function SystemReports() {
     {
       id: 'security',
       title: 'Security Reports',
-      icon: '🛡️',
+      icon: 'bi-shield-check',
       description: 'Security incidents and compliance metrics',
       reports: [
         'Security Incidents',
@@ -113,13 +114,26 @@ function SystemReports() {
       filters: reportFilters
     }
 
-    const report = await generateSystemReport(reportConfig)
-    setSelectedReport(report)
-    setShowModal(true)
+    try {
+      // Call generateSystemReport with the correct parameters
+      const report = await generateSystemReport(categoryId, getDateRangeLabel())
+      setSelectedReport(report)
+      setShowModal(true)
+    } catch (error) {
+      console.error('Error generating report:', error)
+      // You can add a notification here if needed
+    }
   }
 
   const handleExportReport = (report) => {
-    exportReport(report, reportFilters.format)
+    // Create export data from the report
+    const exportData = [
+      ['Report Name', 'Type', 'Generated Date', 'Status'],
+      [report.title || report.name, report.type, report.generatedDate, report.status]
+    ]
+    
+    // Use the available exportToCSV function
+    exportToCSV(exportData, `${report.name}_export.csv`)
   }
 
   const getDateRangeLabel = () => {
@@ -139,7 +153,7 @@ function SystemReports() {
   const reportStats = {
     total: systemReports.length,
     thisWeek: systemReports.filter(r => {
-      const reportDate = new Date(r.generatedAt)
+      const reportDate = new Date(r.generatedDate)
       const weekAgo = new Date()
       weekAgo.setDate(weekAgo.getDate() - 7)
       return reportDate >= weekAgo
@@ -153,7 +167,7 @@ function SystemReports() {
       {/* Header */}
       <div className="component-header">
         <div className="header-left">
-          <h2>📊 System Reports</h2>
+          <h2><i className="bi bi-bar-chart me-2"></i>System Reports</h2>
           <span className="reports-subtitle">
             Comprehensive analytics and operational insights
           </span>
@@ -163,7 +177,7 @@ function SystemReports() {
             className="btn-secondary"
             onClick={() => window.location.reload()}
           >
-            <span className="btn-icon">🔄</span>
+            <span className="btn-icon"><i className="bi bi-arrow-clockwise"></i></span>
             Refresh Data
           </button>
         </div>
@@ -172,7 +186,7 @@ function SystemReports() {
       {/* Statistics Cards */}
       <div className="stats-grid">
         <div className="stat-card primary">
-          <div className="stat-icon">📊</div>
+          <div className="stat-icon"><i className="bi bi-bar-chart"></i></div>
           <div className="stat-content">
             <h3>{reportStats.total}</h3>
             <p>Total Reports</p>
@@ -180,23 +194,21 @@ function SystemReports() {
         </div>
         
         <div className="stat-card success">
-          <div className="stat-icon">📈</div>
+          <div className="stat-icon"><i className="bi bi-graph-up-arrow"></i></div>
           <div className="stat-content">
             <h3>{reportStats.thisWeek}</h3>
             <p>Generated This Week</p>
           </div>
         </div>
         
-        <div className="stat-card warning">
-          <div className="stat-icon">⏳</div>
+                <div className="stat-card warning">
+          <div className="stat-icon"><i className="bi bi-hourglass-split"></i></div>
           <div className="stat-content">
             <h3>{reportStats.pending}</h3>
             <p>In Progress</p>
           </div>
-        </div>
-        
-        <div className="stat-card info">
-          <div className="stat-icon">⚡</div>
+        </div>        <div className="stat-card info">
+          <div className="stat-icon"><i className="bi bi-lightning"></i></div>
           <div className="stat-content">
             <h3>{reportStats.performance}</h3>
             <p>Performance Reports</p>
@@ -293,7 +305,7 @@ function SystemReports() {
             <div key={category.id} className="category-card">
               <div className="category-header">
                 <div className="category-title">
-                  <span className="category-icon">{category.icon}</span>
+                  <span className="category-icon"><i className={`bi ${category.icon}`}></i></span>
                   <h4>{category.title}</h4>
                 </div>
                 <button
@@ -301,7 +313,17 @@ function SystemReports() {
                   onClick={() => handleGenerateReport(category.id)}
                   disabled={loading[category.id]}
                 >
-                  {loading[category.id] ? '⏳ Generating...' : '� Generate'}
+                  {loading[category.id] ? (
+                    <>
+                      <i className="bi bi-hourglass-split me-1"></i>
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-bar-chart me-1"></i>
+                      Generate
+                    </>
+                  )}
                 </button>
               </div>
               
@@ -352,19 +374,19 @@ function SystemReports() {
                 <tr key={report.id}>
                   <td className="report-name">
                     <div className="name-with-icon">
-                      <span className="report-icon">📋</span>
-                      {report.name}
+                      <span className="report-icon"><i className="bi bi-file-text"></i></span>
+                      {report.title}
                     </div>
                   </td>
                   <td>
-                    <span className={`type-badge type-${report.type}`}>
-                      {report.type.replace('_', ' ').toUpperCase()}
+                    <span className={`type-badge type-${report.type.toLowerCase().replace(' ', '-')}`}>
+                      {report.type.toUpperCase()}
                     </span>
                   </td>
                   <td className="date-cell">
-                    {new Date(report.generatedAt).toLocaleString()}
+                    {new Date(report.generatedDate).toLocaleString()}
                   </td>
-                  <td>{report.dateRange}</td>
+                  <td>{report.period}</td>
                   <td>
                     <span className={`status-badge status-${report.status.toLowerCase()}`}>
                       {report.status}
@@ -380,7 +402,7 @@ function SystemReports() {
                         }}
                         title="View Report"
                       >
-                        👁️
+                        <i className="bi bi-eye"></i>
                       </button>
                       
                       <button
@@ -389,7 +411,7 @@ function SystemReports() {
                         disabled={loading[`export-${report.id}`]}
                         title="Download Report"
                       >
-                        {loading[`export-${report.id}`] ? '⏳' : '💾'}
+                        {loading[`export-${report.id}`] ? <i className="bi bi-hourglass"></i> : <i className="bi bi-download"></i>}
                       </button>
                     </div>
                   </td>
@@ -400,7 +422,7 @@ function SystemReports() {
 
           {systemReports.length === 0 && (
             <div className="no-data">
-              <div className="no-data-icon">📊</div>
+              <div className="no-data-icon"><i className="bi bi-bar-chart"></i></div>
               <h4>No Reports Generated Yet</h4>
               <p>Generate your first system report using the categories above.</p>
             </div>
@@ -413,7 +435,7 @@ function SystemReports() {
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content extra-large" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>📊 {selectedReport.name}</h3>
+              <h3><i className="bi bi-bar-chart me-2"></i>{selectedReport.name}</h3>
               <button 
                 className="modal-close"
                 onClick={() => setShowModal(false)}
@@ -426,17 +448,17 @@ function SystemReports() {
               <div className="report-meta">
                 <div className="meta-item">
                   <label>Report Type:</label>
-                  <span className={`type-badge type-${selectedReport.type}`}>
-                    {selectedReport.type.replace('_', ' ').toUpperCase()}
+                  <span className={`type-badge type-${selectedReport.type.toLowerCase().replace(' ', '-')}`}>
+                    {selectedReport.type.toUpperCase()}
                   </span>
                 </div>
                 <div className="meta-item">
                   <label>Generated:</label>
-                  <span>{new Date(selectedReport.generatedAt).toLocaleString()}</span>
+                  <span>{new Date(selectedReport.generatedDate).toLocaleString()}</span>
                 </div>
                 <div className="meta-item">
                   <label>Date Range:</label>
-                  <span>{selectedReport.dateRange}</span>
+                  <span>{selectedReport.period}</span>
                 </div>
                 <div className="meta-item">
                   <label>Status:</label>
@@ -461,7 +483,7 @@ function SystemReports() {
                         <div className="metric-label">{metric.label}</div>
                         {metric.change && (
                           <div className={`metric-change ${metric.change > 0 ? 'positive' : 'negative'}`}>
-                            {metric.change > 0 ? '↗️' : '↘️'} {Math.abs(metric.change)}%
+                            <i className={`bi ${metric.change > 0 ? 'bi-arrow-up-right' : 'bi-arrow-down-right'} me-1`}></i>{Math.abs(metric.change)}%
                           </div>
                         )}
                       </div>
@@ -506,7 +528,8 @@ function SystemReports() {
                 onClick={() => handleExportReport(selectedReport)}
                 disabled={loading[`export-${selectedReport.id}`]}
               >
-                {loading[`export-${selectedReport.id}`] ? '⏳ Exporting...' : '💾 Export Report'}
+                <i className={`bi ${loading[`export-${selectedReport.id}`] ? 'bi-hourglass' : 'bi-download'} me-2`}></i>
+                {loading[`export-${selectedReport.id}`] ? 'Exporting...' : 'Export Report'}
               </button>
               <button 
                 className="btn-secondary"

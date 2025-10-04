@@ -88,9 +88,11 @@
 .notifications .search-input {
   width: 100%;
   padding: 12px 16px 12px 44px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
+  background: #1e1e1e;
+  color: #e0e0e0;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -111,10 +113,11 @@
 
 .notifications .filter-select {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
   background: #1e1e1e;
+  color: #e0e0e0;
   cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -363,9 +366,11 @@
 .notifications .form-select,
 .notifications .form-textarea {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
+  background: #1e1e1e;
+  color: #e0e0e0;
   transition: border-color 0.2s;
 }
 

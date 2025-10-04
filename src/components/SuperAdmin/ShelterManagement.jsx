@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
 import '../../css/SuperAdmin/ShelterManagement.css'
+import '../../css/SuperAdmin/CleanTable.css'
+import '../../css/EnhancedComponents.css'
 
 function ShelterManagement() {
   const { shelters, loading, updateShelterStatus } = useData()
@@ -38,10 +40,10 @@ function ShelterManagement() {
   // Status badge styling
   const getStatusBadge = (status) => {
     const statusConfig = {
-      'Active': { class: 'status-active', label: 'Active' },
+      'Operational': { class: 'status-active', label: 'Operational' },
       'Pending': { class: 'status-pending', label: 'Pending' },
-      'Suspended': { class: 'status-suspended', label: 'Suspended' },
-      'Inactive': { class: 'status-inactive', label: 'Inactive' }
+      'Maintenance': { class: 'status-warning', label: 'Maintenance' },
+      'Closed': { class: 'status-inactive', label: 'Closed' }
     }
     const config = statusConfig[status] || { class: 'status-unknown', label: status }
     return <span className={`status-badge ${config.class}`}>{config.label}</span>
@@ -49,15 +51,15 @@ function ShelterManagement() {
 
   const getTypeBadge = (type) => {
     const typeConfig = {
-      'Animal Shelter': { icon: '🏠', class: 'type-shelter' },
-      'Rescue Organization': { icon: '🚑', class: 'type-rescue' },
-      'Veterinary Clinic': { icon: '🏥', class: 'type-vet' },
-      'Foster Network': { icon: '👨‍👩‍👧‍👦', class: 'type-foster' }
+      'Animal Shelter': { icon: 'bi-house', class: 'type-shelter' },
+      'Rescue Organization': { icon: 'bi-truck', class: 'type-rescue' },
+      'Veterinary Clinic': { icon: 'bi-hospital', class: 'type-vet' },
+      'Foster Network': { icon: 'bi-people', class: 'type-foster' }
     }
-    const config = typeConfig[type] || { icon: '🏢', class: 'type-other' }
+    const config = typeConfig[type] || { icon: 'bi-building', class: 'type-other' }
     return (
       <span className={`type-badge ${config.class}`}>
-        <span className="type-icon">{config.icon}</span>
+        <span className="type-icon"><i className={`bi ${config.icon}`}></i></span>
         {type}
       </span>
     )
@@ -114,12 +116,12 @@ function ShelterManagement() {
 
   // Statistics
   const stats = {
-    active: shelters.filter(s => s.status === 'Active').length,
+    active: shelters.filter(s => s.status === 'Operational').length,
     pending: shelters.filter(s => s.status === 'Pending').length,
     shelterType: shelters.filter(s => s.type === 'Animal Shelter').length,
     rescueType: shelters.filter(s => s.type === 'Rescue Organization').length,
     vetType: shelters.filter(s => s.type === 'Veterinary Clinic').length,
-    totalAnimals: shelters.reduce((sum, s) => sum + s.animalsHosted, 0)
+    totalAnimals: shelters.reduce((sum, s) => sum + (s.currentOccupancy || 0), 0)
   }
 
   // Unique types for filtering
@@ -130,7 +132,7 @@ function ShelterManagement() {
       {/* Header */}
       <div className="component-header">
         <div className="header-left">
-          <h2>🏠 Shelter Management</h2>
+          <h2><i className="bi bi-house me-2"></i>Shelter Management</h2>
           <span className="shelters-count">
             {filteredShelters.length} of {shelters.length} partners
           </span>
@@ -140,7 +142,7 @@ function ShelterManagement() {
             className="btn-primary"
             onClick={() => setShowAddModal(true)}
           >
-            <span className="btn-icon">➕</span>
+            <span className="btn-icon"><i className="bi bi-plus"></i></span>
             Add New Partner
           </button>
         </div>
@@ -149,7 +151,7 @@ function ShelterManagement() {
       {/* Statistics Cards */}
       <div className="stats-grid">
         <div className="stat-card primary">
-          <div className="stat-icon">🏠</div>
+          <div className="stat-icon"><i className="bi bi-house"></i></div>
           <div className="stat-content">
             <h3>{stats.active}</h3>
             <p>Active Partners</p>
@@ -157,7 +159,7 @@ function ShelterManagement() {
         </div>
         
         <div className="stat-card warning">
-          <div className="stat-icon">📋</div>
+          <div className="stat-icon"><i className="bi bi-clipboard-data"></i></div>
           <div className="stat-content">
             <h3>{stats.pending}</h3>
             <p>Pending Applications</p>
@@ -165,7 +167,7 @@ function ShelterManagement() {
         </div>
         
         <div className="stat-card success">
-          <div className="stat-icon">🐕</div>
+          <div className="stat-icon"><i className="bi bi-heart"></i></div>
           <div className="stat-content">
             <h3>{stats.totalAnimals}</h3>
             <p>Animals Hosted</p>
@@ -173,7 +175,7 @@ function ShelterManagement() {
         </div>
         
         <div className="stat-card info">
-          <div className="stat-icon">🏥</div>
+          <div className="stat-icon"><i className="bi bi-hospital"></i></div>
           <div className="stat-content">
             <h3>{stats.vetType}</h3>
             <p>Veterinary Partners</p>
@@ -185,7 +187,7 @@ function ShelterManagement() {
       <div className="component-controls">
         <div className="search-section">
           <div className="search-box">
-            <span className="search-icon">🔍</span>
+            <span className="search-icon"><i className="bi bi-search"></i></span>
             <input
               type="text"
               placeholder="Search by shelter name, location, or contact person..."
@@ -203,10 +205,10 @@ function ShelterManagement() {
             className="filter-select"
           >
             <option value="all">All Status</option>
-            <option value="active">Active</option>
+            <option value="operational">Operational</option>
             <option value="pending">Pending</option>
-            <option value="suspended">Suspended</option>
-            <option value="inactive">Inactive</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="closed">Closed</option>
           </select>
 
           <select
@@ -223,112 +225,114 @@ function ShelterManagement() {
       </div>
 
       {/* Shelters Table */}
-      <div className="table-container">
-        <table className="enhanced-table">
+      <div className="table-wrapper">
+        <table className="data-table">
           <thead>
             <tr>
-              <th>
+              <th className="col-checkbox">
                 <input
                   type="checkbox"
                   checked={selectedShelters.length === filteredShelters.length && filteredShelters.length > 0}
                   onChange={handleSelectAll}
                 />
               </th>
-              <th>Partner Details</th>
-              <th>Type</th>
-              <th>Contact Info</th>
-              <th>Capacity</th>
-              <th>Animals Hosted</th>
-              <th>Status</th>
-              <th>License</th>
-              <th>Actions</th>
+              <th className="col-partner">Partner Information</th>
+              <th className="col-type-status">Type & Status</th>
+              <th className="col-capacity">Capacity Usage</th>
+              <th className="col-contact">Contact & License</th>
+              <th className="col-actions">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredShelters.map(shelter => (
-              <tr key={shelter.id} className="table-row">
-                <td>
+              <tr key={shelter.id}>
+                <td className="col-checkbox">
                   <input
                     type="checkbox"
                     checked={selectedShelters.includes(shelter.id)}
                     onChange={() => handleSelectShelter(shelter.id)}
                   />
                 </td>
-                <td className="shelter-details">
-                  <div className="shelter-name">{shelter.name}</div>
-                  <div className="shelter-location">{shelter.address}</div>
-                  <div className="shelter-contact">Contact: {shelter.manager}</div>
+                <td className="col-partner">
+                  <div className="partner-name">{shelter.name}</div>
+                  <div className="partner-location">{shelter.address}</div>
+                  <div className="partner-manager">Manager: {shelter.manager}</div>
                 </td>
-                <td>{getTypeBadge(shelter.type)}</td>
-                <td className="contact-info">
-                  <div>{shelter.email}</div>
-                  <div className="phone">{shelter.phone}</div>
-                </td>
-                <td className="capacity-info">
-                  <span className="capacity-number">{shelter.capacity}</span>
-                  <span className="capacity-label">animals</span>
-                </td>
-                <td className="hosted-info">
-                  <div className="hosted-number">{shelter.animalsHosted}</div>
-                  <div className="hosted-percentage">
-                    {((shelter.animalsHosted / shelter.capacity) * 100).toFixed(0)}% full
+                <td className="col-type-status">
+                  <div className="badge-container">
+                    {getTypeBadge(shelter.type)}
+                    {getStatusBadge(shelter.status)}
                   </div>
                 </td>
-                <td>{getStatusBadge(shelter.status)}</td>
-                <td className="license-info">
-                  <div className="license-number">{shelter.licenseNumber}</div>
-                  <div className="license-expiry">Expires: {shelter.licenseExpiry}</div>
+                <td className="col-capacity">
+                  <div className="capacity-display">
+                    <div className="capacity-numbers">
+                      <span className="current">{shelter.currentOccupancy || 0}</span>
+                      <span className="divider">/</span>
+                      <span className="total">{shelter.capacity}</span>
+                    </div>
+                    <div className="capacity-percent">
+                      {(((shelter.currentOccupancy || 0) / shelter.capacity) * 100).toFixed(0)}% occupied
+                    </div>
+                  </div>
                 </td>
-                <td className="actions-cell">
-                  <div className="action-buttons">
+                <td className="col-contact">
+                  <div className="contact-details">
+                    <div className="email-info">{shelter.email}</div>
+                    <div className="phone-info">{shelter.phone}</div>
+                    <div className="license-info">License: {shelter.licenseNumber || 'N/A'}</div>
+                  </div>
+                </td>
+                <td className="col-actions">
+                  <div className="actions-wrapper">
                     <button
-                      className="btn-view"
+                      className="action-btn view-btn"
                       onClick={() => handleViewDetails(shelter)}
                       title="View Details"
                     >
-                      👁️
+                      <i className="bi bi-eye"></i>
                     </button>
                     
                     {shelter.status === 'Pending' && (
                       <>
                         <button
-                          className="btn-approve"
-                          onClick={() => handleStatusAction(shelter.id, 'Active')}
+                          className="action-btn approve-btn"
+                          onClick={() => handleStatusAction(shelter.id, 'Operational')}
                           disabled={loading[shelter.id]}
                           title="Approve"
                         >
-                          {loading[shelter.id] ? '⏳' : '✅'}
+                          {loading[shelter.id] ? <i className="bi bi-hourglass"></i> : <i className="bi bi-check-circle"></i>}
                         </button>
                         <button
-                          className="btn-reject"
-                          onClick={() => handleStatusAction(shelter.id, 'Inactive')}
+                          className="action-btn reject-btn"
+                          onClick={() => handleStatusAction(shelter.id, 'Closed')}
                           disabled={loading[shelter.id]}
                           title="Reject"
                         >
-                          {loading[shelter.id] ? '⏳' : '❌'}
+                          {loading[shelter.id] ? <i className="bi bi-hourglass"></i> : <i className="bi bi-x-circle"></i>}
                         </button>
                       </>
                     )}
                     
-                    {shelter.status === 'Active' && (
+                    {shelter.status === 'Operational' && (
                       <button
-                        className="btn-suspend"
-                        onClick={() => handleStatusAction(shelter.id, 'Suspended')}
+                        className="action-btn suspend-btn"
+                        onClick={() => handleStatusAction(shelter.id, 'Maintenance')}
                         disabled={loading[shelter.id]}
-                        title="Suspend"
+                        title="Set to Maintenance"
                       >
-                        {loading[shelter.id] ? '⏳' : '🚫'}
+                        {loading[shelter.id] ? '⏳' : '�'}
                       </button>
                     )}
 
-                    {shelter.status === 'Suspended' && (
+                    {shelter.status === 'Maintenance' && (
                       <button
-                        className="btn-activate"
-                        onClick={() => handleStatusAction(shelter.id, 'Active')}
+                        className="action-btn activate-btn"
+                        onClick={() => handleStatusAction(shelter.id, 'Operational')}
                         disabled={loading[shelter.id]}
                         title="Reactivate"
                       >
-                        {loading[shelter.id] ? '⏳' : '✅'}
+                        {loading[shelter.id] ? <i className="bi bi-hourglass"></i> : <i className="bi bi-check-circle"></i>}
                       </button>
                     )}
                   </div>
@@ -340,7 +344,7 @@ function ShelterManagement() {
 
         {filteredShelters.length === 0 && (
           <div className="no-data">
-            <div className="no-data-icon">🏠</div>
+            <div className="no-data-icon"><i className="bi bi-house"></i></div>
             <h3>No partners found</h3>
             <p>No shelters or organizations match your current filters.</p>
           </div>
@@ -443,7 +447,12 @@ function ShelterManagement() {
                   </div>
                   <div className="detail-item">
                     <label>Rating:</label>
-                    <span>{'⭐'.repeat(selectedShelter.rating || 5)} ({selectedShelter.rating || 5}/5)</span>
+                    <span>
+                      {Array.from({length: 5}).map((_, i) => (
+                        <i key={i} className={`bi ${i < (selectedShelter.rating || 5) ? 'bi-star-fill' : 'bi-star'} me-1`}></i>
+                      ))}
+                      ({selectedShelter.rating || 5}/5)
+                    </span>
                   </div>
                 </div>
               </div>

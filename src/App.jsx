@@ -21,6 +21,14 @@ function AppContent() {
       link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
       document.head.appendChild(link);
     }
+    
+    // Add Bootstrap Icons CSS if not already present
+    if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css';
+      document.head.appendChild(link);
+    }
   }, []);
 
   useEffect(() => {
@@ -49,8 +57,14 @@ function AppContent() {
   // Show appropriate component based on authentication
   return (
     <>
-      {isAuthenticated ? <Dashboard /> : <LoginForm />}
-      <NotificationSystem />
+      {isAuthenticated ? (
+        <>
+          <Dashboard />
+          <NotificationSystem />
+        </>
+      ) : (
+        <LoginForm />
+      )}
     </>
   )
 }

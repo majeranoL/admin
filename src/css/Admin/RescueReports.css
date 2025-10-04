@@ -86,9 +86,11 @@
 .rescue-reports .search-input {
   width: 100%;
   padding: 12px 16px 12px 44px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
+  background: #1e1e1e;
+  color: #e0e0e0;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -109,10 +111,11 @@
 
 .rescue-reports .filter-select {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
   background: #1e1e1e;
+  color: #e0e0e0;
   cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -145,12 +148,12 @@
 }
 
 .rescue-reports .btn-secondary {
-  background: #e2e8f0;
-  color: #475569;
+  background: #444;
+  color: #e0e0e0;
 }
 
 .rescue-reports .btn-secondary:hover {
-  background: #cbd5e1;
+  background: #555;
 }
 
 /* Reports Table */
@@ -172,13 +175,14 @@
   text-align: left;
   font-weight: 600;
   color: #e0e0e0;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid #444;
 }
 
 .rescue-reports .reports-table td {
   padding: 16px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #444;
   vertical-align: top;
+  color: #e0e0e0;
 }
 
 .rescue-reports .reports-table tbody tr {
@@ -339,9 +343,11 @@
 .rescue-reports .form-select,
 .rescue-reports .form-textarea {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
+  background: #1e1e1e;
+  color: #e0e0e0;
   transition: border-color 0.2s;
 }
 

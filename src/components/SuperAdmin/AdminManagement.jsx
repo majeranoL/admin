@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
 import '../../css/SuperAdmin/AdminManagement.css'
+import '../../css/EnhancedComponents.css'
 
 function AdminManagement() {
   const { adminUsers, loading, updateAdminStatus } = useData()
@@ -85,21 +86,21 @@ function AdminManagement() {
       {/* Stats Cards */}
       <div className="admin-stats">
         <div className="stat-card">
-          <div className="stat-icon">👤</div>
+          <div className="stat-icon"><i className="bi bi-person-circle"></i></div>
           <div className="stat-info">
             <h3>{adminUsers.filter(a => a.status === 'Active').length}</h3>
             <p>Active Admins</p>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">⏸️</div>
+          <div className="stat-icon"><i className="bi bi-pause-circle"></i></div>
           <div className="stat-info">
             <h3>{adminUsers.filter(a => a.status === 'Suspended').length}</h3>
             <p>Suspended</p>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">⏳</div>
+          <div className="stat-icon"><i className="bi bi-clock"></i></div>
           <div className="stat-info">
             <h3>{adminUsers.filter(a => a.status === 'Pending').length}</h3>
             <p>Pending Approval</p>

@@ -419,7 +419,123 @@ export const DataProvider = ({ children }) => {
 
   // Loading states
   const [loading, setLoading] = useState({})
-  const [notifications, setNotifications] = useState([])
+  
+  // Popup notifications (temporary notifications)
+  const [popupNotifications, setPopupNotifications] = useState([])
+  
+  // Table notifications (persistent notifications for the Notifications component)
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      type: 'Emergency',
+      priority: 'High',
+      title: 'Urgent: Injured Dog Found on Highway',
+      message: 'A severely injured German Shepherd has been found on Highway 101. Immediate rescue required.',
+      status: 'Unread',
+      timestamp: '2024-10-04T10:30:00Z',
+      details: 'Dog appears to have been hit by a vehicle. Multiple injuries visible. Location: Mile marker 45 on Highway 101 northbound.',
+      actionRequired: 'Dispatch rescue team immediately and contact nearest veterinary emergency clinic.'
+    },
+    {
+      id: 2,
+      type: 'Adoption',
+      priority: 'Medium',
+      title: 'New Adoption Application Submitted',
+      message: 'Sarah Johnson has submitted an adoption application for Buddy (Golden Retriever).',
+      status: 'Unread',
+      timestamp: '2024-10-04T09:15:00Z',
+      details: 'Application includes references, veterinary history, and home inspection consent.',
+      actionRequired: 'Review application and schedule home inspection within 3 business days.'
+    },
+    {
+      id: 3,
+      type: 'System',
+      priority: 'Low',
+      title: 'Weekly Database Backup Completed',
+      message: 'Automated weekly database backup has been successfully completed.',
+      status: 'Read',
+      timestamp: '2024-10-04T02:00:00Z',
+      details: 'Backup size: 2.4GB. All data tables verified. Backup stored in secure cloud storage.',
+      actionRequired: null
+    },
+    {
+      id: 4,
+      type: 'Rescue',
+      priority: 'High',
+      title: 'Multiple Cats Found in Abandoned Building',
+      message: 'Report of 8-12 cats found in an abandoned warehouse. Rescue operation needed.',
+      status: 'Unread',
+      timestamp: '2024-10-04T08:45:00Z',
+      details: 'Anonymous tip received about cats trapped in warehouse at 123 Industrial Blvd. Building appears unsafe.',
+      actionRequired: 'Coordinate with building safety inspector and animal rescue team.'
+    },
+    {
+      id: 5,
+      type: 'Alert',
+      priority: 'Medium',
+      title: 'Volunteer Training Session Tomorrow',
+      message: 'Reminder: New volunteer orientation scheduled for tomorrow at 2:00 PM.',
+      status: 'Read',
+      timestamp: '2024-10-03T16:30:00Z',
+      details: '15 new volunteers registered. Training covers animal handling, safety protocols, and emergency procedures.',
+      actionRequired: 'Ensure training materials are prepared and meeting room is available.'
+    },
+    {
+      id: 6,
+      type: 'Update',
+      priority: 'Low',
+      title: 'Max (German Shepherd) Successfully Adopted',
+      message: 'Great news! Max has found his forever home with the Rodriguez family.',
+      status: 'Read',
+      timestamp: '2024-10-03T14:20:00Z',
+      details: 'Adoption process completed successfully. Follow-up check scheduled for next month.',
+      actionRequired: null
+    },
+    {
+      id: 7,
+      type: 'Emergency',
+      priority: 'High',
+      title: 'Shelter at Near Capacity',
+      message: 'Current shelter occupancy at 95%. Consider temporary foster arrangements.',
+      status: 'Unread',
+      timestamp: '2024-10-03T11:15:00Z',
+      details: 'Dog kennels: 38/40 occupied. Cat areas: 22/25 occupied. Isolation units: 3/5 occupied.',
+      actionRequired: 'Contact foster network and consider temporary placement solutions.'
+    },
+    {
+      id: 8,
+      type: 'System',
+      priority: 'Medium',
+      title: 'Software Update Available',
+      message: 'New version of the Animal Management System is available for installation.',
+      status: 'Unread',
+      timestamp: '2024-10-02T20:00:00Z',
+      details: 'Version 2.3.1 includes bug fixes, security improvements, and new reporting features.',
+      actionRequired: 'Schedule maintenance window for system update installation.'
+    },
+    {
+      id: 9,
+      type: 'Adoption',
+      priority: 'Low',
+      title: 'Adoption Event This Weekend',
+      message: 'Reminder: Community adoption event scheduled for Saturday at Central Park.',
+      status: 'Read',
+      timestamp: '2024-10-02T10:30:00Z',
+      details: 'Expected 500+ visitors. 15 animals pre-selected for adoption showcase.',
+      actionRequired: null
+    },
+    {
+      id: 10,
+      type: 'Alert',
+      priority: 'Medium',
+      title: 'Medical Supplies Running Low',
+      message: 'Several critical medical supplies are below minimum threshold.',
+      status: 'Read',
+      timestamp: '2024-10-01T15:45:00Z',
+      details: 'Low stock: Antibiotics (3 days), Pain medication (5 days), Surgical gloves (2 days).',
+      actionRequired: 'Place urgent order with primary veterinary supplier.'
+    }
+  ])
 
   // Statistics
   const getStats = () => {
@@ -473,16 +589,57 @@ export const DataProvider = ({ children }) => {
     }
   }
 
+  // Popup notification functions (for temporary alerts)
+  const addPopupNotification = (notification) => {
+    setPopupNotifications(prev => [...prev, notification])
+    // Auto-removal is handled by NotificationSystem component
+  }
+
+  const removePopupNotification = (id) => {
+    setPopupNotifications(prev => prev.filter(notif => notif.id !== id))
+  }
+
+  // Add notification to the table (separate from popup notifications)
   const addNotification = (notification) => {
     setNotifications(prev => [...prev, notification])
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-      removeNotification(notification.id)
-    }, 5000)
   }
 
   const removeNotification = (id) => {
-    setNotifications(prev => prev.filter(notif => notif.id !== id))
+    removePopupNotification(id)
+  }
+
+  const markNotificationAsRead = (id) => {
+    setLoading(prev => ({ ...prev, [id]: true }))
+    setTimeout(() => {
+      setNotifications(prev => 
+        prev.map(notification => 
+          notification.id === id 
+            ? { ...notification, status: 'Read' }
+            : notification
+        )
+      )
+      setLoading(prev => ({ ...prev, [id]: false }))
+    }, 500)
+  }
+
+  const deleteNotification = (id) => {
+    setLoading(prev => ({ ...prev, [id]: true }))
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(notification => notification.id !== id))
+      setLoading(prev => ({ ...prev, [id]: false }))
+    }, 500)
+  }
+
+  const showNotification = (message, type = 'info') => {
+    const notification = {
+      id: Date.now(),
+      type: type,
+      title: type === 'success' ? 'Success' : type === 'error' ? 'Error' : type === 'warning' ? 'Warning' : 'Information',
+      message: message,
+      timestamp: new Date().toISOString(),
+      details: null
+    }
+    addPopupNotification(notification)
   }
 
   const exportToCSV = () => {
@@ -682,23 +839,53 @@ export const DataProvider = ({ children }) => {
   // Generate System Report
   const generateSystemReport = async (reportType, period) => {
     const reportId = `#SR${Date.now().toString().slice(-3)}`
-    setLoading(prev => ({ ...prev, generateReport: true }))
+    setLoading(prev => ({ ...prev, [reportType]: true }))
     try {
       await new Promise(resolve => setTimeout(resolve, 2000))
       const newReport = {
         id: reportId,
+        name: `${reportType} Report`,
         title: `${reportType} Report`,
         type: reportType,
-        generatedDate: new Date().toISOString().split('T')[0],
+        generatedDate: new Date().toISOString(),
         period: period,
         status: 'Completed',
+        summary: `Comprehensive ${reportType} analysis covering ${period}. This report provides detailed insights into system performance and operational metrics.`,
         data: {
           // Mock data based on current state
           totalRecords: Math.floor(Math.random() * 100) + 50,
           processedItems: Math.floor(Math.random() * 50) + 25,
           successRate: `${Math.floor(Math.random() * 20) + 80}%`,
           avgTime: `${Math.floor(Math.random() * 5) + 2}.${Math.floor(Math.random() * 9)} hours`
-        }
+        },
+        metrics: [
+          { label: 'Total Records', value: Math.floor(Math.random() * 1000) + 500, change: Math.floor(Math.random() * 20) - 10 },
+          { label: 'Success Rate', value: `${Math.floor(Math.random() * 20) + 80}%`, change: Math.floor(Math.random() * 10) - 5 },
+          { label: 'Avg Response Time', value: `${Math.floor(Math.random() * 5) + 2}s`, change: Math.floor(Math.random() * 20) - 10 },
+          { label: 'Active Users', value: Math.floor(Math.random() * 100) + 50, change: Math.floor(Math.random() * 15) + 5 }
+        ],
+        analysis: [
+          {
+            title: 'Performance Overview',
+            content: 'System performance has shown steady improvement over the selected period. Key metrics indicate optimal resource utilization and user satisfaction.'
+          },
+          {
+            title: 'Key Findings',
+            content: 'Analysis reveals consistent uptime, efficient processing times, and positive user engagement trends across all monitored parameters.'
+          }
+        ],
+        recommendations: [
+          {
+            title: 'Optimize Database Queries',
+            description: 'Consider indexing frequently accessed tables to improve response times.',
+            priority: 'medium'
+          },
+          {
+            title: 'Scale Resources',
+            description: 'Monitor resource usage and scale accordingly during peak periods.',
+            priority: 'high'
+          }
+        ]
       }
       setSystemReports(prev => [newReport, ...prev])
       addNotification({
@@ -707,10 +894,12 @@ export const DataProvider = ({ children }) => {
         message: `Report ${reportId} generated successfully`,
         details: `${reportType} report for ${period} is ready`
       })
+      return newReport
     } catch (error) {
       addNotification({ id: Date.now(), type: 'error', message: 'Failed to generate report', details: error.message })
+      throw error
     } finally {
-      setLoading(prev => ({ ...prev, generateReport: false }))
+      setLoading(prev => ({ ...prev, [reportType]: false }))
     }
   }
 
@@ -850,7 +1039,8 @@ export const DataProvider = ({ children }) => {
     
     // State
     loading,
-    notifications,
+    notifications, // Table notifications for Notifications component
+    popupNotifications, // Popup notifications for NotificationSystem component
     
     // Adoption Operations
     updateAdoptionStatus,
@@ -878,7 +1068,12 @@ export const DataProvider = ({ children }) => {
     exportToCSV,
     exportAuditLogs,
     removeNotification,
-    addNotification
+    addNotification,
+    addPopupNotification,
+    removePopupNotification,
+    markNotificationAsRead,
+    deleteNotification,
+    showNotification
   }
 
   return (

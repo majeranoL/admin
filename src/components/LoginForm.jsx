@@ -150,8 +150,9 @@ function LoginForm() {
                   type="button"
                   className="password-toggle-btn"
                   onClick={() => setShowPassword(!showPassword)}
+                  title={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? "Hide" : "Show"}
+                  <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
                 </button>
               </div>
             </div>

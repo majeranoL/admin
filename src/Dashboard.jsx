@@ -28,23 +28,23 @@ function Dashboard() {
     if (userRole === "superadmin") {
       // Super admin menu items
       return [
-        { id: "dashboard", label: "Dashboard", icon: "📊" },
-        { id: "admin-management", label: "Admin Management", icon: "👤" },
-        { id: "shelter-management", label: "Shelter/Partner Management", icon: "🏠" },
-        { id: "system-reports", label: "System Reports", icon: "📈" },
-        { id: "audit-logs", label: "Audit Logs", icon: "📋" },
-        { id: "settings", label: "Settings", icon: "⚙️" }
+        { id: "dashboard", label: "Dashboard", icon: "bi bi-speedometer2" },
+        { id: "admin-management", label: "Admin Management", icon: "bi bi-people" },
+        { id: "shelter-management", label: "Shelter/Partner Management", icon: "bi bi-buildings" },
+        { id: "system-reports", label: "System Reports", icon: "bi bi-bar-chart" },
+        { id: "audit-logs", label: "Audit Logs", icon: "bi bi-journal-text" },
+        { id: "settings", label: "Settings", icon: "bi bi-gear" }
       ]
     } else {
       // Admin menu items
       return [
-        { id: "dashboard", label: "Dashboard", icon: "📊" },
-        { id: "rescue-reports", label: "Rescue Reports", icon: "🆘" },
-        { id: "volunteers", label: "Volunteers", icon: "👥" },
-        { id: "rescued-animals", label: "Rescued Animals", icon: "🐕" },
-        { id: "adoption-requests", label: "Adoption Requests", icon: "❤️" },
-        { id: "notifications", label: "Notifications", icon: "🔔" },
-        { id: "settings", label: "Settings", icon: "⚙️" }
+        { id: "dashboard", label: "Dashboard", icon: "bi bi-speedometer2" },
+        { id: "rescue-reports", label: "Rescue Reports", icon: "bi bi-exclamation-triangle" },
+        { id: "volunteers", label: "Volunteers", icon: "bi bi-people-fill" },
+        { id: "rescued-animals", label: "Rescued Animals", icon: "bi bi-heart" },
+        { id: "adoption-requests", label: "Adoption Requests", icon: "bi bi-house-heart" },
+        { id: "notifications", label: "Notifications", icon: "bi bi-bell" },
+        { id: "settings", label: "Settings", icon: "bi bi-gear" }
       ]
     }
   }
@@ -120,7 +120,7 @@ function Dashboard() {
                 className={`nav-item ${activeSection === item.id ? 'active' : ''}`}
                 onClick={() => setActiveSection(item.id)}
               >
-                <span className="nav-icon">{item.icon}</span>
+                <i className={`nav-icon ${item.icon}`}></i>
                 <span className="nav-label">{item.label}</span>
               </button>
             ))}

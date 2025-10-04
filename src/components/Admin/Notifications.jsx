@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
 import '../../css/Admin/Notifications.css'
+import '../../css/EnhancedComponents.css'
 
 function Notifications() {
   const { notifications, loading, markNotificationAsRead, deleteNotification } = useData()
@@ -28,24 +29,24 @@ function Notifications() {
   // Priority and type styling
   const getPriorityBadge = (priority) => {
     const priorityConfig = {
-      'High': { class: 'priority-high', label: '🚨 High', icon: '🚨' },
-      'Medium': { class: 'priority-medium', label: '⚠️ Medium', icon: '⚠️' },
-      'Low': { class: 'priority-low', label: '📋 Low', icon: '📋' }
+      'High': { class: 'priority-high', label: 'High', icon: 'bi bi-exclamation-triangle-fill' },
+      'Medium': { class: 'priority-medium', label: 'Medium', icon: 'bi bi-exclamation-circle-fill' },
+      'Low': { class: 'priority-low', label: 'Low', icon: 'bi bi-info-circle-fill' }
     }
-    const config = priorityConfig[priority] || { class: 'priority-unknown', label: priority, icon: '❓' }
-    return <span className={`priority-badge ${config.class}`}>{config.label}</span>
+    const config = priorityConfig[priority] || { class: 'priority-unknown', label: priority, icon: 'bi bi-question-circle-fill' }
+    return <span className={`priority-badge ${config.class}`}><i className={config.icon}></i> {config.label}</span>
   }
 
   const getTypeIcon = (type) => {
     const typeIcons = {
-      'Emergency': '🚨',
-      'Adoption': '🏠',
-      'Rescue': '🚑',
-      'System': '⚙️',
-      'Update': '📢',
-      'Alert': '⚠️'
+      'Emergency': 'bi bi-exclamation-triangle-fill',
+      'Adoption': 'bi bi-house-heart-fill',
+      'Rescue': 'bi bi-truck',
+      'System': 'bi bi-gear-fill',
+      'Update': 'bi bi-megaphone-fill',
+      'Alert': 'bi bi-exclamation-circle-fill'
     }
-    return typeIcons[type] || '📋'
+    return typeIcons[type] || 'bi bi-clipboard-check'
   }
 
   const getStatusBadge = (status) => {
@@ -121,14 +122,14 @@ function Notifications() {
       {/* Header */}
       <div className="component-header">
         <div className="header-left">
-          <h2>📢 Notifications</h2>
+          <h2><i className="bi bi-bell-fill"></i> Notifications</h2>
           <span className="notifications-count">
             {sortedNotifications.length} of {notifications.length} notifications
           </span>
         </div>
         <div className="header-actions">
           <button className="btn-primary">
-            <span className="btn-icon">⚙️</span>
+            <i className="btn-icon bi bi-gear"></i>
             Notification Settings
           </button>
         </div>
@@ -183,118 +184,131 @@ function Notifications() {
             onClick={handleBulkMarkAsRead}
             disabled={loading.bulk}
           >
-            📖 Mark as Read
+            <i className="bi bi-check-circle"></i> Mark as Read
           </button>
           <button 
             className="bulk-btn delete"
             onClick={handleBulkDelete}
             disabled={loading.bulk}
           >
-            🗑️ Delete Selected
+            <i className="bi bi-trash3"></i> Delete Selected
           </button>
         </div>
       )}
 
       {/* Notifications List */}
-      <div className="notifications-container">
-        <div className="table-header">
-          <div className="header-cell">
-            <input
-              type="checkbox"
-              checked={selectedNotifications.length === sortedNotifications.length && sortedNotifications.length > 0}
-              onChange={handleSelectAll}
-            />
-          </div>
-          <div className="header-cell">Type</div>
-          <div className="header-cell">Priority</div>
-          <div className="header-cell">Message</div>
-          <div className="header-cell">Status</div>
-          <div className="header-cell">Time</div>
-          <div className="header-cell">Actions</div>
+      <div className="notifications-wrapper">
+        {/* Horizontal scroll hint */}
+        <div className="scroll-hint">
+          <span>← Scroll horizontally to see all columns →</span>
         </div>
+        <div className="notifications-container">
+          <table className="notifications-table">
+            <thead>
+              <tr>
+                <th style={{width: '50px'}}>
+                  <input
+                    type="checkbox"
+                    checked={selectedNotifications.length === sortedNotifications.length && sortedNotifications.length > 0}
+                    onChange={handleSelectAll}
+                  />
+                </th>
+                <th style={{width: '120px'}}>Type</th>
+                <th style={{width: '100px'}}>Priority</th>
+                <th style={{minWidth: '300px'}}>Message</th>
+                <th style={{width: '100px'}}>Status</th>
+                <th style={{width: '120px'}}>Time</th>
+                <th style={{width: '120px'}}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
 
-        {sortedNotifications.map(notification => (
-          <div 
-            key={notification.id} 
-            className={`notification-row ${notification.status.toLowerCase()} ${selectedNotifications.includes(notification.id) ? 'selected' : ''}`}
-          >
-            <div className="row-cell">
-              <input
-                type="checkbox"
-                checked={selectedNotifications.includes(notification.id)}
-                onChange={() => handleSelectNotification(notification.id)}
-              />
-            </div>
-            
-            <div className="row-cell type-cell">
-              <span className="type-icon">{getTypeIcon(notification.type)}</span>
-              <span className="type-text">{notification.type}</span>
-            </div>
-            
-            <div className="row-cell">
-              {getPriorityBadge(notification.priority)}
-            </div>
-            
-            <div className="row-cell message-cell" onClick={() => handleNotificationClick(notification)}>
-              <div className="notification-title">{notification.title}</div>
-              <div className="notification-preview">{notification.message}</div>
-            </div>
-            
-            <div className="row-cell">
-              {getStatusBadge(notification.status)}
-            </div>
-            
-            <div className="row-cell time-cell">
-              {formatTimestamp(notification.timestamp)}
-            </div>
-            
-            <div className="row-cell actions-cell">
-              <div className="action-buttons">
-                <button
-                  className="btn-view"
-                  onClick={() => handleNotificationClick(notification)}
-                  title="View Details"
+              {sortedNotifications.map(notification => (
+                <tr 
+                  key={notification.id} 
+                  className={`${notification.status.toLowerCase()} ${selectedNotifications.includes(notification.id) ? 'selected' : ''}`}
                 >
-                  👁️
-                </button>
-                
-                {notification.status === 'Unread' && (
-                  <button
-                    className="btn-mark-read"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      markNotificationAsRead(notification.id)
-                    }}
-                    disabled={loading[notification.id]}
-                    title="Mark as Read"
-                  >
-                    {loading[notification.id] ? '⏳' : '📖'}
-                  </button>
-                )}
-                
-                <button
-                  className="btn-delete"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    deleteNotification(notification.id)
-                  }}
-                  disabled={loading[notification.id]}
-                  title="Delete"
-                >
-                  {loading[notification.id] ? '⏳' : '🗑️'}
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedNotifications.includes(notification.id)}
+                      onChange={() => handleSelectNotification(notification.id)}
+                    />
+                  </td>
+                  
+                  <td className="type-cell">
+                    <i className={`type-icon ${getTypeIcon(notification.type)}`}></i>
+                    <span className="type-text">{notification.type}</span>
+                  </td>
+                  
+                  <td>
+                    {getPriorityBadge(notification.priority)}
+                  </td>
+                  
+                  <td className="message-cell" onClick={() => handleNotificationClick(notification)}>
+                    <div className="notification-title">{notification.title}</div>
+                    <div className="notification-preview">{notification.message}</div>
+                  </td>
+                  
+                  <td>
+                    {getStatusBadge(notification.status)}
+                  </td>
+                  
+                  <td className="time-cell">
+                    {formatTimestamp(notification.timestamp)}
+                  </td>
+                  
+                  <td className="actions-cell">
+                    <div className="action-buttons">
+                      <button
+                        className="btn-view"
+                        onClick={() => handleNotificationClick(notification)}
+                        title="View Details"
+                      >
+                        <i className="bi bi-eye"></i>
+                      </button>
+                      
+                      {notification.status === 'Unread' && (
+                        <button
+                          className="btn-mark-read"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            markNotificationAsRead(notification.id)
+                          }}
+                          disabled={loading[notification.id]}
+                          title="Mark as Read"
+                        >
+                          {loading[notification.id] ? <i className="bi bi-hourglass-split"></i> : <i className="bi bi-check-circle"></i>}
+                        </button>
+                      )}
+                      
+                      <button
+                        className="btn-delete"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          deleteNotification(notification.id)
+                        }}
+                        disabled={loading[notification.id]}
+                        title="Delete"
+                      >
+                        {loading[notification.id] ? <i className="bi bi-hourglass-split"></i> : <i className="bi bi-trash3"></i>}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
 
-        {sortedNotifications.length === 0 && (
-          <div className="no-data">
-            <div className="no-data-icon">📭</div>
-            <h3>No notifications found</h3>
-            <p>No notifications match your current filters.</p>
-          </div>
-        )}
+            </tbody>
+          </table>
+          
+          {sortedNotifications.length === 0 && (
+            <div className="no-data">
+              <i className="no-data-icon bi bi-inbox"></i>
+              <h3>No notifications found</h3>
+              <p>No notifications match your current filters.</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Details Modal */}
@@ -340,7 +354,7 @@ function Notifications() {
                   
                   {selectedNotification.actionRequired && (
                     <div className="action-required">
-                      <h5>⚠️ Action Required:</h5>
+                      <h5><i className="bi bi-exclamation-triangle-fill"></i> Action Required:</h5>
                       <p>{selectedNotification.actionRequired}</p>
                     </div>
                   )}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
 import '../../css/SuperAdmin/AuditLogs.css'
+import '../../css/EnhancedComponents.css'
 
 function AuditLogs() {
   const { auditLogs, loading, exportAuditLogs } = useData()
@@ -80,27 +81,27 @@ function AuditLogs() {
   // Get severity badge styling
   const getSeverityBadge = (severity) => {
     const severityConfig = {
-      'Info': { class: 'severity-info', label: 'ℹ️ Info', color: '#0ea5e9' },
-      'Warning': { class: 'severity-warning', label: '⚠️ Warning', color: '#f59e0b' },
-      'Error': { class: 'severity-error', label: '❌ Error', color: '#ef4444' },
-      'Critical': { class: 'severity-critical', label: '🚨 Critical', color: '#dc2626' }
+      'Info': { class: 'severity-info', label: 'Info', icon: 'bi-info-circle', color: '#0ea5e9' },
+      'Warning': { class: 'severity-warning', label: 'Warning', icon: 'bi-exclamation-triangle', color: '#f59e0b' },
+      'Error': { class: 'severity-error', label: 'Error', icon: 'bi-x-circle', color: '#ef4444' },
+      'Critical': { class: 'severity-critical', label: 'Critical', icon: 'bi-exclamation-triangle-fill', color: '#dc2626' }
     }
-    const config = severityConfig[severity] || { class: 'severity-unknown', label: severity, color: '#6b7280' }
-    return <span className={`severity-badge ${config.class}`}>{config.label}</span>
+    const config = severityConfig[severity] || { class: 'severity-unknown', label: severity, icon: 'bi-question-circle', color: '#6b7280' }
+    return <span className={`severity-badge ${config.class}`}><i className={`bi ${config.icon} me-1`}></i>{config.label}</span>
   }
 
   // Get type icon
   const getTypeIcon = (type) => {
     const typeIcons = {
-      'Authentication': '🔐',
-      'User Management': '👥',
-      'Data Access': '📊',
-      'System': '⚙️',
-      'Security': '🛡️',
-      'API': '🔌',
-      'File': '📁'
+      'Authentication': 'bi-key',
+      'User Management': 'bi-people',
+      'Data Access': 'bi-database',
+      'System': 'bi-gear',
+      'Security': 'bi-shield-check',
+      'API': 'bi-plug',
+      'File': 'bi-folder'
     }
-    return typeIcons[type] || '📋'
+    return <i className={`bi ${typeIcons[type] || 'bi-file-text'}`}></i>
   }
 
   const formatTimestamp = (timestamp) => {
@@ -162,7 +163,7 @@ function AuditLogs() {
       {/* Header */}
       <div className="component-header">
         <div className="header-left">
-          <h2>📋 Audit Logs</h2>
+          <h2><i className="bi bi-journal-text me-2"></i>Audit Logs</h2>
           <span className="logs-count">
             {filteredLogs.length} of {auditLogs.length} log entries
           </span>
@@ -173,7 +174,7 @@ function AuditLogs() {
             onClick={handleExportLogs}
             disabled={loading.export}
           >
-            <span className="btn-icon">💾</span>
+            <span className="btn-icon"><i className="bi bi-download"></i></span>
             {loading.export ? 'Exporting...' : 'Export Logs'}
           </button>
         </div>
@@ -182,7 +183,7 @@ function AuditLogs() {
       {/* Statistics Cards */}
       <div className="stats-grid">
         <div className="stat-card primary">
-          <div className="stat-icon">📊</div>
+          <div className="stat-icon"><i className="bi bi-journal-text"></i></div>
           <div className="stat-content">
             <h3>{stats.total}</h3>
             <p>Total Entries</p>
@@ -190,7 +191,7 @@ function AuditLogs() {
         </div>
         
         <div className="stat-card success">
-          <div className="stat-icon">ℹ️</div>
+          <div className="stat-icon"><i className="bi bi-info-circle"></i></div>
           <div className="stat-content">
             <h3>{stats.info}</h3>
             <p>Info Logs</p>
@@ -198,7 +199,7 @@ function AuditLogs() {
         </div>
         
         <div className="stat-card warning">
-          <div className="stat-icon">⚠️</div>
+          <div className="stat-icon"><i className="bi bi-exclamation-triangle"></i></div>
           <div className="stat-content">
             <h3>{stats.warning}</h3>
             <p>Warnings</p>
@@ -206,7 +207,7 @@ function AuditLogs() {
         </div>
         
         <div className="stat-card error">
-          <div className="stat-icon">❌</div>
+          <div className="stat-icon"><i className="bi bi-x-circle"></i></div>
           <div className="stat-content">
             <h3>{stats.error + stats.critical}</h3>
             <p>Errors & Critical</p>
@@ -214,7 +215,7 @@ function AuditLogs() {
         </div>
         
         <div className="stat-card info">
-          <div className="stat-icon">👥</div>
+          <div className="stat-icon"><i className="bi bi-people"></i></div>
           <div className="stat-content">
             <h3>{stats.uniqueUsers}</h3>
             <p>Active Users</p>
@@ -226,7 +227,7 @@ function AuditLogs() {
       <div className="component-controls">
         <div className="search-section">
           <div className="search-box">
-            <span className="search-icon">🔍</span>
+            <span className="search-icon"><i className="bi bi-search"></i></span>
             <input
               type="text"
               placeholder="Search actions, details, or users..."
@@ -318,7 +319,7 @@ function AuditLogs() {
             onClick={handleExportLogs}
             disabled={loading.export}
           >
-            💾 Export Selected
+            <i className="bi bi-download me-2"></i>Export Selected
           </button>
         </div>
       )}
@@ -384,7 +385,7 @@ function AuditLogs() {
                     onClick={() => handleViewDetails(log)}
                     title="View Details"
                   >
-                    👁️
+                    <i className="bi bi-eye"></i>
                   </button>
                 </td>
               </tr>
@@ -394,7 +395,7 @@ function AuditLogs() {
 
         {filteredLogs.length === 0 && (
           <div className="no-data">
-            <div className="no-data-icon">📋</div>
+            <div className="no-data-icon"><i className="bi bi-journal-text"></i></div>
             <h3>No audit logs found</h3>
             <p>No logs match your current filter criteria.</p>
           </div>

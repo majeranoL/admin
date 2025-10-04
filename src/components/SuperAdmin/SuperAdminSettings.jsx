@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
 import '../../css/SuperAdmin/SuperAdminSettings.css'
+import '../../css/EnhancedComponents.css'
 
 function SuperAdminSettings() {
   const { showNotification } = useData()
@@ -172,11 +173,11 @@ function SuperAdminSettings() {
   }
 
   const tabNavigation = [
-    { id: 'system', label: '⚙️ System', icon: '⚙️' },
-    { id: 'security', label: '🔒 Security', icon: '🔒' },
-    { id: 'notifications', label: '🔔 Notifications', icon: '🔔' },
-    { id: 'api', label: '🔌 API', icon: '🔌' },
-    { id: 'backup', label: '💾 Backup', icon: '💾' }
+    { id: 'system', label: 'System', icon: 'bi-gear' },
+    { id: 'security', label: 'Security', icon: 'bi-shield-lock' },
+    { id: 'notifications', label: 'Notifications', icon: 'bi-bell' },
+    { id: 'api', label: 'API', icon: 'bi-plug' },
+    { id: 'backup', label: 'Backup', icon: 'bi-database' }
   ]
 
   return (
@@ -184,7 +185,7 @@ function SuperAdminSettings() {
       {/* Header */}
       <div className="component-header">
         <div className="header-left">
-          <h2>⚙️ System Settings</h2>
+          <h2><i className="bi bi-gear me-2"></i>System Settings</h2>
           <span className="settings-subtitle">Configure system-wide settings and administrative preferences</span>
         </div>
         <div className="header-actions">
@@ -192,7 +193,7 @@ function SuperAdminSettings() {
             className="btn-secondary"
             onClick={handleResetToDefaults}
           >
-            <span className="btn-icon">🔄</span>
+            <span className="btn-icon"><i className="bi bi-arrow-counterclockwise"></i></span>
             Reset to Defaults
           </button>
           <button 
@@ -200,7 +201,7 @@ function SuperAdminSettings() {
             onClick={handleSaveAllSettings}
             disabled={loading}
           >
-            <span className="btn-icon">💾</span>
+            <span className="btn-icon"><i className="bi bi-save"></i></span>
             {loading ? 'Saving...' : 'Save All Settings'}
           </button>
         </div>
@@ -214,7 +215,7 @@ function SuperAdminSettings() {
             className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
-            <span className="tab-icon">{tab.icon}</span>
+            <span className="tab-icon"><i className={`bi ${tab.icon}`}></i></span>
             {tab.label}
           </button>
         ))}
@@ -226,14 +227,14 @@ function SuperAdminSettings() {
         {activeTab === 'system' && (
           <div className="settings-section">
             <div className="section-header">
-              <h3>⚙️ System Configuration</h3>
+              <h3><i className="bi bi-gear me-2"></i>System Configuration</h3>
               <p>Core system settings and operational parameters</p>
             </div>
 
             <div className="settings-grid">
               <div className="setting-card">
                 <div className="setting-header">
-                  <h4>🚧 Maintenance Mode</h4>
+                  <h4><i className="bi bi-cone-striped me-2"></i>Maintenance Mode</h4>
                   <label className="toggle-switch">
                     <input
                       type="checkbox"
@@ -246,7 +247,7 @@ function SuperAdminSettings() {
                 <p>Enable maintenance mode to prevent user access during system updates</p>
                 {systemSettings.maintenanceMode && (
                   <div className="maintenance-warning">
-                    <span className="warning-icon">⚠️</span>
+                    <span className="warning-icon"><i className="bi bi-exclamation-triangle"></i></span>
                     System is currently in maintenance mode
                   </div>
                 )}
@@ -254,7 +255,7 @@ function SuperAdminSettings() {
 
               <div className="setting-card">
                 <div className="setting-header">
-                  <h4>💾 Auto Backup Frequency</h4>
+                  <h4><i className="bi bi-database me-2"></i>Auto Backup Frequency</h4>
                 </div>
                 <p>Automatically backup system data at scheduled intervals</p>
                 <select
@@ -271,7 +272,7 @@ function SuperAdminSettings() {
 
               <div className="setting-card">
                 <div className="setting-header">
-                  <h4>⏱️ Session Timeout</h4>
+                  <h4><i className="bi bi-clock me-2"></i>Session Timeout</h4>
                 </div>
                 <p>Set automatic logout time for inactive sessions (minutes)</p>
                 <select
@@ -289,7 +290,7 @@ function SuperAdminSettings() {
 
               <div className="setting-card">
                 <div className="setting-header">
-                  <h4>🔐 Max Login Attempts</h4>
+                  <h4><i className="bi bi-shield-lock me-2"></i>Max Login Attempts</h4>
                 </div>
                 <p>Maximum failed login attempts before account lockout</p>
                 <select
@@ -311,12 +312,12 @@ function SuperAdminSettings() {
         {activeTab === 'security' && (
           <div className="settings-section">
             <div className="section-header">
-              <h3>🔒 Security Settings</h3>
+              <h3><i className="bi bi-shield-lock me-2"></i>Security Settings</h3>
               <p>Configure security policies and access controls</p>
             </div>
 
             <div className="setting-group">
-              <h4>🔑 Password Policy</h4>
+              <h4><i className="bi bi-key me-2"></i>Password Policy</h4>
               
               <div className="settings-grid">
                 <div className="setting-item">
@@ -386,14 +387,14 @@ function SuperAdminSettings() {
         {activeTab === 'notifications' && (
           <div className="settings-section">
             <div className="section-header">
-              <h3>🔔 Notification Settings</h3>
+              <h3><i className="bi bi-bell me-2"></i>Notification Settings</h3>
               <p>Configure system-wide notification preferences</p>
             </div>
 
             <div className="settings-list">
               <div className="setting-toggle">
                 <div className="toggle-info">
-                  <label>📧 Email Alerts</label>
+                  <label><i className="bi bi-envelope me-2"></i>Email Alerts</label>
                   <span>Send email notifications for system events</span>
                 </div>
                 <label className="toggle-switch">
@@ -408,7 +409,7 @@ function SuperAdminSettings() {
 
               <div className="setting-toggle">
                 <div className="toggle-info">
-                  <label>📱 SMS Alerts</label>
+                  <label><i className="bi bi-phone me-2"></i>SMS Alerts</label>
                   <span>Send SMS notifications for critical events</span>
                 </div>
                 <label className="toggle-switch">
@@ -423,7 +424,7 @@ function SuperAdminSettings() {
 
               <div className="setting-toggle">
                 <div className="toggle-info">
-                  <label>🚨 Emergency Notifications</label>
+                  <label><i className="bi bi-exclamation-triangle me-2"></i>Emergency Notifications</label>
                   <span>High-priority notifications for emergency situations</span>
                 </div>
                 <label className="toggle-switch">
@@ -438,7 +439,7 @@ function SuperAdminSettings() {
 
               <div className="setting-toggle">
                 <div className="toggle-info">
-                  <label>⚙️ System Alerts</label>
+                  <label><i className="bi bi-gear me-2"></i>System Alerts</label>
                   <span>Notifications for system performance and maintenance</span>
                 </div>
                 <label className="toggle-switch">
@@ -520,7 +521,7 @@ function SuperAdminSettings() {
         {activeTab === 'backup' && (
           <div className="settings-section">
             <div className="section-header">
-              <h3>💾 Backup Configuration</h3>
+              <h3><i className="bi bi-database me-2"></i>Backup Configuration</h3>
               <p>Configure automated backup settings and data retention</p>
             </div>
 
@@ -590,7 +591,7 @@ function SuperAdminSettings() {
                 onClick={handleTestBackup}
                 disabled={loading}
               >
-                {loading ? '⏳ Testing...' : '🧪 Test Backup'}
+                {loading ? <><i className="bi bi-hourglass me-2"></i>Testing...</> : <><i className="bi bi-play-circle me-2"></i>Test Backup</>}
               </button>
               
               <div className="backup-status">
