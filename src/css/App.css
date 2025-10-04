@@ -16,13 +16,13 @@
 :root,
 [data-theme="dark"] {
   /* Background Colors */
-  --background-color: #121212;
-  --card-background: var(--card-background);
-  --sidebar-background: var(--card-background);
-  --header-background: var(--card-background);
+  --background-color: #1e1e1e;
+  --card-background: #2a2a2a;
+  --sidebar-background: #2a2a2a;
+  --header-background: #2a2a2a;
   --table-header-bg: #2a2a2a;
   --row-hover-bg: rgba(59, 130, 246, 0.05);
-  --modal-background: var(--card-background);
+  --modal-background: #2a2a2a;
   --dropdown-background: #2a2a2a;
   
   /* Text Colors */
@@ -32,7 +32,7 @@
   --text-inverse: #1f2937;
   
   /* Border Colors */
-  --border-color: var(--border-color)333;
+  --border-color: #333333;
   --border-light: #444444;
   --divider-color: #333333;
   
