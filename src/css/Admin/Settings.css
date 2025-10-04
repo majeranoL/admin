@@ -395,3 +395,38 @@
     gap: 12px;
   }
 }
+
+/* Theme Toggle Specific Styles */
+.settings .theme-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings .theme-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 80px;
+  text-align: right;
+}
+
+.settings .toggle-switch input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.settings .toggle-switch .toggle-slider {
+  background: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+.settings .toggle-switch input:checked + .toggle-slider {
+  transform: translateX(24px);
+}
+
+.settings .setting-toggle .toggle-info label {
+  font-weight: 600;
+  color: var(--text-color);
+}

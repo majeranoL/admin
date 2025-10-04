@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useData } from '../../contexts/DataContext'
+import { useTheme } from '../../contexts/ThemeContext'
 import '../../css/Admin/Settings.css'
 import '../../css/EnhancedComponents.css'
 
 function Settings() {
   const { showNotification } = useData()
+  const { theme, toggleTheme } = useTheme()
   
   // Account Settings
   const [profileData, setProfileData] = useState({
@@ -35,7 +37,6 @@ function Settings() {
 
   // Display Settings
   const [displaySettings, setDisplaySettings] = useState({
-    theme: localStorage.getItem('theme') || 'light',
     language: localStorage.getItem('language') || 'en',
     timezone: localStorage.getItem('timezone') || 'Asia/Manila',
     dateFormat: localStorage.getItem('dateFormat') || 'MM/DD/YYYY',
@@ -140,7 +141,6 @@ function Settings() {
 
       // Reset display settings
       const defaultDisplaySettings = {
-        theme: 'light',
         language: 'en',
         timezone: 'Asia/Manila',
         dateFormat: 'MM/DD/YYYY',
@@ -464,16 +464,22 @@ function Settings() {
             </div>
 
             <div className="settings-grid">
-              <div className="setting-item">
-                <label>Theme</label>
-                <select
-                  value={displaySettings.theme}
-                  onChange={(e) => handleDisplayChange('theme', e.target.value)}
-                >
-                  <option value="light">Light</option>
-                  <option value="dark">Dark</option>
-                  <option value="auto">Auto (System)</option>
-                </select>
+              <div className="setting-toggle">
+                <div className="toggle-info">
+                  <label>Theme Mode</label>
+                  <span>Switch between light and dark theme</span>
+                </div>
+                <div className="theme-toggle-container">
+                  <span className="theme-label">{theme === 'light' ? '☀️ Light' : '🌙 Dark'}</span>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={theme === 'dark'}
+                      onChange={toggleTheme}
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
+                </div>
               </div>
 
               <div className="setting-item">
