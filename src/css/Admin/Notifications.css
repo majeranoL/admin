@@ -1,7 +1,7 @@
 /* Notifications Component Styles */
 .notifications {
   padding: 20px;
-  background: #121212;
+  background: var(--background-color);
   min-height: 100vh;
 }
 
@@ -34,12 +34,12 @@
 }
 
 .notifications .stat-card {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   border-left: 4px solid #06b6d4;
-  border: 1px solid #333;
+  border: 1px solid var(--border-color);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -63,11 +63,11 @@
 
 /* Controls */
 .notifications .controls-section {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  border: 1px solid #333;
+  border: 1px solid var(--border-color);
   margin-bottom: 24px;
 }
 
@@ -91,7 +91,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   color: #e0e0e0;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -116,7 +116,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   color: #e0e0e0;
   cursor: pointer;
   transition: border-color 0.2s;
@@ -160,9 +160,9 @@
 
 /* Notifications List */
 .notifications .notifications-container {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
@@ -309,7 +309,7 @@
 }
 
 .notifications .modal-content {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
   max-width: 600px;
   width: 100%;
@@ -369,7 +369,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   color: #e0e0e0;
   transition: border-color 0.2s;
 }

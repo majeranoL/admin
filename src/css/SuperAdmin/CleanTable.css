@@ -4,9 +4,9 @@
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 8px;
-  border: 1px solid #333;
+  border: 1px solid var(--border-color);
   margin: 20px 0;
 }
 

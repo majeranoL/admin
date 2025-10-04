@@ -1,7 +1,7 @@
 /* RescueReports Component Styles */
 .rescue-reports {
   padding: 20px;
-  background: #121212;
+  background: var(--background-color);
   min-height: 100vh;
 }
 
@@ -34,10 +34,10 @@
 }
 
 .rescue-reports .stat-card {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   border-left: 4px solid #ef4444;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -62,10 +62,10 @@
 
 /* Controls */
 .rescue-reports .controls-section {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   margin-bottom: 24px;
 }
 
@@ -89,7 +89,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   color: #e0e0e0;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -114,7 +114,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   color: #e0e0e0;
   cursor: pointer;
   transition: border-color 0.2s;
@@ -158,10 +158,10 @@
 
 /* Reports Table */
 .rescue-reports .reports-table-container {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
 }
 
 .rescue-reports .reports-table {
@@ -251,7 +251,7 @@
 }
 
 .rescue-reports .modal-content {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
   max-width: 700px;
   width: 100%;
@@ -346,7 +346,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   color: #e0e0e0;
   transition: border-color 0.2s;
 }

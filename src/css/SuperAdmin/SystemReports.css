@@ -2,9 +2,10 @@
 .system-reports {
   width: 100%;
   padding: 20px;
-  background: #121212;
+  background: var(--background-color);
   min-height: 100vh;
   box-sizing: border-box;
+  color: var(--text-color);
 }
 
 .system-reports > * {
@@ -44,10 +45,10 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: #1a1a1a;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid #444;
   border-left: 4px solid #10b981;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -79,17 +80,17 @@
 }
 
 .system-reports .stat-card p {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   margin: 0;
   font-weight: 500;
 }
 
 /* Controls */
 .system-reports .controls-section {
-  background: #1a1a1a;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   margin-bottom: 24px;
 }
 
@@ -127,7 +128,7 @@
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 18px;
 }
 
@@ -136,7 +137,7 @@
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 14px;
-  background: #1a1a1a;
+  background: var(--card-background);
   cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -180,7 +181,7 @@
 /* Report Configuration */
 .system-reports .report-config {
   width: 100%;
-  background: #1a1a1a;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -211,7 +212,7 @@
 }
 
 .system-reports .config-item label {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -324,7 +325,7 @@
 }
 
 .system-reports .category-card {
-  background: #1a1a1a;
+  background: var(--card-background);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -389,7 +390,7 @@
 }
 
 .system-reports .category-description {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   margin: 0 0 16px 0;
   font-size: 0.95rem;
   line-height: 1.5;
@@ -465,7 +466,7 @@
 
 /* Reports Table */
 .system-reports .reports-table {
-  background: #1a1a1a;
+  background: var(--card-background);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -591,10 +592,10 @@
 }
 
 .system-reports .report-card {
-  background: #1a1a1a;
+  background: var(--card-background);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
@@ -626,7 +627,7 @@
 
 .system-reports .report-id {
   font-size: 0.8rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   background: #2a2a2a;
   padding: 4px 8px;
   border-radius: 12px;
@@ -660,7 +661,7 @@
 .system-reports .meta-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 
@@ -696,7 +697,7 @@
 
 .system-reports .data-label {
   font-size: 0.9rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .system-reports .data-value {
@@ -733,7 +734,7 @@
 }
 
 .system-reports .modal-content {
-  background: #1a1a1a;
+  background: var(--card-background);
   border-radius: 12px;
   max-width: 800px;
   width: 100%;
@@ -761,7 +762,7 @@
   font-size: 1.5rem;
   cursor: pointer;
   padding: 4px;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .system-reports .modal-body {
@@ -794,7 +795,7 @@
 .system-reports .detail-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 
@@ -808,7 +809,7 @@
   padding: 20px;
   border-radius: 8px;
   text-align: center;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-style: italic;
 }
 

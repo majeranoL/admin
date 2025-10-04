@@ -1,5 +1,5 @@
 :root {
-  /* Color Variables */
+  /* Color Variables - These stay the same for both themes */
   --primary-color: #3b82f6;
   --primary-hover: #2563eb;
   --success-color: #22c55e;
@@ -10,19 +10,89 @@
   --warning-hover: #d97706;
   --info-color: #06b6d4;
   --info-hover: #0891b2;
-  
+}
+
+/* Dark Theme Variables (Default) */
+:root,
+[data-theme="dark"] {
   /* Background Colors */
   --background-color: #121212;
-  --card-background: #1e1e1e;
+  --card-background: var(--card-background);
+  --sidebar-background: var(--card-background);
+  --header-background: var(--card-background);
   --table-header-bg: #2a2a2a;
   --row-hover-bg: rgba(59, 130, 246, 0.05);
+  --modal-background: var(--card-background);
+  --dropdown-background: #2a2a2a;
   
   /* Text Colors */
   --text-color: #e5e5e5;
   --text-secondary: #a1a1a1;
+  --text-muted: #6b7280;
+  --text-inverse: #1f2937;
   
   /* Border Colors */
-  --border-color: #333333;
+  --border-color: var(--border-color)333;
+  --border-light: #444444;
+  --divider-color: #333333;
+  
+  /* Form Elements */
+  --input-background: #2a2a2a;
+  --input-border: #444444;
+  --input-focus-border: #3b82f6;
+  
+  /* Status Colors */
+  --status-pending: #f59e0b;
+  --status-success: #22c55e;
+  --status-error: #ef4444;
+  --status-warning: #f97316;
+  
+  /* Dark Theme Gradients */
+  --admin-header-gradient: linear-gradient(135deg, #e11d48 0%, #be185d 100%);
+  --system-header-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --audit-header-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --login-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+/* Light Theme Variables */
+[data-theme="light"] {
+  /* Background Colors - Off-white theme */
+  --background-color: #f9fafb;
+  --card-background: #ffffff;
+  --sidebar-background: #f3f4f6;
+  --header-background: #ffffff;
+  --table-header-bg: #f9fafb;
+  --row-hover-bg: rgba(59, 130, 246, 0.08);
+  --modal-background: #ffffff;
+  --dropdown-background: #ffffff;
+  
+  /* Text Colors */
+  --text-color: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --text-inverse: #ffffff;
+  
+  /* Border Colors */
+  --border-color: #e5e7eb;
+  --border-light: #f3f4f6;
+  --divider-color: #e5e7eb;
+  
+  /* Form Elements */
+  --input-background: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus-border: #3b82f6;
+  
+  /* Status Colors */
+  --status-pending: #f59e0b;
+  --status-success: #22c55e;
+  --status-error: #ef4444;
+  --status-warning: #f97316;
+  
+  /* Light Theme Gradients */
+  --admin-header-gradient: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  --system-header-gradient: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  --audit-header-gradient: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+  --login-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
 }
 
 * {
@@ -31,6 +101,7 @@
   box-sizing: border-box;
 }
 
+/* Login page always uses dark mode */
 body.login-page {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
@@ -38,14 +109,16 @@ body.login-page {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #e5e5e5;
 }
 
 body.dashboard-page {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #121212;
+  background: var(--background-color);
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  color: var(--text-color);
 }
 
 /* Default body styles for login */
@@ -74,7 +147,7 @@ body {
 }
 
 .login-container {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 20px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 
               0 15px 40px rgba(0, 0, 0, 0.5),
@@ -83,7 +156,7 @@ body {
   width: 100%;
   max-width: 800px;
   min-height: 600px;
-  border: 1px solid #333;
+  border: 1px solid var(--border-color);
 }
 
 .login-form {
@@ -107,7 +180,7 @@ body {
 }
 
 .logo p {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 1rem;
 }
 
@@ -143,7 +216,7 @@ body {
 .form-group input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  background: #1a1a1a;
+  background: var(--card-background);
 }
 
 .form-group input::placeholder {
@@ -366,7 +439,7 @@ body {
 
 .loading-content p {
   margin: 0;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 1rem;
 }
 
@@ -464,7 +537,7 @@ body {
 }
 
 .demo-credentials p {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 0.8rem;
   margin: 0.25rem 0;
 }

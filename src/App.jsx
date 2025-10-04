@@ -4,6 +4,7 @@ import LoginForm from "./components/LoginForm"
 import NotificationSystem from "./components/NotificationSystem"
 import { RoleProvider } from "./contexts/RoleProvider"
 import { DataProvider } from "./contexts/DataContext"
+import { ThemeProvider } from "./contexts/ThemeContext"
 import { useRole } from "./hooks/useRole"
 import "./css/App.css"
 import "./css/Admin/AdoptionRequests.css"
@@ -72,11 +73,13 @@ function AppContent() {
 // Main App Component (wraps with providers)
 function App() {
   return (
-    <RoleProvider>
-      <DataProvider>
-        <AppContent />
-      </DataProvider>
-    </RoleProvider>
+    <ThemeProvider>
+      <RoleProvider>
+        <DataProvider>
+          <AppContent />
+        </DataProvider>
+      </RoleProvider>
+    </ThemeProvider>
   )
 }
 

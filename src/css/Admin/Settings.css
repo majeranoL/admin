@@ -1,7 +1,7 @@
 /* Settings Component Styles */
 .settings {
   padding: 20px;
-  background: #121212;
+  background: var(--background-color);
   min-height: 100vh;
 }
 
@@ -34,9 +34,9 @@
 }
 
 .settings .settings-nav {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   overflow: hidden;
   position: sticky;
   top: 20px;
@@ -80,9 +80,9 @@
 
 /* Settings Content */
 .settings .settings-content {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
@@ -272,7 +272,7 @@
   left: 2px;
   width: 20px;
   height: 20px;
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 50%;
   transition: transform 0.2s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);

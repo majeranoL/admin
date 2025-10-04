@@ -1,7 +1,7 @@
 /* SuperAdminDashboard Component Styles */
 .super-admin-dashboard {
   padding: 20px;
-  background: #121212;
+  background: var(--background-color);
   min-height: 100vh;
 }
 
@@ -35,10 +35,10 @@
 }
 
 .super-admin-dashboard .stat-card {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 28px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   text-align: center;
   transition: transform 0.2s, box-shadow 0.2s;
   border-top: 4px solid #1e293b;
@@ -72,10 +72,10 @@
 
 /* Welcome Message */
 .super-admin-dashboard .welcome-section {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 40px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   text-align: center;
   margin-bottom: 40px;
 }
@@ -104,10 +104,10 @@
 }
 
 .super-admin-dashboard .action-card {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
@@ -169,9 +169,9 @@
 
 /* Recent Activity */
 .super-admin-dashboard .recent-activity {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   overflow: hidden;
 }
 

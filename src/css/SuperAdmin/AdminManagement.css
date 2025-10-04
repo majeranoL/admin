@@ -1,8 +1,9 @@
 /* AdminManagement Component Styles */
 .admin-management {
   padding: 20px;
-  background: #121212;
+  background: var(--background-color);
   min-height: 100vh;
+  color: var(--text-color);
 }
 
 .admin-management .page-header {
@@ -34,10 +35,10 @@
 }
 
 .admin-management .stat-card {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   border-left: 4px solid #e11d48;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -55,17 +56,17 @@
 }
 
 .admin-management .stat-card p {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   margin: 0;
   font-weight: 500;
 }
 
 /* Controls */
 .admin-management .controls-section {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   margin-bottom: 24px;
 }
 
@@ -89,7 +90,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   color: #e0e0e0;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -105,7 +106,7 @@
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 18px;
 }
 
@@ -114,7 +115,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   color: #e0e0e0;
   cursor: pointer;
   transition: border-color 0.2s;
@@ -158,10 +159,10 @@
 
 /* Admin Users Table */
 .admin-management .admins-table-container {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
 }
 
 .admin-management .admins-table {
@@ -224,7 +225,7 @@
 
 .admin-management .admin-email {
   font-size: 0.9rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -256,7 +257,7 @@
 
 .admin-management .last-login {
   font-size: 0.9rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .admin-management .permissions-list {
@@ -291,7 +292,7 @@
 }
 
 .admin-management .modal-content {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
   max-width: 700px;
   width: 100%;
@@ -319,7 +320,7 @@
   font-size: 1.5rem;
   cursor: pointer;
   padding: 4px;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .admin-management .modal-body {
@@ -352,7 +353,7 @@
 .admin-management .detail-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 
@@ -395,7 +396,7 @@
 
 .admin-management .permission-label {
   font-size: 0.8rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .admin-management .modal-form {
@@ -423,7 +424,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   color: #e0e0e0;
   transition: border-color 0.2s;
 }

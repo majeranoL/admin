@@ -1,7 +1,7 @@
 /* ShelterManagement Component Styles */
 .shelter-management {
   padding: 20px;
-  background: #121212;
+  background: var(--background-color);
   min-height: 100vh;
   width: 100%;
   max-width: none !important;
@@ -37,10 +37,10 @@
 }
 
 .shelter-management .stat-card {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   border-left: 4px solid #f59e0b;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -65,11 +65,11 @@
 
 /* Controls */
 .shelter-management .controls-section {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  border: 1px solid #333;
+  border: 1px solid var(--border-color);
   margin-bottom: 20px;
 }
 
@@ -180,11 +180,11 @@
 
 /* Shelters Table */
 .shelter-management .shelters-table-container {
-  background: #1e1e1e !important;
+  background: var(--card-background) !important;
   border-radius: 12px !important;
   overflow: hidden !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
-  border: 1px solid #333 !important;
+  border: 1px solid var(--border-color) !important;
   margin: 10px 0 !important;
   overflow-x: auto !important;
   width: 100% !important;
@@ -498,12 +498,12 @@
 
 .shelter-management .shelter-location {
   font-size: 0.9rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .shelter-management .shelter-contact {
   font-size: 0.8rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .shelter-management .capacity-info {
@@ -529,7 +529,7 @@
 
 .shelter-management .capacity-text {
   font-size: 0.8rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .shelter-management .status-badge {
@@ -628,7 +628,7 @@
 }
 
 .shelter-management .modal-content {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
   max-width: 700px;
   width: 100%;
@@ -656,7 +656,7 @@
   font-size: 1.5rem;
   cursor: pointer;
   padding: 4px;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .shelter-management .modal-body {
@@ -689,7 +689,7 @@
 .shelter-management .detail-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 

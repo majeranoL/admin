@@ -1,8 +1,9 @@
 /* AuditLogs Component Styles */
 .audit-logs {
   padding: 20px;
-  background: #121212;
+  background: var(--background-color);
   min-height: 100vh;
+  color: var(--text-color);
 }
 
 .audit-logs .page-header {
@@ -34,10 +35,10 @@
 }
 
 .audit-logs .stat-card {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   border-left: 4px solid #6366f1;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -55,17 +56,17 @@
 }
 
 .audit-logs .stat-card p {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   margin: 0;
   font-weight: 500;
 }
 
 /* Controls */
 .audit-logs .controls-section {
-  background: #1e1e1e;
+  background: var(--card-background);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
   margin-bottom: 24px;
 }
 
@@ -103,7 +104,7 @@
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 18px;
 }
 
@@ -112,7 +113,7 @@
   border: 2px solid #444;
   border-radius: 8px;
   font-size: 14px;
-  background: #1e1e1e;
+  background: var(--card-background);
   cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -169,7 +170,7 @@
 /* Logs Table */
 .audit-logs .logs-table-container,
 .audit-logs .table-container {
-  background: #1a1a1a;
+  background: var(--card-background);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -224,7 +225,7 @@
 .audit-logs .timestamp-cell {
   font-family: 'Monaco', 'Menlo', monospace;
   font-size: 0.85rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   min-width: 140px;
 }
 
@@ -280,7 +281,7 @@
 }
 
 .audit-logs .details-preview {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -342,7 +343,7 @@
 }
 
 .audit-logs .no-data h3 {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   margin: 0 0 8px 0;
   font-size: 1.2rem;
 }
@@ -376,7 +377,7 @@
 
 .audit-logs .log-details {
   font-size: 0.8rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   margin-top: 4px;
 }
 
@@ -408,7 +409,7 @@
 
 .audit-logs .user-id {
   font-size: 0.8rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .audit-logs .severity-badge {
@@ -433,7 +434,7 @@
   flex-direction: column;
   gap: 4px;
   font-size: 0.9rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 /* Modal Styles */
@@ -452,7 +453,7 @@
 }
 
 .audit-logs .modal-content {
-  background: #1e1e1e;
+  background: var(--card-background);
   border-radius: 12px;
   max-width: 700px;
   width: 100%;
@@ -480,7 +481,7 @@
   font-size: 1.5rem;
   cursor: pointer;
   padding: 4px;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .audit-logs .modal-body {
@@ -516,7 +517,7 @@
 .audit-logs .detail-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 

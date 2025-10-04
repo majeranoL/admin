@@ -1,6 +1,6 @@
-# React + Vite
+# Animal911 Admin Panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive admin dashboard for the Animal911 application with light/dark theme system.
 
 Currently, two official plugins are available:
 

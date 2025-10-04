@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
+import { useTheme } from '../../contexts/ThemeContext'
 import '../../css/SuperAdmin/SuperAdminSettings.css'
 import '../../css/EnhancedComponents.css'
 
 function SuperAdminSettings() {
   const { showNotification } = useData()
+  const { theme, toggleTheme, isDark } = useTheme()
   
   const [systemSettings, setSystemSettings] = useState({
     maintenanceMode: JSON.parse(localStorage.getItem('maintenanceMode') || 'false'),
@@ -251,6 +253,35 @@ function SuperAdminSettings() {
                     System is currently in maintenance mode
                   </div>
                 )}
+              </div>
+
+              <div className="setting-card">
+                <div className="setting-header">
+                  <h4><i className={`bi ${isDark ? 'bi-moon-stars' : 'bi-sun'} me-2`}></i>Theme Mode</h4>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={isDark}
+                      onChange={toggleTheme}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+                <p>Switch between light and dark theme modes for better visibility and comfort</p>
+                <div className="theme-preview">
+                  <div className="theme-info">
+                    <span className="current-theme">
+                      <i className={`bi ${isDark ? 'bi-moon-stars' : 'bi-sun'} me-1`}></i>
+                      Current: {isDark ? 'Dark Mode' : 'Light Mode'}
+                    </span>
+                    <span className="theme-description">
+                      {isDark 
+                        ? 'Dark theme reduces eye strain in low-light environments' 
+                        : 'Light theme provides better readability in bright environments'
+                      }
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <div className="setting-card">
