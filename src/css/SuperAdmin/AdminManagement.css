@@ -176,12 +176,12 @@
   text-align: left;
   font-weight: 600;
   color: #e0e0e0;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .admin-management .admins-table td {
   padding: 16px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
 }
 
@@ -372,7 +372,7 @@
   background: #2a2a2a;
   padding: 16px;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
 }
 
 .admin-management .permission-group-title {

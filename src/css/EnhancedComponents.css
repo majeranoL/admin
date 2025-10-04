@@ -178,7 +178,7 @@
 .table-header {
   background: #2a2a2a;
   padding: 15px 20px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--table-border);
   font-weight: 600;
   color: var(--text-color);
   display: grid;
@@ -194,7 +194,7 @@
 
 .table-row {
   padding: 15px 20px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--table-border);
   display: grid;
   grid-template-columns: 40px 1fr 120px 120px 100px 60px;
   gap: 15px;
@@ -494,7 +494,7 @@ h2 .bi, h3 .bi, h4 .bi {
   font-weight: 600;
   margin: 0 0 16px 0;
   padding-bottom: 8px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--table-border);
 }
 
 .form-group {

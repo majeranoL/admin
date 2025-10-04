@@ -49,7 +49,7 @@
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border: 1px solid #444;
+  border: 1px solid var(--table-border);
   border-left: 4px solid #10b981;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -111,7 +111,7 @@
 .system-reports .search-input {
   width: 100%;
   padding: 12px 16px 12px 44px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -134,7 +134,7 @@
 
 .system-reports .filter-select {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
@@ -185,7 +185,7 @@
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  border: 1px solid #444;
+  border: 1px solid var(--table-border);
   margin-bottom: 30px;
   box-sizing: border-box;
 }
@@ -329,7 +329,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  border: 1px solid #444;
+  border: 1px solid var(--table-border);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -343,7 +343,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--table-border);
   background: #2a2a2a;
 }
 
@@ -419,7 +419,7 @@
 .system-reports .category-footer {
   padding: 16px 20px;
   background: #2a2a2a;
-  border-top: 1px solid #444;
+  border-top: 1px solid var(--table-border);
 }
 
 .system-reports .date-info {
@@ -470,7 +470,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  border: 1px solid #444;
+  border: 1px solid var(--table-border);
 }
 
 .system-reports .enhanced-table {
@@ -486,12 +486,12 @@
   text-align: left;
   font-weight: 600;
   font-size: 0.9rem;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--table-border);
 }
 
 .system-reports .enhanced-table td {
   padding: 16px 20px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--table-border);
   color: #d0d0d0;
   font-size: 0.9rem;
 }
@@ -607,7 +607,7 @@
 
 .system-reports .report-header {
   padding: 20px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .system-reports .report-title-row {
@@ -688,7 +688,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .system-reports .data-item:last-child {
@@ -835,7 +835,7 @@
 .system-reports .form-select,
 .system-reports .form-textarea {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
   transition: border-color 0.2s;

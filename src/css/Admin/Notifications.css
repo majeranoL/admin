@@ -173,7 +173,7 @@
 
 .notifications .notification-item {
   padding: 20px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
   transition: background-color 0.2s;
   cursor: pointer;
   display: flex;
