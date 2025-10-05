@@ -3,7 +3,7 @@ import { useData } from '../../contexts/DataContext'
 import '../../css/Admin/RescueReports.css'
 
 function RescueReports() {
-  const { rescueReports, loading, updateRescueReportStatus } = useData()
+  const { rescueReports, loading, updateRescueReportStatus, showNotification } = useData()
   
   const [selectedReports, setSelectedReports] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
@@ -71,7 +71,17 @@ function RescueReports() {
 
   const confirmAction = () => {
     const { id, action, rescueTeam } = actionReport
-    updateRescueReportStatus(id, action, rescueTeam)
+    try {
+      updateRescueReportStatus(id, action, rescueTeam)
+      const actionText = action === 'assigned' ? 'assigned to rescue team' : 
+                        action === 'in_progress' ? 'marked as in progress' :
+                        action === 'completed' ? 'marked as completed' : 
+                        action === 'cancelled' ? 'cancelled' : 'updated'
+      showNotification(`Rescue report ${actionText} successfully!`, 'success')
+    } catch (error) {
+      console.error('Error updating rescue report status:', error)
+      showNotification('Failed to update rescue report. Please try again.', 'error')
+    }
     setShowConfirm(false)
     setActionReport({ id: null, action: null, rescueTeam: null })
   }

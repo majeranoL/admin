@@ -3,15 +3,14 @@ import { useData } from '../../contexts/DataContext'
 import '../../css/Admin/AdoptionRequests.css'
 
 function AdoptionRequests() {
-  const { 
+  const {
     adoptionRequests, 
     loading, 
     updateAdoptionStatus, 
     exportToCSV, 
-    bulkUpdateStatus 
-  } = useData()
-
-  // Component state
+    bulkUpdateStatus,
+    showNotification
+  } = useData()  // Component state
   const [selectedRequests, setSelectedRequests] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
@@ -66,14 +65,28 @@ function AdoptionRequests() {
 
   const confirmAction = () => {
     const { id, action } = actionRequest
-    updateAdoptionStatus(id, action)
+    try {
+      updateAdoptionStatus(id, action)
+      const actionText = action === 'approved' ? 'approved' : action === 'rejected' ? 'rejected' : 'updated'
+      showNotification(`Adoption request ${actionText} successfully!`, 'success')
+    } catch (error) {
+      console.error('Error updating adoption status:', error)
+      showNotification('Failed to update adoption request. Please try again.', 'error')
+    }
     setShowConfirm(false)
     setActionRequest({ id: null, action: null })
   }
 
   const handleBulkAction = (action) => {
     if (selectedRequests.length === 0) return
-    bulkUpdateStatus(selectedRequests, action)
+    try {
+      bulkUpdateStatus(selectedRequests, action)
+      const actionText = action === 'approved' ? 'approved' : action === 'rejected' ? 'rejected' : 'updated'
+      showNotification(`${selectedRequests.length} adoption requests ${actionText} successfully!`, 'success')
+    } catch (error) {
+      console.error('Error updating adoption requests:', error)
+      showNotification('Failed to update adoption requests. Please try again.', 'error')
+    }
     setSelectedRequests([])
   }
 

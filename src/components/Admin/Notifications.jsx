@@ -4,7 +4,7 @@ import '../../css/Admin/Notifications.css'
 import '../../css/EnhancedComponents.css'
 
 function Notifications() {
-  const { notifications, loading, markNotificationAsRead, deleteNotification } = useData()
+  const { notifications, loading, markNotificationAsRead, deleteNotification, showNotification } = useData()
   
   const [selectedNotifications, setSelectedNotifications] = useState([])
   const [filterType, setFilterType] = useState('all')
@@ -91,27 +91,76 @@ function Notifications() {
 
   const handleNotificationClick = (notification) => {
     if (notification.status === 'Unread') {
-      markNotificationAsRead(notification.id)
+      try {
+        markNotificationAsRead(notification.id)
+        showNotification('Notification marked as read', 'success')
+      } catch (error) {
+        console.error('Error marking notification as read:', error)
+        showNotification('Failed to mark notification as read', 'error')
+      }
     }
     setSelectedNotification(notification)
     setShowModal(true)
   }
 
   const handleBulkMarkAsRead = () => {
-    selectedNotifications.forEach(id => {
-      const notification = notifications.find(n => n.id === id)
-      if (notification && notification.status === 'Unread') {
-        markNotificationAsRead(id)
+    try {
+      const unreadCount = selectedNotifications.filter(id => {
+        const notification = notifications.find(n => n.id === id)
+        return notification && notification.status === 'Unread'
+      }).length
+
+      selectedNotifications.forEach(id => {
+        const notification = notifications.find(n => n.id === id)
+        if (notification && notification.status === 'Unread') {
+          markNotificationAsRead(id)
+        }
+      })
+
+      if (unreadCount > 0) {
+        showNotification(`${unreadCount} notifications marked as read`, 'success')
       }
-    })
+    } catch (error) {
+      console.error('Error marking notifications as read:', error)
+      showNotification('Failed to mark notifications as read', 'error')
+    }
     setSelectedNotifications([])
     setShowBulkActions(false)
   }
 
   const handleBulkDelete = () => {
-    selectedNotifications.forEach(id => deleteNotification(id))
+    try {
+      const deleteCount = selectedNotifications.length
+      selectedNotifications.forEach(id => deleteNotification(id))
+      showNotification(`${deleteCount} notifications deleted successfully`, 'success')
+    } catch (error) {
+      console.error('Error deleting notifications:', error)
+      showNotification('Failed to delete notifications', 'error')
+    }
     setSelectedNotifications([])
     setShowBulkActions(false)
+  }
+
+  const handleMarkSingleAsRead = (notificationId, event) => {
+    if (event) event.stopPropagation()
+    try {
+      markNotificationAsRead(notificationId)
+      showNotification('Notification marked as read', 'success')
+    } catch (error) {
+      console.error('Error marking notification as read:', error)
+      showNotification('Failed to mark notification as read', 'error')
+    }
+  }
+
+  const handleDeleteSingle = (notificationId, event) => {
+    if (event) event.stopPropagation()
+    try {
+      deleteNotification(notificationId)
+      showNotification('Notification deleted successfully', 'success')
+    } catch (error) {
+      console.error('Error deleting notification:', error)
+      showNotification('Failed to delete notification', 'error')
+    }
   }
 
   // Unique types for filtering
@@ -271,10 +320,7 @@ function Notifications() {
                       {notification.status === 'Unread' && (
                         <button
                           className="btn-mark-read"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            markNotificationAsRead(notification.id)
-                          }}
+                          onClick={(e) => handleMarkSingleAsRead(notification.id, e)}
                           disabled={loading[notification.id]}
                           title="Mark as Read"
                         >
@@ -284,10 +330,7 @@ function Notifications() {
                       
                       <button
                         className="btn-delete"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          deleteNotification(notification.id)
-                        }}
+                        onClick={(e) => handleDeleteSingle(notification.id, e)}
                         disabled={loading[notification.id]}
                         title="Delete"
                       >
@@ -367,7 +410,7 @@ function Notifications() {
                 <button
                   className="btn-primary"
                   onClick={() => {
-                    markNotificationAsRead(selectedNotification.id)
+                    handleMarkSingleAsRead(selectedNotification.id)
                     setShowModal(false)
                   }}
                 >

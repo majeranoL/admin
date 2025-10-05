@@ -3,7 +3,7 @@ import { useData } from '../../contexts/DataContext'
 import '../../css/Admin/RescuedAnimals.css'
 
 function RescuedAnimals() {
-  const { rescuedAnimals, loading, updateAnimalStatus } = useData()
+  const { rescuedAnimals, loading, updateAnimalStatus, showNotification } = useData()
   
   const [selectedAnimals, setSelectedAnimals] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
@@ -57,7 +57,16 @@ function RescuedAnimals() {
 
   const confirmAction = () => {
     const { id, action } = actionAnimal
-    updateAnimalStatus(id, action)
+    try {
+      updateAnimalStatus(id, action)
+      const actionText = action === 'adopted' ? 'marked as adopted' : 
+                        action === 'available' ? 'marked as available' :
+                        action === 'medical_care' ? 'moved to medical care' : 'updated'
+      showNotification(`Animal ${actionText} successfully!`, 'success')
+    } catch (error) {
+      console.error('Error updating animal status:', error)
+      showNotification('Failed to update animal status. Please try again.', 'error')
+    }
     setShowConfirm(false)
     setActionAnimal({ id: null, action: null })
   }

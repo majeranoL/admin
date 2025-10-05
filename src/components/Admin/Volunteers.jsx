@@ -3,7 +3,7 @@ import { useData } from '../../contexts/DataContext'
 import '../../css/Admin/Volunteers.css'
 
 function Volunteers() {
-  const { volunteers, loading, updateVolunteerStatus } = useData()
+  const { volunteers, loading, updateVolunteerStatus, showNotification } = useData()
   
   const [selectedVolunteers, setSelectedVolunteers] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
@@ -59,7 +59,16 @@ function Volunteers() {
 
   const confirmAction = () => {
     const { id, action } = actionVolunteer
-    updateVolunteerStatus(id, action)
+    try {
+      updateVolunteerStatus(id, action)
+      const actionText = action === 'active' ? 'activated' : 
+                        action === 'inactive' ? 'deactivated' :
+                        action === 'suspended' ? 'suspended' : 'updated'
+      showNotification(`Volunteer ${actionText} successfully!`, 'success')
+    } catch (error) {
+      console.error('Error updating volunteer status:', error)
+      showNotification('Failed to update volunteer status. Please try again.', 'error')
+    }
     setShowConfirm(false)
     setActionVolunteer({ id: null, action: null })
   }
