@@ -4,7 +4,7 @@ import '../../css/SuperAdmin/SystemReports.css'
 import '../../css/EnhancedComponents.css'
 
 function SystemReports() {
-  const { systemReports, loading, generateSystemReport, exportToCSV } = useData()
+  const { systemReports, loading, generateSystemReport, exportToCSV, showNotification } = useData()
   
   const [selectedReport, setSelectedReport] = useState(null)
   const [showModal, setShowModal] = useState(false)
@@ -119,21 +119,28 @@ function SystemReports() {
       const report = await generateSystemReport(categoryId, getDateRangeLabel())
       setSelectedReport(report)
       setShowModal(true)
+      showNotification('Report generated successfully!', 'success')
     } catch (error) {
       console.error('Error generating report:', error)
-      // You can add a notification here if needed
+      showNotification('Failed to generate report. Please try again.', 'error')
     }
   }
 
   const handleExportReport = (report) => {
-    // Create export data from the report
-    const exportData = [
-      ['Report Name', 'Type', 'Generated Date', 'Status'],
-      [report.title || report.name, report.type, report.generatedDate, report.status]
-    ]
-    
-    // Use the available exportToCSV function
-    exportToCSV(exportData, `${report.name}_export.csv`)
+    try {
+      // Create export data from the report
+      const exportData = [
+        ['Report Name', 'Type', 'Generated Date', 'Status'],
+        [report.title || report.name, report.type, report.generatedDate, report.status]
+      ]
+      
+      // Use the available exportToCSV function
+      exportToCSV(exportData, `${report.name}_export.csv`)
+      showNotification('Report exported successfully!', 'success')
+    } catch (error) {
+      console.error('Error exporting report:', error)
+      showNotification('Failed to export report. Please try again.', 'error')
+    }
   }
 
   const getDateRangeLabel = () => {

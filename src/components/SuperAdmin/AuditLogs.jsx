@@ -4,7 +4,7 @@ import '../../css/SuperAdmin/AuditLogs.css'
 import '../../css/EnhancedComponents.css'
 
 function AuditLogs() {
-  const { auditLogs, loading, exportAuditLogs } = useData()
+  const { auditLogs, loading, exportAuditLogs, showNotification } = useData()
   
   const [selectedLogs, setSelectedLogs] = useState([])
   const [filterType, setFilterType] = useState('all')
@@ -133,15 +133,31 @@ function AuditLogs() {
   }
 
   const handleExportLogs = () => {
-    const logsToExport = selectedLogs.length > 0 
-      ? filteredLogs.filter(log => selectedLogs.includes(log.id))
-      : filteredLogs
-    exportAuditLogs(logsToExport)
+    try {
+      const logsToExport = selectedLogs.length > 0 
+        ? filteredLogs.filter(log => selectedLogs.includes(log.id))
+        : filteredLogs
+      exportAuditLogs(logsToExport)
+      showNotification('Audit logs exported successfully!', 'success')
+    } catch (error) {
+      console.error('Error exporting logs:', error)
+      showNotification('Failed to export audit logs. Please try again.', 'error')
+    }
   }
 
   const handleViewDetails = (log) => {
     setSelectedLog(log)
     setShowModal(true)
+  }
+
+  const handleExportSingleLog = (log) => {
+    try {
+      exportAuditLogs([log])
+      showNotification('Log exported successfully!', 'success')
+    } catch (error) {
+      console.error('Error exporting log:', error)
+      showNotification('Failed to export log. Please try again.', 'error')
+    }
   }
 
   // Statistics
@@ -494,7 +510,7 @@ function AuditLogs() {
             <div className="modal-footer">
               <button
                 className="btn-export"
-                onClick={() => exportAuditLogs([selectedLog])}
+                onClick={() => handleExportSingleLog(selectedLog)}
               >
                 � Export This Log
               </button>

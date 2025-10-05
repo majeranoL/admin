@@ -5,7 +5,7 @@ import '../../css/SuperAdmin/CleanTable.css'
 import '../../css/EnhancedComponents.css'
 
 function ShelterManagement() {
-  const { shelters, loading, updateShelterStatus } = useData()
+  const { shelters, loading, updateShelterStatus, showNotification } = useData()
   
   const [selectedShelters, setSelectedShelters] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
@@ -89,6 +89,13 @@ function ShelterManagement() {
   const confirmAction = () => {
     const { id, action } = actionShelter
     updateShelterStatus(id, action)
+    
+    // Show notification based on action
+    const shelter = shelters.find(shelter => shelter.id === id)
+    const shelterName = shelter ? shelter.name : 'Shelter'
+    const actionText = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'suspended'
+    showNotification(`${shelterName} has been ${actionText} successfully!`, 'success')
+    
     setShowConfirm(false)
     setActionShelter({ id: null, action: null })
   }

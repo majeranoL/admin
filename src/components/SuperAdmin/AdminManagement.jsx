@@ -4,7 +4,7 @@ import '../../css/SuperAdmin/AdminManagement.css'
 import '../../css/EnhancedComponents.css'
 
 function AdminManagement() {
-  const { adminUsers, loading, updateAdminStatus } = useData()
+  const { adminUsers, loading, updateAdminStatus, showNotification } = useData()
   
   const [selectedAdmins, setSelectedAdmins] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
@@ -59,6 +59,13 @@ function AdminManagement() {
   const confirmAction = () => {
     const { id, action } = actionAdmin
     updateAdminStatus(id, action)
+    
+    // Show notification based on action
+    const admin = adminUsers.find(admin => admin.id === id)
+    const adminName = admin ? admin.name : 'Admin'
+    const actionText = action === 'activate' ? 'activated' : action === 'suspend' ? 'suspended' : 'deleted'
+    showNotification(`${adminName} has been ${actionText} successfully!`, 'success')
+    
     setShowConfirm(false)
     setActionAdmin({ id: null, action: null })
   }
