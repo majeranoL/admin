@@ -7,7 +7,7 @@
 
 .super-admin-dashboard .page-header {
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  color: white;
+  color: var(--text-on-button);
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -149,8 +149,8 @@
 .super-admin-dashboard .action-button {
   width: 100%;
   padding: 12px 24px;
-  background: #1e293b;
-  color: white;
+  background: var(--card-background);
+  color: var(--text-on-button);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -163,7 +163,7 @@
 }
 
 .super-admin-dashboard .action-button:hover {
-  background: #0f172a;
+  background: var(--accent-background);
   transform: translateY(-1px);
 }
 
@@ -176,8 +176,8 @@
 }
 
 .super-admin-dashboard .activity-header {
-  background: #1e293b;
-  color: white;
+  background: var(--card-background);
+  color: var(--text-on-button);
   padding: 20px 24px;
   font-size: 1.2rem;
   font-weight: 600;
@@ -205,13 +205,13 @@
 }
 
 .super-admin-dashboard .activity-item:hover {
-  background: #2a2a2a;
+  background: var(--card-background);
 }
 
 .super-admin-dashboard .activity-icon {
   width: 40px;
   height: 40px;
-  background: #2a2a2a;
+  background: var(--card-background);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -225,7 +225,7 @@
 }
 
 .super-admin-dashboard .activity-text {
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 4px 0;
   font-weight: 500;
 }

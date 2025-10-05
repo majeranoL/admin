@@ -7,7 +7,7 @@
 
 .rescue-reports .page-header {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
+  color: var(--text-on-button);
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -90,7 +90,7 @@
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
-  color: #e0e0e0;
+  color: var(--text-light);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -115,7 +115,7 @@
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
-  color: #e0e0e0;
+  color: var(--text-light);
   cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -139,7 +139,7 @@
 
 .rescue-reports .btn-primary {
   background: #ef4444;
-  color: white;
+  color: var(--text-on-button);
 }
 
 .rescue-reports .btn-primary:hover {
@@ -149,7 +149,7 @@
 
 .rescue-reports .btn-secondary {
   background: #444;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .rescue-reports .btn-secondary:hover {
@@ -170,11 +170,11 @@
 }
 
 .rescue-reports .reports-table th {
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 16px;
   text-align: left;
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   border-bottom: 2px solid #444;
 }
 
@@ -182,7 +182,7 @@
   padding: 16px;
   border-bottom: 1px solid var(--table-border);
   vertical-align: top;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .rescue-reports .reports-table tbody tr {
@@ -191,7 +191,7 @@
 }
 
 .rescue-reports .reports-table tbody tr:hover {
-  background: #2a2a2a;
+  background: var(--card-background);
 }
 
 .rescue-reports .report-info {
@@ -218,9 +218,9 @@
   text-transform: uppercase;
 }
 
-.rescue-reports .priority-high { background: #4a1a1a; color: #ff6b6b; }
-.rescue-reports .priority-medium { background: #3a2f1a; color: #fbbf24; }
-.rescue-reports .priority-low { background: #1a3a1a; color: #4ade80; }
+.rescue-reports .priority-high { background: var(--status-error-bg); color: #ff6b6b; }
+.rescue-reports .priority-medium { background: var(--status-warning-bg); color: #fbbf24; }
+.rescue-reports .priority-low { background: var(--status-success-bg); color: #4ade80; }
 
 .rescue-reports .status-badge {
   padding: 4px 12px;
@@ -230,10 +230,10 @@
   text-transform: uppercase;
 }
 
-.rescue-reports .status-pending { background: #3a2f1a; color: #fbbf24; }
+.rescue-reports .status-pending { background: var(--status-warning-bg); color: #fbbf24; }
 .rescue-reports .status-in-progress { background: #dbeafe; color: #1e40af; }
-.rescue-reports .status-completed { background: #1a3a1a; color: #4ade80; }
-.rescue-reports .status-cancelled { background: #4a1a1a; color: #ff6b6b; }
+.rescue-reports .status-completed { background: var(--status-success-bg); color: #4ade80; }
+.rescue-reports .status-cancelled { background: var(--status-error-bg); color: #ff6b6b; }
 
 /* Modal Styles */
 .rescue-reports .modal-overlay {
@@ -292,7 +292,7 @@
 
 .rescue-reports .detail-title {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
@@ -335,7 +335,7 @@
 
 .rescue-reports .form-label {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 0.9rem;
 }
 
@@ -347,7 +347,7 @@
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
-  color: #e0e0e0;
+  color: var(--text-light);
   transition: border-color 0.2s;
 }
 

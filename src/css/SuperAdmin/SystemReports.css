@@ -15,7 +15,7 @@
 
 .system-reports .page-header {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
+  color: var(--text-on-button);
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -75,7 +75,7 @@
 .system-reports .stat-card h3 {
   font-size: 2rem;
   font-weight: bold;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 8px 0;
 }
 
@@ -161,7 +161,7 @@
 
 .system-reports .btn-primary {
   background: #10b981;
-  color: white;
+  color: var(--text-on-button);
 }
 
 .system-reports .btn-primary:hover {
@@ -171,7 +171,7 @@
 
 .system-reports .btn-secondary {
   background: #444;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .system-reports .btn-secondary:hover {
@@ -191,7 +191,7 @@
 }
 
 .system-reports .config-section h3 {
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 20px 0;
   font-size: 1.2rem;
   font-weight: 600;
@@ -222,8 +222,8 @@
   padding: 10px 12px;
   border: 2px solid #444;
   border-radius: 6px;
-  background: #2a2a2a;
-  color: #e0e0e0;
+  background: var(--card-background);
+  color: var(--text-light);
   font-size: 0.9rem;
   transition: border-color 0.2s;
 }
@@ -244,7 +244,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #d0d0d0;
+  color: var(--text-lighter);
   font-size: 0.9rem;
   cursor: pointer;
 }
@@ -272,7 +272,7 @@
 }
 
 .system-reports .report-categories h3 {
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 20px 0;
   font-size: 1.2rem;
   font-weight: 600;
@@ -344,7 +344,7 @@
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid var(--table-border);
-  background: #2a2a2a;
+  background: var(--card-background);
 }
 
 .system-reports .category-title {
@@ -356,7 +356,7 @@
 .system-reports .category-title h4 {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0;
 }
 
@@ -367,7 +367,7 @@
 
 .system-reports .btn-generate {
   background: #10b981;
-  color: white;
+  color: var(--text-on-button);
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -407,7 +407,7 @@
   align-items: center;
   gap: 8px;
   padding: 6px 0;
-  color: #d0d0d0;
+  color: var(--text-lighter);
   font-size: 0.9rem;
 }
 
@@ -418,7 +418,7 @@
 
 .system-reports .category-footer {
   padding: 16px 20px;
-  background: #2a2a2a;
+  background: var(--card-background);
   border-top: 1px solid var(--table-border);
 }
 
@@ -430,7 +430,7 @@
 }
 
 .system-reports .date-label {
-  color: #888;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -453,14 +453,14 @@
 }
 
 .system-reports .section-header h3 {
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0;
   font-size: 1.4rem;
   font-weight: 600;
 }
 
 .system-reports .report-count {
-  color: #888;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
@@ -480,8 +480,8 @@
 }
 
 .system-reports .enhanced-table th {
-  background: #2a2a2a;
-  color: #e0e0e0;
+  background: var(--card-background);
+  color: var(--text-light);
   padding: 16px 20px;
   text-align: left;
   font-weight: 600;
@@ -492,7 +492,7 @@
 .system-reports .enhanced-table td {
   padding: 16px 20px;
   border-bottom: 1px solid var(--table-border);
-  color: #d0d0d0;
+  color: var(--text-lighter);
   font-size: 0.9rem;
 }
 
@@ -501,7 +501,7 @@
 }
 
 .system-reports .enhanced-table tr:hover {
-  background: #2a2a2a;
+  background: var(--card-background);
 }
 
 .system-reports .report-name .name-with-icon {
@@ -621,14 +621,14 @@
 .system-reports .report-title {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0;
 }
 
 .system-reports .report-id {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 4px 8px;
   border-radius: 12px;
   font-family: monospace;
@@ -666,12 +666,12 @@
 }
 
 .system-reports .meta-value {
-  color: #e0e0e0;
+  color: var(--text-light);
   font-weight: 500;
 }
 
 .system-reports .report-data {
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 16px;
   border-radius: 8px;
   margin-top: 16px;
@@ -713,10 +713,10 @@
   text-transform: uppercase;
 }
 
-.system-reports .status-completed { background: #1a3a1a; color: #4ade80; }
-.system-reports .status-pending { background: #3a2f1a; color: #fbbf24; }
+.system-reports .status-completed { background: var(--status-success-bg); color: #4ade80; }
+.system-reports .status-pending { background: var(--status-warning-bg); color: #fbbf24; }
 .system-reports .status-in-progress { background: #dbeafe; color: #1e40af; }
-.system-reports .status-failed { background: #4a1a1a; color: #ff6b6b; }
+.system-reports .status-failed { background: var(--status-error-bg); color: #ff6b6b; }
 
 /* Modal Styles */
 .system-reports .modal-overlay {
@@ -752,7 +752,7 @@
 .system-reports .modal-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0;
 }
 
@@ -775,7 +775,7 @@
 
 .system-reports .detail-title {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
@@ -800,12 +800,12 @@
 }
 
 .system-reports .detail-value {
-  color: #e0e0e0;
+  color: var(--text-light);
   font-weight: 500;
 }
 
 .system-reports .report-chart {
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 20px;
   border-radius: 8px;
   text-align: center;
@@ -827,7 +827,7 @@
 
 .system-reports .form-label {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 0.9rem;
 }
 

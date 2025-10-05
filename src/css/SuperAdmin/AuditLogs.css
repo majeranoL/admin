@@ -8,7 +8,7 @@
 
 .audit-logs .page-header {
   background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: white;
+  color: var(--text-on-button);
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -51,7 +51,7 @@
 .audit-logs .stat-card h3 {
   font-size: 2rem;
   font-weight: bold;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 8px 0;
 }
 
@@ -149,18 +149,18 @@
 }
 
 .audit-logs .btn-primary {
-  background: #6366f1;
-  color: white;
+  background: var(--primary-color);
+  color: var(--text-on-button);
 }
 
 .audit-logs .btn-primary:hover {
-  background: #4f46e5;
+  background: var(--primary-color);
   transform: translateY(-1px);
 }
 
 .audit-logs .btn-secondary {
   background: #444;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .audit-logs .btn-secondary:hover {
@@ -187,11 +187,11 @@
 
 .audit-logs .logs-table th,
 .audit-logs .enhanced-table th {
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 16px;
   text-align: left;
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   border-bottom: 2px solid #444;
   font-size: 0.9rem;
 }
@@ -201,7 +201,7 @@
   padding: 16px;
   border-bottom: 1px solid var(--table-border);
   vertical-align: top;
-  color: #d0d0d0;
+  color: var(--text-lighter);
   font-size: 0.9rem;
 }
 
@@ -213,7 +213,7 @@
 
 .audit-logs .logs-table tbody tr:hover,
 .audit-logs .enhanced-table tbody tr:hover {
-  background: #2a2a2a;
+  background: var(--card-background);
 }
 
 .audit-logs .logs-table tbody tr:last-child td,
@@ -242,7 +242,7 @@
 }
 
 .audit-logs .type-text {
-  color: #e0e0e0;
+  color: var(--text-light);
   font-weight: 500;
 }
 
@@ -257,13 +257,13 @@
 }
 
 .audit-logs .user-email {
-  color: #e0e0e0;
+  color: var(--text-light);
   font-weight: 500;
   font-size: 0.9rem;
 }
 
 .audit-logs .user-id {
-  color: #888;
+  color: var(--text-muted);
   font-size: 0.8rem;
 }
 
@@ -272,7 +272,7 @@
 }
 
 .audit-logs .action-text {
-  color: #d0d0d0;
+  color: var(--text-lighter);
   font-weight: 500;
 }
 
@@ -288,7 +288,7 @@
 .audit-logs .ip-cell {
   font-family: 'Monaco', 'Menlo', monospace;
   font-size: 0.85rem;
-  color: #888;
+  color: var(--text-muted);
   min-width: 120px;
 }
 
@@ -333,7 +333,7 @@
 .audit-logs .no-data {
   text-align: center;
   padding: 60px 20px;
-  color: #888;
+  color: var(--text-muted);
 }
 
 .audit-logs .no-data-icon {
@@ -349,13 +349,13 @@
 }
 
 .audit-logs .no-data p {
-  color: #888;
+  color: var(--text-muted);
   margin: 0;
   font-size: 0.9rem;
 }
 
 .audit-logs .logs-table tbody tr:hover {
-  background: #2a2a2a;
+  background: var(--card-background);
 }
 
 .audit-logs .log-info {
@@ -366,12 +366,12 @@
 
 .audit-logs .log-id {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 0.9rem;
 }
 
 .audit-logs .log-action {
-  color: #e0e0e0;
+  color: var(--text-light);
   font-weight: 500;
 }
 
@@ -393,7 +393,7 @@
 
 .audit-logs .type-text {
   font-weight: 500;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .audit-logs .user-info {
@@ -404,7 +404,7 @@
 
 .audit-logs .user-email {
   font-weight: 500;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .audit-logs .user-id {
@@ -425,9 +425,9 @@
 }
 
 .audit-logs .severity-info { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-.audit-logs .severity-warning { background: #3a2f1a; color: #fbbf24; }
-.audit-logs .severity-error { background: #4a1a1a; color: #ff6b6b; }
-.audit-logs .severity-critical { background: #4a1a1a; color: #ff8a80; }
+.audit-logs .severity-warning { background: var(--status-warning-bg); color: #fbbf24; }
+.audit-logs .severity-error { background: var(--status-error-bg); color: #ff6b6b; }
+.audit-logs .severity-critical { background: var(--status-error-bg); color: #ff8a80; }
 
 .audit-logs .timestamp-info {
   display: flex;
@@ -471,7 +471,7 @@
 .audit-logs .modal-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0;
 }
 
@@ -494,7 +494,7 @@
 
 .audit-logs .detail-title {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin-bottom: 12px;
   font-size: 1.1rem;
   display: flex;
@@ -522,12 +522,12 @@
 }
 
 .audit-logs .detail-value {
-  color: #e0e0e0;
+  color: var(--text-light);
   font-weight: 500;
 }
 
 .audit-logs .log-details-full {
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 16px;
   border-radius: 8px;
   border-left: 4px solid #6366f1;
@@ -535,7 +535,7 @@
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   line-height: 1.4;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .audit-logs .modal-actions {

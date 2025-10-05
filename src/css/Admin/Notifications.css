@@ -7,7 +7,7 @@
 
 .notifications .page-header {
   background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-  color: white;
+  color: var(--text-on-button);
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -92,7 +92,7 @@
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
-  color: #e0e0e0;
+  color: var(--text-light);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -117,7 +117,7 @@
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
-  color: #e0e0e0;
+  color: var(--text-light);
   cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -141,7 +141,7 @@
 
 .notifications .btn-primary {
   background: #06b6d4;
-  color: white;
+  color: var(--text-on-button);
 }
 
 .notifications .btn-primary:hover {
@@ -150,7 +150,7 @@
 }
 
 .notifications .btn-secondary {
-  background: #e2e8f0;
+  background: var(--subtle-background);
   color: #475569;
 }
 
@@ -182,11 +182,11 @@
 }
 
 .notifications .notification-item:hover {
-  background: #2a2a2a;
+  background: var(--card-background);
 }
 
 .notifications .notification-item.unread {
-  background: #1a2332;
+  background: var(--accent-background);
   border-left: 4px solid #06b6d4;
 }
 
@@ -238,7 +238,7 @@
 .notifications .notification-details {
   font-size: 0.9rem;
   color: #475569;
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 12px;
   border-radius: 8px;
   margin: 8px 0 0 0;
@@ -263,9 +263,9 @@
   text-transform: uppercase;
 }
 
-.notifications .priority-high { background: #4a1a1a; color: #ff6b6b; }
-.notifications .priority-medium { background: #3a2f1a; color: #fbbf24; }
-.notifications .priority-low { background: #1a3a1a; color: #4ade80; }
+.notifications .priority-high { background: var(--status-error-bg); color: #ff6b6b; }
+.notifications .priority-medium { background: var(--status-warning-bg); color: #fbbf24; }
+.notifications .priority-low { background: var(--status-success-bg); color: #4ade80; }
 
 /* Notification Type Icons and Colors */
 .notifications .type-success {
@@ -274,12 +274,12 @@
 }
 
 .notifications .type-warning {
-  background: #3a2f1a;
+  background: var(--status-warning-bg);
   color: #92400e;
 }
 
 .notifications .type-error {
-  background: #4a1a1a;
+  background: var(--status-error-bg);
   color: #991b1b;
 }
 
@@ -289,7 +289,7 @@
 }
 
 .notifications .type-system {
-  background: #e2e8f0;
+  background: var(--subtle-background);
   color: #475569;
 }
 
@@ -358,7 +358,7 @@
 
 .notifications .form-label {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 0.9rem;
 }
 
@@ -370,7 +370,7 @@
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
-  color: #e0e0e0;
+  color: var(--text-light);
   transition: border-color 0.2s;
 }
 

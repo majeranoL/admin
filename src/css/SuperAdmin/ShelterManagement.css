@@ -10,7 +10,7 @@
 
 .shelter-management .page-header {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: white;
+  color: var(--text-on-button);
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -53,7 +53,7 @@
 .shelter-management .stat-card h3 {
   font-size: 2rem;
   font-weight: bold;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 8px 0;
 }
 
@@ -106,8 +106,8 @@
   border: 2px solid #333;
   border-radius: 8px;
   font-size: 14px;
-  background: #2a2a2a;
-  color: #e0e0e0;
+  background: var(--card-background);
+  color: var(--text-light);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -135,8 +135,8 @@
   border: 2px solid #333;
   border-radius: 8px;
   font-size: 14px;
-  background: #2a2a2a;
-  color: #e0e0e0;
+  background: var(--card-background);
+  color: var(--text-light);
   cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -160,7 +160,7 @@
 
 .shelter-management .btn-primary {
   background: #f59e0b;
-  color: white;
+  color: var(--text-on-button);
 }
 
 .shelter-management .btn-primary:hover {
@@ -169,13 +169,13 @@
 }
 
 .shelter-management .btn-secondary {
-  background: #374151;
-  color: #e0e0e0;
+  background: var(--card-background);
+  color: var(--text-light);
   border: 1px solid #4b5563;
 }
 
 .shelter-management .btn-secondary:hover {
-  background: #4b5563;
+  background: var(--card-background);
 }
 
 /* Shelters Table */
@@ -241,11 +241,11 @@
 } /* actions */
 
 .shelter-management .shelters-table th {
-  background: #2a2a2a !important;
+  background: var(--card-background) !important;
   padding: 15px 12px !important;
   text-align: left !important;
   font-weight: 600 !important;
-  color: #e0e0e0 !important;
+  color: var(--text-color) !important;
   border-bottom: 2px solid #333 !important;
   position: relative !important;
   white-space: nowrap !important;
@@ -258,7 +258,7 @@
   padding: 15px 12px !important;
   border-bottom: 1px solid var(--table-border) !important;
   vertical-align: middle !important;
-  color: #e0e0e0 !important;
+  color: var(--text-color) !important;
   word-wrap: break-word !important;
   overflow: hidden !important;
   text-align: left !important;
@@ -276,7 +276,7 @@
 }
 
 .shelter-management .shelters-table tbody tr:hover {
-  background: #2a2a2a;
+  background: var(--card-background);
 }
 
 .shelter-management .shelters-table thead tr {
@@ -292,7 +292,7 @@
 
 .shelter-management .shelter-name {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin-bottom: 4px;
   font-size: 14px;
   width: 100%;
@@ -326,7 +326,7 @@
 
 .shelter-management .capacity-number {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 16px;
   display: block;
 }
@@ -358,7 +358,7 @@
 
 .shelter-management .license-number {
   font-weight: 500;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .shelter-management .license-expiry {
@@ -434,7 +434,7 @@
 .shelter-management .capacity-total {
   font-size: 16px;
   font-weight: 500;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .shelter-management .capacity-percentage {
@@ -455,7 +455,7 @@
 }
 
 .shelter-management .email {
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 13px;
   margin-bottom: 2px;
 }
@@ -472,8 +472,8 @@
 
 .shelter-management .btn-view {
   padding: 4px 8px;
-  background: #374151;
-  color: #e0e0e0;
+  background: var(--card-background);
+  color: var(--text-light);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -482,7 +482,7 @@
 }
 
 .shelter-management .btn-view:hover {
-  background: #4b5563;
+  background: var(--card-background);
 }
 
 .shelter-management .shelter-info {
@@ -493,7 +493,7 @@
 
 .shelter-management .shelter-name {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .shelter-management .shelter-location {
@@ -542,18 +542,18 @@
   max-width: 100%;
 }
 
-.shelter-management .status-active { background: #1a3a1a; color: #4ade80; }
-.shelter-management .status-pending { background: #3a2f1a; color: #fbbf24; }
-.shelter-management .status-warning { background: #3a3a1a; color: #f59e0b; }
-.shelter-management .status-inactive { background: #4a1a1a; color: #ff6b6b; }
-.shelter-management .status-unknown { background: #2a2a2a; color: #94a3b8; }
+.shelter-management .status-active { background: var(--status-success-bg); color: #4ade80; }
+.shelter-management .status-pending { background: var(--status-warning-bg); color: #fbbf24; }
+.shelter-management .status-warning { background: var(--status-warning-bg); color: #f59e0b; }
+.shelter-management .status-inactive { background: var(--status-error-bg); color: #ff6b6b; }
+.shelter-management .status-unknown { background: var(--card-background); color: #94a3b8; }
 
 .shelter-management .type-badge {
   padding: 3px 8px;
   border-radius: 12px;
   font-size: 0.7rem;
   font-weight: 500;
-  background: #2a2a2a;
+  background: var(--card-background);
   color: #94a3b8;
   white-space: nowrap;
   max-width: 100%;
@@ -646,7 +646,7 @@
 .shelter-management .modal-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0;
 }
 
@@ -669,7 +669,7 @@
 
 .shelter-management .detail-title {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
@@ -694,7 +694,7 @@
 }
 
 .shelter-management .detail-value {
-  color: #e0e0e0;
+  color: var(--text-light);
   font-weight: 500;
 }
 
@@ -705,8 +705,8 @@
 }
 
 .shelter-management .facility-tag {
-  background: #2a2a2a;
-  color: #e0e0e0;
+  background: var(--card-background);
+  color: var(--text-light);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 0.8rem;
@@ -727,7 +727,7 @@
 
 .shelter-management .form-label {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 0.9rem;
 }
 

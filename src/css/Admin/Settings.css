@@ -7,7 +7,7 @@
 
 .settings .page-header {
   background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-  color: white;
+  color: var(--text-on-button);
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -58,18 +58,18 @@
 }
 
 .settings .nav-item:hover {
-  background: #2a2a2a;
-  color: #e0e0e0;
+  background: var(--card-background);
+  color: var(--text-light);
 }
 
 .settings .nav-item.active {
-  background: #64748b;
-  color: white;
+  background: var(--secondary-color);
+  color: var(--text-on-button);
   font-weight: 600;
 }
 
 .settings .nav-item.active:hover {
-  background: #475569;
+  background: var(--primary-color);
 }
 
 .settings .nav-icon {
@@ -120,7 +120,7 @@
 .settings .section-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 16px 0;
   padding-bottom: 8px;
   border-bottom: 2px solid var(--border-color);
@@ -144,7 +144,7 @@
 
 .settings .form-label {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 0.9rem;
 }
 
@@ -211,7 +211,7 @@
 .settings .checkbox-label strong,
 .settings .radio-label strong {
   display: block;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-weight: 600;
   margin-bottom: 2px;
 }
@@ -241,7 +241,7 @@
 
 .settings .toggle-title {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 4px 0;
 }
 
@@ -256,14 +256,14 @@
   position: relative;
   width: 48px;
   height: 24px;
-  background: #e2e8f0;
+  background: var(--subtle-background);
   border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .settings .toggle-switch.active {
-  background: #64748b;
+  background: var(--secondary-color);
 }
 
 .settings .toggle-slider {
@@ -304,17 +304,17 @@
 }
 
 .settings .btn-primary {
-  background: #64748b;
-  color: white;
+  background: var(--secondary-color);
+  color: var(--text-on-button);
 }
 
 .settings .btn-primary:hover {
-  background: #475569;
+  background: var(--primary-color);
   transform: translateY(-1px);
 }
 
 .settings .btn-secondary {
-  background: #e2e8f0;
+  background: var(--subtle-background);
   color: #475569;
 }
 
@@ -324,7 +324,7 @@
 
 .settings .btn-danger {
   background: #ef4444;
-  color: white;
+  color: var(--text-on-button);
 }
 
 .settings .btn-danger:hover {

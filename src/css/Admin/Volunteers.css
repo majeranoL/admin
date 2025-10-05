@@ -7,7 +7,7 @@
 
 .volunteers.enhanced-component .page-header {
   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
+  color: var(--text-on-button);
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -136,7 +136,7 @@
 
 .volunteers.enhanced-component .btn-primary {
   background: #8b5cf6;
-  color: white;
+  color: var(--text-on-button);
 }
 
 .volunteers.enhanced-component .btn-primary:hover {
@@ -145,7 +145,7 @@
 }
 
 .volunteers.enhanced-component .btn-secondary {
-  background: #e2e8f0;
+  background: var(--subtle-background);
   color: #475569;
 }
 
@@ -190,7 +190,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--text-on-button);
   font-size: 1.5rem;
   font-weight: bold;
 }
@@ -228,7 +228,7 @@
 }
 
 .volunteers.enhanced-component .skill-tag {
-  background: #2a2a2a;
+  background: var(--card-background);
   color: #475569;
   padding: 4px 12px;
   border-radius: 20px;
@@ -270,10 +270,10 @@
   text-transform: uppercase;
 }
 
-.volunteers.enhanced-component .status-active { background: #1a3a1a; color: #4ade80; }
-.volunteers.enhanced-component .status-inactive { background: #4a1a1a; color: #ff6b6b; }
-.volunteers.enhanced-component .status-training { background: #3a2f1a; color: #fbbf24; }
-.volunteers.enhanced-component .status-suspended { background: #2a2a2a; color: #94a3b8; }
+.volunteers.enhanced-component .status-active { background: var(--status-success-bg); color: #4ade80; }
+.volunteers.enhanced-component .status-inactive { background: var(--status-error-bg); color: #ff6b6b; }
+.volunteers.enhanced-component .status-training { background: var(--status-warning-bg); color: #fbbf24; }
+.volunteers.enhanced-component .status-suspended { background: var(--card-background); color: #94a3b8; }
 
 /* Modal Styles */
 .volunteers.enhanced-component .modal-overlay {
@@ -332,7 +332,7 @@
 
 .volunteers.enhanced-component .detail-title {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
@@ -375,7 +375,7 @@
 
 .volunteers.enhanced-component .form-label {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 0.9rem;
 }
 

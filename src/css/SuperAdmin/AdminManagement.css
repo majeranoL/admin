@@ -8,7 +8,7 @@
 
 .admin-management .page-header {
   background: linear-gradient(135deg, #e11d48 0%, #be185d 100%);
-  color: white;
+  color: var(--text-on-button);
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -51,7 +51,7 @@
 .admin-management .stat-card h3 {
   font-size: 2rem;
   font-weight: bold;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 8px 0;
 }
 
@@ -91,7 +91,7 @@
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
-  color: #e0e0e0;
+  color: var(--text-light);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -116,7 +116,7 @@
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
-  color: #e0e0e0;
+  color: var(--text-light);
   cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -140,7 +140,7 @@
 
 .admin-management .btn-primary {
   background: #e11d48;
-  color: white;
+  color: var(--text-on-button);
 }
 
 .admin-management .btn-primary:hover {
@@ -150,7 +150,7 @@
 
 .admin-management .btn-secondary {
   background: #444;
-  color: #e0e0e0;
+  color: var(--text-light);
 }
 
 .admin-management .btn-secondary:hover {
@@ -171,11 +171,11 @@
 }
 
 .admin-management .admins-table th {
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 16px;
   text-align: left;
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   border-bottom: 2px solid var(--border-color);
 }
 
@@ -191,7 +191,7 @@
 }
 
 .admin-management .admins-table tbody tr:hover {
-  background: #2a2a2a;
+  background: var(--card-background);
 }
 
 .admin-management .admin-info {
@@ -208,7 +208,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--text-on-button);
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -237,10 +237,10 @@
   text-transform: uppercase;
 }
 
-.admin-management .role-super-admin { background: #4a1a1a; color: #ff8a80; }
-.admin-management .role-admin { background: #dbeafe; color: #1e40af; }
-.admin-management .role-manager { background: #e0e7ff; color: #3730a3; }
-.admin-management .role-staff { background: #2a2a2a; color: #e0e0e0; }
+.admin-management .role-super-admin { background: var(--status-error-bg); color: #ff8a80; }
+.admin-management .role-admin { background: var(--role-admin-bg); color: var(--role-admin-text); }
+.admin-management .role-manager { background: var(--accent-background); color: #3730a3; }
+.admin-management .role-staff { background: var(--card-background); color: var(--text-light); }
 
 .admin-management .status-badge {
   padding: 4px 12px;
@@ -250,10 +250,10 @@
   text-transform: uppercase;
 }
 
-.admin-management .status-active { background: #1a3a1a; color: #4ade80; }
-.admin-management .status-inactive { background: #4a1a1a; color: #ff6b6b; }
-.admin-management .status-suspended { background: #2a2a2a; color: #94a3b8; }
-.admin-management .status-pending { background: #3a2f1a; color: #fbbf24; }
+.admin-management .status-active { background: var(--status-success-bg); color: #4ade80; }
+.admin-management .status-inactive { background: var(--status-error-bg); color: #ff6b6b; }
+.admin-management .status-suspended { background: var(--card-background); color: #94a3b8; }
+.admin-management .status-pending { background: var(--status-warning-bg); color: #fbbf24; }
 
 .admin-management .last-login {
   font-size: 0.9rem;
@@ -268,7 +268,7 @@
 }
 
 .admin-management .permission-tag {
-  background: #2a2a2a;
+  background: var(--card-background);
   color: #475569;
   padding: 2px 8px;
   border-radius: 12px;
@@ -333,7 +333,7 @@
 
 .admin-management .detail-title {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
@@ -369,7 +369,7 @@
 }
 
 .admin-management .permission-group {
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 16px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
@@ -377,7 +377,7 @@
 
 .admin-management .permission-group-title {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   margin: 0 0 12px 0;
   font-size: 0.9rem;
 }
@@ -413,7 +413,7 @@
 
 .admin-management .form-label {
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 0.9rem;
 }
 
@@ -425,7 +425,7 @@
   border-radius: 8px;
   font-size: 14px;
   background: var(--card-background);
-  color: #e0e0e0;
+  color: var(--text-light);
   transition: border-color 0.2s;
 }
 

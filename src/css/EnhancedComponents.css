@@ -89,7 +89,7 @@
   padding: 10px 15px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: #2a2a2a;
+  background: var(--card-background);
   color: var(--text-color);
   font-size: 14px;
 }
@@ -101,8 +101,8 @@
 
 /* Buttons */
 .btn-primary {
-  background: #e74c3c;
-  color: white;
+  background: var(--primary-color);
+  color: var(--text-on-button);
   border: none;
   padding: 12px 20px;
   border-radius: 6px;
@@ -115,7 +115,7 @@
 }
 
 .btn-primary:hover {
-  background: #c0392b;
+  background: var(--primary-hover);
 }
 
 .btn-icon {
@@ -128,7 +128,7 @@
   gap: 12px;
   align-items: center;
   padding: 15px;
-  background: #2a2a2a;
+  background: var(--card-background);
   border-radius: 6px;
   margin-top: 15px;
 }
@@ -148,13 +148,13 @@
 }
 
 .bulk-btn:not(.delete) {
-  background: #3b82f6;
-  color: white;
+  background: var(--primary-color);
+  color: var(--text-on-button);
 }
 
 .bulk-btn.delete {
-  background: #ef4444;
-  color: white;
+  background: var(--danger-color);
+  color: var(--text-on-button);
 }
 
 .bulk-btn:hover {
@@ -176,7 +176,7 @@
 
 /* Table Styles */
 .table-header {
-  background: #2a2a2a;
+  background: var(--table-header-background);
   padding: 15px 20px;
   border-bottom: 1px solid var(--table-border);
   font-weight: 600;
@@ -204,7 +204,7 @@
 }
 
 .table-row:hover {
-  background: #2a2a2a;
+  background: var(--table-hover-background);
 }
 
 .table-row:last-child {
@@ -251,18 +251,18 @@
 }
 
 .action-btn.view {
-  background: #3b82f6;
-  color: white;
+  background: var(--info-color);
+  color: var(--text-on-button);
 }
 
 .action-btn.edit {
-  background: #f59e0b;
-  color: white;
+  background: var(--warning-color);
+  color: var(--text-on-button);
 }
 
 .action-btn.delete {
-  background: #ef4444;
-  color: white;
+  background: var(--danger-color);
+  color: var(--text-on-button);
 }
 
 /* Loading States */
@@ -333,7 +333,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #2a2a2a;
+  background: var(--card-background);
   border-radius: 50%;
 }
 
@@ -358,8 +358,8 @@
 
 /* Secondary Button */
 .btn-secondary {
-  background: #64748b;
-  color: white;
+  background: var(--secondary-color);
+  color: var(--text-on-button);
   border: none;
   padding: 12px 20px;
   border-radius: 6px;
@@ -372,7 +372,7 @@
 }
 
 .btn-secondary:hover {
-  background: #475569;
+  background: var(--secondary-hover);
 }
 
 /* Report Config */
@@ -388,7 +388,7 @@
 .tab-navigation {
   display: flex;
   gap: 4px;
-  background: #2a2a2a;
+  background: var(--card-background);
   padding: 6px;
   border-radius: 8px;
   margin-bottom: 24px;
@@ -410,7 +410,7 @@
 
 .tab-button.active {
   background: #e74c3c;
-  color: white;
+  color: var(--text-on-button);
 }
 
 .tab-button:hover:not(.active) {
@@ -514,7 +514,7 @@ h2 .bi, h3 .bi, h4 .bi {
   padding: 12px 16px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: #2a2a2a;
+  background: var(--card-background);
   color: var(--text-color);
   font-size: 14px;
 }
@@ -529,7 +529,7 @@ h2 .bi, h3 .bi, h4 .bi {
   padding: 12px 16px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: #2a2a2a;
+  background: var(--card-background);
   color: var(--text-color);
   font-size: 14px;
 }
@@ -598,7 +598,7 @@ h2 .bi, h3 .bi, h4 .bi {
 .btn-add {
   padding: 10px 20px;
   background: var(--primary-color);
-  color: white;
+  color: var(--text-on-button);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -733,7 +733,7 @@ h2 .bi, h3 .bi, h4 .bi {
 .shelters-table th,
 .system-table th,
 .audit-table th {
-  background: var(--table-header-bg);
+  background: var(--table-header-background);
   color: var(--text-color);
   padding: 15px 12px;
   text-align: left;
@@ -874,7 +874,7 @@ h2 .bi, h3 .bi, h4 .bi {
 .btn-view {
   padding: 6px 12px;
   background: var(--info-color);
-  color: white;
+  color: var(--text-on-button);
   border: none;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -892,7 +892,7 @@ h2 .bi, h3 .bi, h4 .bi {
 .btn-complete {
   padding: 6px 12px;
   background: var(--success-color);
-  color: white;
+  color: var(--text-on-button);
   border: none;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -912,7 +912,7 @@ h2 .bi, h3 .bi, h4 .bi {
 .btn-leave {
   padding: 6px 12px;
   background: var(--warning-color);
-  color: white;
+  color: var(--text-on-button);
   border: none;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -932,7 +932,7 @@ h2 .bi, h3 .bi, h4 .bi {
 .btn-cancel {
   padding: 6px 12px;
   background: var(--danger-color);
-  color: white;
+  color: var(--text-on-button);
   border: none;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -1068,7 +1068,7 @@ h2 .bi, h3 .bi, h4 .bi {
 .btn-edit {
   padding: 10px 20px;
   background: var(--primary-color);
-  color: white;
+  color: var(--text-on-button);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -1274,7 +1274,7 @@ h2 .bi, h3 .bi, h4 .bi {
 
 .tab-button.active {
   background: var(--primary-color);
-  color: white;
+  color: var(--text-on-button);
 }
 
 .tab-button:hover:not(.active) {
@@ -1345,7 +1345,7 @@ h2 .bi, h3 .bi, h4 .bi {
   padding: 12px 16px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: #2a2a2a;
+  background: var(--card-background);
   color: var(--text-color);
   font-size: 14px;
   transition: border-color 0.2s ease;
@@ -1474,7 +1474,7 @@ h2 .bi, h3 .bi, h4 .bi {
 
 .toggle-switch input:checked + .slider:before {
   transform: translateX(26px);
-  background-color: white;
+  background-color: var(--text-on-button);
 }
 
 .toggle-switch:hover .slider {
@@ -2007,7 +2007,7 @@ h2 .bi, h3 .bi, h4 .bi {
 
 .bulk-btn {
   background: var(--primary-color);
-  color: white;
+  color: var(--text-on-button);
 }
 
 .bulk-btn:hover {
