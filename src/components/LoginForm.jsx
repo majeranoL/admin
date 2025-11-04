@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from "react"
+import { useNavigate } from "react-router-dom"
 import { useRole } from "../hooks/useRole"
+import { useTheme } from "../contexts/ThemeContext"
 import logger from "../utils/logger"
+import logo from "../assets/animal911logo.png"
 
 function LoginForm() {
+  const navigate = useNavigate()
+  const { theme } = useTheme()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -111,13 +116,12 @@ function LoginForm() {
   }
 
   return (
-    <div className="app">
+    <div className={`app ${theme === 'light' ? 'light-mode' : 'dark-mode'}`}>
       <div className="login-wrapper">
         <div className="login-container" style={{ position: 'relative' }}>
           <div className="login-form">
           <div className="logo">
-            <h1>Animal911</h1>
-            <p>Admin Login</p>
+              <img src={logo} alt="Animal 911 Logo" className="login-logo-img" />
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -160,8 +164,13 @@ function LoginForm() {
             <button type="submit" className="login-btn" disabled={isLoading}>
               {isLoading ? "Logging in..." : "Login"}
             </button>
-            <button type="button" className="register-btn" disabled={isLoading}>
-              Register as Admin
+            <button 
+              type="button" 
+              className="register-btn" 
+              onClick={() => navigate('/register-shelter')}
+              disabled={isLoading}
+            >
+              <i className="bi bi-building"></i> Register your Shelter
             </button>
 
             <div className="forgot-password">

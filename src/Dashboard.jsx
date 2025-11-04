@@ -13,6 +13,7 @@ import ShelterManagement from "./components/SuperAdmin/ShelterManagement"
 import SystemReports from "./components/SuperAdmin/SystemReports"
 import AuditLogs from "./components/SuperAdmin/AuditLogs"
 import SuperAdminSettings from "./components/SuperAdmin/SuperAdminSettings"
+import logo from "./assets/animal911logo.png"
 import "./css/Dashboard.css"
 
 function Dashboard() {
@@ -98,7 +99,8 @@ function Dashboard() {
     <div className="dashboard">
       <div className="dashboard-header">
         <div className="header-left">
-          <h1>Animal911 Admin</h1>
+          <img src={logo} alt="Animal 911 Logo" className="dashboard-logo" />
+          <h1>Admin</h1>
         </div>
         <div className="header-right">
           <span className="welcome-text">Welcome, {username || 'Admin'}</span>

@@ -28,6 +28,18 @@ body {
   border-bottom: 1px solid var(--border-color);
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dashboard-logo {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
 .header-left h1 {
   color: #e74c3c;
   font-size: 1.8rem;

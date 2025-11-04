@@ -14,69 +14,8 @@
   --info-hover: #0891b2;
 }
 
-/* Dark Theme Variables (Default) */
+/* Light Theme Variables (Default) */
 :root,
-[data-theme="dark"] {
-  /* Background Colors */
-  --background-color: #1e1e1e;
-  --card-background: var(--card-background);
-  --sidebar-background: var(--card-background);
-  --header-background: var(--card-background);
-  --table-header-bg: #2a2a2a;
-  --row-hover-bg: rgba(59, 130, 246, 0.05);
-  --modal-background: var(--card-background);
-  --dropdown-background: var(--card-background);
-  
-  /* Text Colors */
-  --text-color: #e5e5e5;
-  --text-secondary: #a1a1a1;
-  --text-muted: #6b7280;
-  --text-inverse: #1f2937;
-  --text-light: #e0e0e0;
-  --text-lighter: #d0d0d0;
-  --text-on-button: #ffffff;
-  
-  /* Border Colors */
-  --border-color: #333333;
-  --border-light: #444444;
-  --divider-color: #333333;
-  --table-border: #444444;
-  
-  /* Form Elements */
-  --input-background: var(--card-background);
-  --input-border: #444444;
-  --input-focus-border: #3b82f6;
-  
-  /* Additional Backgrounds */
-  --subtle-background: #333333;
-  --accent-background: #3a3a3a;
-  --table-header-background: var(--card-background);
-  --table-hover-background: var(--card-background);
-  --login-container-background: var(--card-background);
-  
-  /* Role Colors */
-  --role-admin-bg: #1e3a8a;
-  --role-admin-text: #93c5fd;
-  
-  /* Status Colors */
-  --status-pending: #f59e0b;
-  --status-success: #22c55e;
-  --status-error: #ef4444;
-  --status-warning: #f97316;
-  
-  /* Status Backgrounds */
-  --status-success-bg: #1a3a1a;
-  --status-error-bg: #4a1a1a;
-  --status-warning-bg: #3a2f1a;
-  
-  /* Dark Theme Gradients */
-  --admin-header-gradient: linear-gradient(135deg, #e11d48 0%, #be185d 100%);
-  --system-header-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  --audit-header-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  --login-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-}
-
-/* Light Theme Variables */
 [data-theme="light"] {
   /* Background Colors - Off-white theme */
   --background-color: #f9fafb;
@@ -137,21 +76,103 @@
   --login-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
 }
 
+/* Dark Theme Variables */
+[data-theme="dark"] {
+  /* Background Colors */
+  --background-color: #1e1e1e;
+  --card-background: #2a2a2a;
+  --sidebar-background: #2a2a2a;
+  --header-background: #2a2a2a;
+  --table-header-bg: #2a2a2a;
+  --row-hover-bg: rgba(59, 130, 246, 0.05);
+  --modal-background: #2a2a2a;
+  --dropdown-background: #2a2a2a;
+  
+  /* Text Colors */
+  --text-color: #e5e5e5;
+  --text-secondary: #a1a1a1;
+  --text-muted: #6b7280;
+  --text-inverse: #1f2937;
+  --text-light: #e0e0e0;
+  --text-lighter: #d0d0d0;
+  --text-on-button: #ffffff;
+  
+  /* Border Colors */
+  --border-color: #333333;
+  --border-light: #444444;
+  --divider-color: #333333;
+  --table-border: #444444;
+  
+  /* Form Elements */
+  --input-background: #2a2a2a;
+  --input-border: #444444;
+  --input-focus-border: #3b82f6;
+  
+  /* Additional Backgrounds */
+  --subtle-background: #333333;
+  --accent-background: #3a3a3a;
+  --table-header-background: #2a2a2a;
+  --table-hover-background: #2a2a2a;
+  --login-container-background: #2a2a2a;
+  
+  /* Role Colors */
+  --role-admin-bg: #1e3a8a;
+  --role-admin-text: #93c5fd;
+  
+  /* Status Colors */
+  --status-pending: #f59e0b;
+  --status-success: #22c55e;
+  --status-error: #ef4444;
+  --status-warning: #f97316;
+  
+  /* Status Backgrounds */
+  --status-success-bg: #1a3a1a;
+  --status-error-bg: #4a1a1a;
+  --status-warning-bg: #3a2f1a;
+  
+  /* Dark Theme Gradients */
+  --admin-header-gradient: linear-gradient(135deg, #e11d48 0%, #be185d 100%);
+  --system-header-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --audit-header-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --login-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Login page always uses dark mode */
+/* Login page - respects theme */
 body.login-page {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #e5e5e5;
+  background-image: url('../assets/heropagebackground.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* Login page overlay for better contrast */
+body.login-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 0;
+}
+
+/* Dark mode overlay for login */
+body.login-page.dark-theme::before {
+  background: rgba(17, 24, 39, 0.7);
 }
 
 body.dashboard-page {
@@ -163,14 +184,19 @@ body.dashboard-page {
   color: var(--text-color);
 }
 
-/* Default body styles for login */
+/* Landing page body styles */
+body.landing-page-body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Default body styles */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .app {
@@ -183,9 +209,22 @@ body {
   padding: 20px;
 }
 
+/* Light mode login */
+.app.light-mode {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+  color: #1f2937;
+}
+
+/* Dark mode login */
+.app.dark-mode {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  color: #e5e5e5;
+}
+
 .login-wrapper {
   position: relative;
   display: inline-block;
+  z-index: 1;
 }
 
 .login-container {
@@ -199,6 +238,8 @@ body {
   max-width: 800px;
   min-height: 600px;
   border: 1px solid var(--border-color);
+  position: relative;
+  z-index: 1;
 }
 
 .login-form {
@@ -212,6 +253,16 @@ body {
 .logo {
   text-align: center;
   margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.login-logo-img {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
 }
 
 .logo h1 {
@@ -222,7 +273,7 @@ body {
 }
 
 .logo p {
-  color: #a1a1a1;
+  color: var(--text-secondary);
   font-size: 1rem;
 }
 
@@ -241,18 +292,18 @@ body {
 .form-group input {
   width: 100%;
   padding: 12px 30px;
-  border: 2px solid #444;
+  border: 2px solid var(--input-border);
   border-radius: 8px;
   font-size: 16px;
-  transition: border-color 0.3s ease;
-  background: var(--card-background);
-  color: var(--text-light);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  background: var(--input-background);
+  color: var(--text-color);
 }
 
 .form-group input:focus {
   outline: none;
   border-color: #667eea;
-  background: #333;
+  background: var(--input-background);
 }
 
 .form-group input:disabled {
@@ -290,33 +341,50 @@ body {
   justify-content: center;
   width: 30px;
   height: 30px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .password-toggle-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--text-light);
+  background-color: var(--subtle-background);
+  color: var(--text-color);
 }
 
 
 
 .login-btn {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: var(--text-on-button);
   border: none;
   padding: 15px 30px;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s ease;
   margin-bottom: 20px;
 }
 
-.login-btn:hover {
+/* Light mode login button - Black */
+.app.light-mode .login-btn {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+.app.light-mode .login-btn:hover {
+  background: #111827;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 15px rgba(31, 41, 55, 0.4);
+}
+
+/* Dark mode login button - White */
+.app.dark-mode .login-btn {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.app.dark-mode .login-btn:hover {
+  background: #f3f4f6;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
 }
 
 .login-btn:active {
@@ -327,7 +395,6 @@ body {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
-  background: #555;
 }
 
 .login-btn:disabled:hover {
@@ -338,8 +405,8 @@ body {
 .register-btn {
   width: 100%;
   background: transparent;
-  color: var(--text-light);
-  border: 2px solid #444;
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
   padding: 15px 30px;
   border-radius: 8px;
   font-size: 16px;
@@ -350,10 +417,10 @@ body {
 }
 
 .register-btn:hover {
-  background: #444;
-  color: var(--text-on-button);
+  background: var(--subtle-background);
+  color: var(--text-color);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(68, 68, 68, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .register-btn:active {
@@ -400,16 +467,16 @@ body {
 }
 
 .login-message.success {
-  background-color: #1e3e2e;
-  color: #4caf50;
-  border: 1px solid #388e3c;
+  background-color: var(--status-success-bg);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
   box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 .login-message.error {
-  background-color: #2d1b1b;
-  color: #ff6b6b;
-  border: 1px solid #d32f2f;
+  background-color: var(--status-error-bg);
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
   box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
 }
 
@@ -430,6 +497,7 @@ body {
   transform: translateX(-50%);
   transition: opacity 0.3s ease-out;
   overflow: hidden;
+  z-index: 2;
 }
 
 /* Progress bar for message timeout */
@@ -460,7 +528,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(18, 18, 18, 0.95);
+  background: var(--background-color);
+  opacity: 0.98;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -470,7 +539,7 @@ body {
 
 .loading-content {
   text-align: center;
-  color: var(--text-light);
+  color: var(--text-color);
 }
 
 .loading-content h3 {
@@ -481,14 +550,14 @@ body {
 
 .loading-content p {
   margin: 0;
-  color: #a1a1a1;
+  color: var(--text-secondary);
   font-size: 1rem;
 }
 
 .loading-spinner-large {
   width: 50px;
   height: 50px;
-  border: 4px solid #333;
+  border: 4px solid var(--border-color);
   border-top: 4px solid #e74c3c;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -498,7 +567,7 @@ body {
 .loading-progress-bar {
   width: 200px;
   height: 4px;
-  background: #333;
+  background: var(--border-color);
   border-radius: 2px;
   margin: 1.5rem auto 0;
   overflow: hidden;
@@ -536,16 +605,16 @@ body {
 }
 
 .login-message-external.success {
-  background-color: #1e3e2e;
-  color: #4caf50;
-  border: 1px solid #388e3c;
+  background-color: var(--status-success-bg);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
   box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 .login-message-external.error {
-  background-color: #2d1b1b;
-  color: #ff6b6b;
-  border: 1px solid #d32f2f;
+  background-color: var(--status-error-bg);
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
   box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
 }
 
@@ -563,7 +632,7 @@ body {
 
 .demo-credentials {
   background: var(--card-background);
-  border: 1px solid var(--table-border);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -579,13 +648,13 @@ body {
 }
 
 .demo-credentials p {
-  color: #a1a1a1;
+  color: var(--text-secondary);
   font-size: 0.8rem;
   margin: 0.25rem 0;
 }
 
 .demo-credentials strong {
-  color: var(--text-light);
+  color: var(--text-color);
 }
 
 /* Responsive Design */
