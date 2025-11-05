@@ -307,18 +307,18 @@ npm install firebase
 
 ## Environment Variables (Optional)
 
-For added security, you can move Firebase config to environment variables:
+For added security, Firebase config uses environment variables:
 
-Create `.env` file:
+Create `.env` file (already done - see `.env.example` for template):
 
 ```
-VITE_FIREBASE_API_KEY=AIzaSyAy6eCKGOc5v8xutP6hZugZYsJIleNdOOY
-VITE_FIREBASE_AUTH_DOMAIN=animal911-29427.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=animal911-29427
-VITE_FIREBASE_STORAGE_BUCKET=animal911-29427.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID=941199997725
-VITE_FIREBASE_APP_ID=1:941199997725:web:352cc94eb1b3f8a8317ff4
-VITE_FIREBASE_MEASUREMENT_ID=G-ZBR87VS88V
+VITE_FIREBASE_API_KEY=your_api_key_here
+VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
 ```
 
 Then update `firebase.js`:
