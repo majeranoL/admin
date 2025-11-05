@@ -192,23 +192,64 @@
   overflow-y: auto;
 }
 
-.table-row {
-  padding: 15px 20px;
-  border-bottom: 1px solid var(--table-border);
-  display: grid;
-  grid-template-columns: 40px 1fr 120px 120px 100px 60px;
-  gap: 15px;
-  align-items: center;
-  transition: background-color 0.2s;
-  color: var(--text-secondary);
+/* Enhanced Table Row Styles */
+.enhanced-table .table-row {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
 }
 
-.table-row:hover {
+.enhanced-table .table-row:hover {
   background: var(--table-hover-background);
 }
 
-.table-row:last-child {
+.enhanced-table .table-row:last-child {
   border-bottom: none;
+}
+
+/* Severity-based row highlighting */
+.enhanced-table .table-row.severity-info {
+  background: rgba(14, 165, 233, 0.03);
+  border-left: 3px solid #0ea5e9;
+}
+
+.enhanced-table .table-row.severity-info:hover {
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.enhanced-table .table-row.severity-warning {
+  background: rgba(251, 191, 36, 0.03);
+  border-left: 3px solid #fbbf24;
+}
+
+.enhanced-table .table-row.severity-warning:hover {
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.enhanced-table .table-row.severity-critical {
+  background: rgba(239, 68, 68, 0.03);
+  border-left: 3px solid #ef4444;
+}
+
+.enhanced-table .table-row.severity-critical:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.enhanced-table .table-row.severity-low {
+  background: rgba(34, 197, 94, 0.03);
+  border-left: 3px solid #22c55e;
+}
+
+.enhanced-table .table-row.severity-low:hover {
+  background: rgba(34, 197, 94, 0.08);
+}
+
+/* Ensure all cells in severity rows maintain alignment */
+.enhanced-table .table-row.severity-info td,
+.enhanced-table .table-row.severity-warning td,
+.enhanced-table .table-row.severity-critical td,
+.enhanced-table .table-row.severity-low td {
+  padding: 14px 16px;
+  vertical-align: middle;
 }
 
 /* Checkbox Styles */
@@ -2175,5 +2216,427 @@ h2 .bi, h3 .bi, h4 .bi {
   
   .notification-preview {
     font-size: 12px;
+  }
+}
+
+/* Enhanced Table Styles */
+.table-container {
+  background: var(--card-background);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.enhanced-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--card-background);
+  table-layout: fixed;
+  min-width: 100%;
+}
+
+.enhanced-table thead {
+  background: var(--table-header-background);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.enhanced-table thead th {
+  padding: 15px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--border-color);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.enhanced-table thead th:first-child {
+  padding-left: 20px;
+  width: 3%;
+  min-width: 50px;
+}
+
+.enhanced-table thead th:last-child {
+  padding-right: 20px;
+  width: 8%;
+  min-width: 100px;
+  text-align: center;
+}
+
+.enhanced-table thead th:nth-child(2) {
+  width: 12%;
+  min-width: 180px;
+}
+
+.enhanced-table thead th:nth-child(3) {
+  width: 10%;
+  min-width: 140px;
+}
+
+.enhanced-table thead th:nth-child(4) {
+  width: 8%;
+  min-width: 120px;
+}
+
+.enhanced-table thead th:nth-child(5) {
+  width: 18%;
+  min-width: 220px;
+}
+
+.enhanced-table thead th:nth-child(6) {
+  width: 12%;
+  min-width: 160px;
+}
+
+.enhanced-table thead th:nth-child(7) {
+  width: 20%;
+  min-width: 280px;
+}
+
+.enhanced-table thead th:nth-child(8) {
+  width: 9%;
+  min-width: 140px;
+}
+
+.enhanced-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.enhanced-table tbody tr:hover {
+  background: var(--table-hover-background);
+}
+
+.enhanced-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.enhanced-table tbody td {
+  padding: 14px 16px;
+  color: var(--text-color);
+  vertical-align: middle;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 0;
+}
+
+.enhanced-table tbody td:first-child {
+  padding-left: 20px;
+  width: 3%;
+  min-width: 50px;
+  overflow: visible;
+  white-space: normal;
+}
+
+.enhanced-table tbody td:last-child {
+  padding-right: 20px;
+  width: 8%;
+  min-width: 100px;
+  text-align: center;
+  overflow: visible;
+  white-space: normal;
+}
+
+.enhanced-table tbody td:nth-child(2) {
+  width: 12%;
+  min-width: 180px;
+}
+
+.enhanced-table tbody td:nth-child(3) {
+  width: 10%;
+  min-width: 140px;
+}
+
+.enhanced-table tbody td:nth-child(4) {
+  width: 8%;
+  min-width: 120px;
+}
+
+.enhanced-table tbody td:nth-child(5) {
+  width: 18%;
+  min-width: 220px;
+  overflow: visible;
+  white-space: normal;
+}
+
+.enhanced-table tbody td:nth-child(6) {
+  width: 12%;
+  min-width: 160px;
+}
+
+.enhanced-table tbody td:nth-child(7) {
+  width: 20%;
+  min-width: 280px;
+}
+
+.enhanced-table tbody td:nth-child(8) {
+  width: 9%;
+  min-width: 140px;
+}
+
+/* Table Cell Specific Styles */
+.enhanced-table .timestamp-cell {
+  color: var(--text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+  position: relative;
+}
+
+.enhanced-table .timestamp-cell:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-top: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.enhanced-table .type-cell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.enhanced-table .type-cell .type-icon {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.enhanced-table .type-cell .type-text {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: calc(100% - 28px);
+}
+
+.enhanced-table .user-cell {
+  overflow: visible;
+  white-space: normal;
+  padding: 14px 16px !important;
+}
+
+.enhanced-table .user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 42px;
+  justify-content: center;
+}
+
+.enhanced-table .user-email {
+  font-weight: 500;
+  color: var(--text-color);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  position: relative;
+  line-height: 1.4;
+}
+
+.enhanced-table .user-email:hover {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.enhanced-table .user-id {
+  font-size: 11px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.enhanced-table .action-cell {
+  font-weight: 500;
+  overflow: hidden;
+  position: relative;
+}
+
+.enhanced-table .action-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.enhanced-table .action-text:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: normal;
+  z-index: 1000;
+  margin-top: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+.enhanced-table .details-cell {
+  overflow: hidden;
+  position: relative;
+}
+
+.enhanced-table .details-preview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  font-size: 13px;
+  display: block;
+  cursor: default;
+}
+
+.enhanced-table .details-preview:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: normal;
+  z-index: 1000;
+  margin-top: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  max-width: 400px;
+  word-wrap: break-word;
+}
+
+.enhanced-table .ip-cell {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.enhanced-table .actions-cell {
+  text-align: center;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+/* Table Action Buttons */
+.enhanced-table .btn-view,
+.enhanced-table .btn-download {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enhanced-table .btn-view:hover {
+  background: rgba(59, 130, 246, 0.25);
+  transform: translateY(-1px);
+}
+
+.enhanced-table .btn-download {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.enhanced-table .btn-download:hover {
+  background: rgba(34, 197, 94, 0.25);
+  transform: translateY(-1px);
+}
+
+.enhanced-table .btn-view:disabled,
+.enhanced-table .btn-download:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Checkbox in table */
+.enhanced-table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+/* Type Icon and Text */
+.enhanced-table .type-icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.enhanced-table .type-text {
+  font-weight: 500;
+}
+
+/* Responsive Table */
+@media (max-width: 1200px) {
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .enhanced-table {
+    min-width: 1000px;
+  }
+}
+
+@media (max-width: 768px) {
+  .enhanced-table {
+    min-width: 800px;
+  }
+  
+  .enhanced-table thead th,
+  .enhanced-table tbody td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  .enhanced-table thead th:first-child,
+  .enhanced-table tbody td:first-child {
+    padding-left: 15px;
+  }
+  
+  .enhanced-table thead th:last-child,
+  .enhanced-table tbody td:last-child {
+    padding-right: 15px;
   }
 }

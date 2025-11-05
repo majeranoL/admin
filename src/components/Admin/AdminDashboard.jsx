@@ -2,16 +2,30 @@ import React from 'react'
 import { useData } from '../../contexts/DataContext'
 
 function AdminDashboard({ userRole }) {
-  const { showNotification } = useData()
+  const { 
+    showNotification,
+    rescueReports,
+    volunteers,
+    adoptionRequests
+  } = useData()
 
-  const testPopupNotification = (type) => {
-    const messages = {
-      success: 'Success! This notification slides out to the right individually.',
-      error: 'Error! Each notification has its own 5-second timer.',
-      info: 'Info! Click multiple buttons to see individual slide-out timing.'
-    }
-    showNotification(messages[type], type)
-  }
+  // Calculate real statistics
+  const pendingReports = rescueReports.filter(report => 
+    report.status === 'Pending' || report.status === 'pending'
+  ).length
+
+  const ongoingRescues = rescueReports.filter(report => 
+    report.status === 'In Progress' || report.status === 'in-progress'
+  ).length
+
+  const availableVolunteers = volunteers.filter(volunteer => 
+    volunteer.status === 'Active' || volunteer.status === 'active'
+  ).length
+
+  const pendingAdoptions = adoptionRequests.filter(request => 
+    request.status === 'pending' || request.status === 'Pending'
+  ).length
+  
   return (
     <div className="content-section">
       <h2>Admin Dashboard</h2>
@@ -28,7 +42,7 @@ function AdminDashboard({ userRole }) {
             <i className="card-icon bi bi-clipboard-check"></i>
           </div>
           <div className="card-content">
-            <p className="card-number">12</p>
+            <p className="card-number">{pendingReports}</p>
             <p className="card-description">Reports awaiting review</p>
           </div>
         </div>
@@ -39,7 +53,7 @@ function AdminDashboard({ userRole }) {
             <i className="card-icon bi bi-truck"></i>
           </div>
           <div className="card-content">
-            <p className="card-number">5</p>
+            <p className="card-number">{ongoingRescues}</p>
             <p className="card-description">Active rescue operations</p>
           </div>
         </div>
@@ -50,7 +64,7 @@ function AdminDashboard({ userRole }) {
             <i className="card-icon bi bi-people-fill"></i>
           </div>
           <div className="card-content">
-            <p className="card-number">18</p>
+            <p className="card-number">{availableVolunteers}</p>
             <p className="card-description">Ready for assignments</p>
           </div>
         </div>
@@ -61,39 +75,8 @@ function AdminDashboard({ userRole }) {
             <i className="card-icon bi bi-heart-fill"></i>
           </div>
           <div className="card-content">
-            <p className="card-number">7</p>
+            <p className="card-number">{pendingAdoptions}</p>
             <p className="card-description">Applications to review</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Test Notification System */}
-      <div className="dashboard-card test-notifications" style={{marginTop: '20px', gridColumn: '1 / -1'}}>
-        <div className="card-header">
-          <h3>Test Popup Notifications</h3>
-          <i className="card-icon bi bi-flask"></i>
-        </div>
-        <div className="card-content">
-          <p className="card-description">Test the popup notification system (separate from the Notifications table)</p>
-          <div style={{display: 'flex', gap: '10px', marginTop: '10px'}}>
-            <button 
-              onClick={() => testPopupNotification('success')} 
-              style={{padding: '8px 16px', background: '#22c55e', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
-            >
-              <i className="bi bi-check-circle-fill"></i> Success
-            </button>
-            <button 
-              onClick={() => testPopupNotification('error')} 
-              style={{padding: '8px 16px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
-            >
-              <i className="bi bi-x-circle-fill"></i> Error
-            </button>
-            <button 
-              onClick={() => testPopupNotification('info')} 
-              style={{padding: '8px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
-            >
-              <i className="bi bi-info-circle-fill"></i> Info
-            </button>
           </div>
         </div>
       </div>

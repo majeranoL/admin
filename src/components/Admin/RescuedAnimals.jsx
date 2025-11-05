@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
+import { useRole } from '../../hooks/useRole'
+import AuditLogService from '../../services/auditLogService'
 import '../../css/Admin/RescuedAnimals.css'
 
 function RescuedAnimals() {
   const { rescuedAnimals, loading, updateAnimalStatus, showNotification } = useData()
+  const { userId, username } = useRole()
   
   const [selectedAnimals, setSelectedAnimals] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
@@ -55,13 +58,35 @@ function RescuedAnimals() {
     setShowConfirm(true)
   }
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     const { id, action } = actionAnimal
     try {
+      // Get animal details before update for logging
+      const animal = rescuedAnimals.find(a => a.id === id)
+      
       updateAnimalStatus(id, action)
       const actionText = action === 'adopted' ? 'marked as adopted' : 
                         action === 'available' ? 'marked as available' :
                         action === 'medical_care' ? 'moved to medical care' : 'updated'
+      
+      // Log the animal status change as data access
+      await AuditLogService.logDataAccess(
+        `Animal ${actionText}`,
+        userId,
+        username || 'admin@animal911.com',
+        'admin',
+        `Animal: ${animal?.name || 'Unknown'}`,
+        {
+          animalId: id,
+          animalName: animal?.name,
+          species: animal?.species,
+          breed: animal?.breed,
+          oldStatus: animal?.status,
+          newStatus: action,
+          rescueDate: animal?.rescueDate
+        }
+      )
+      
       showNotification(`Animal ${actionText} successfully!`, 'success')
     } catch (error) {
       console.error('Error updating animal status:', error)

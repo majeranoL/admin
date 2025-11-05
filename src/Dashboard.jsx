@@ -8,7 +8,7 @@ import AdoptionRequests from "./components/Admin/AdoptionRequests"
 import Notifications from "./components/Admin/Notifications"
 import Settings from "./components/Admin/Settings"
 import SuperAdminDashboard from "./components/SuperAdmin/SuperAdminDashboard"
-import AdminManagement from "./components/SuperAdmin/AdminManagement"
+import AccountManagement from "./components/SuperAdmin/AccountManagement"
 import ShelterManagement from "./components/SuperAdmin/ShelterManagement"
 import SystemReports from "./components/SuperAdmin/SystemReports"
 import AuditLogs from "./components/SuperAdmin/AuditLogs"
@@ -30,7 +30,7 @@ function Dashboard() {
       // Super admin menu items
       return [
         { id: "dashboard", label: "Dashboard", icon: "bi bi-speedometer2" },
-        { id: "admin-management", label: "Admin Management", icon: "bi bi-people" },
+        { id: "account-management", label: "Account Management", icon: "bi bi-person-gear" },
         { id: "shelter-management", label: "Shelter/Partner Management", icon: "bi bi-buildings" },
         { id: "system-reports", label: "System Reports", icon: "bi bi-bar-chart" },
         { id: "audit-logs", label: "Audit Logs", icon: "bi bi-journal-text" },
@@ -59,8 +59,8 @@ function Dashboard() {
       switch(activeSection) {
         case "dashboard":
           return <SuperAdminDashboard />
-        case "admin-management":
-          return <AdminManagement />
+        case "account-management":
+          return <AccountManagement />
         case "shelter-management":
           return <ShelterManagement />
         case "system-reports":

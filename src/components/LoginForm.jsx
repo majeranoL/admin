@@ -2,7 +2,10 @@ import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useRole } from "../hooks/useRole"
 import { useTheme } from "../contexts/ThemeContext"
+import { collection, query, where, getDocs } from "firebase/firestore"
+import { db } from "../config/firebase"
 import logger from "../utils/logger"
+import AuditLogService from "../services/auditLogService"
 import logo from "../assets/animal911logo.png"
 
 function LoginForm() {
@@ -59,59 +62,98 @@ function LoginForm() {
     }
   }, [])
 
-  // Dummy login credentials
-  const dummyCredentials = {
-    admin: {
-      username: "admin",
-      password: "admin123",
-      role: "admin"
-    },
-    superadmin: {
-      username: "superadmin", 
-      password: "super123",
-      role: "superadmin"
-    }
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    // Check against dummy credentials
-    if (username.trim() && password.trim()) {
-      let isLoginSuccessful = false
-      let userRole = "admin"
-      
-      // Check if credentials match any dummy account
-      Object.values(dummyCredentials).forEach(account => {
-        if (username.toLowerCase() === account.username && password === account.password) {
-          isLoginSuccessful = true
-          userRole = account.role
-        }
-      })
-      
-      if (isLoginSuccessful) {
-        try {
-          // Start loading immediately
-          setIsLoading(true)
-          setMessageWithTimeout("Login successful! Welcome to Animal911 Admin.", true)
-          
-          // Add a delay to allow dashboard components to prepare
-          await new Promise(resolve => setTimeout(resolve, 1500))
-          
-          // Use the context login function
-          await login(userRole, username)
-          
-          logger.info("Login successful:", { username, userRole })
-        } catch (error) {
-          logger.error("Login error:", error)
-          setIsLoading(false)
-          setMessageWithTimeout("Login failed. Please try again.", false)
-        }
-      } else {
-        setMessageWithTimeout("Invalid username or password.", false)
-      }
-    } else {
+    if (!username.trim() || !password.trim()) {
       setMessageWithTimeout("Please enter both username and password.", false)
+      return
+    }
+
+    try {
+      setIsLoading(true)
+
+      // Check if user is a verified shelter (admin role)
+      const sheltersQuery = query(
+        collection(db, 'shelters'),
+        where('email', '==', username.toLowerCase()),
+        where('verified', '==', true)
+      )
+      const sheltersSnapshot = await getDocs(sheltersQuery)
+
+      if (!sheltersSnapshot.empty) {
+        const shelterDoc = sheltersSnapshot.docs[0]
+        const shelterData = shelterDoc.data()
+
+        // Check password field (stored during registration)
+        // In production, use proper password hashing (bcrypt, argon2)
+        if (shelterData.password && password === shelterData.password) {
+          // Log successful login
+          await AuditLogService.logAuthentication(
+            'Login',
+            shelterDoc.id,
+            shelterData.email,
+            true
+          )
+          
+          setMessageWithTimeout("Login successful! Welcome to Animal911 Admin.", true)
+          await new Promise(resolve => setTimeout(resolve, 1500))
+          await login('admin', shelterData.shelterName, shelterDoc.id)
+          logger.info("Shelter login successful:", { 
+            shelterName: shelterData.shelterName,
+            shelterId: shelterDoc.id 
+          })
+          return
+        }
+      }
+
+      // Check if user is a super admin
+      const adminsQuery = query(
+        collection(db, 'admins'),
+        where('email', '==', username.toLowerCase())
+      )
+      const adminsSnapshot = await getDocs(adminsQuery)
+
+      if (!adminsSnapshot.empty) {
+        const adminDoc = adminsSnapshot.docs[0]
+        const adminData = adminDoc.data()
+
+        // Check password field
+        if (adminData.password && password === adminData.password) {
+          // Log successful super admin login
+          await AuditLogService.logAuthentication(
+            'Super Admin Login',
+            adminDoc.id,
+            adminData.email,
+            true
+          )
+          
+          setMessageWithTimeout("Login successful! Welcome Super Admin.", true)
+          await new Promise(resolve => setTimeout(resolve, 1500))
+          await login('superadmin', adminData.name || 'Super Admin', adminDoc.id)
+          logger.info("Super admin login successful:", { 
+            adminName: adminData.name,
+            adminId: adminDoc.id 
+          })
+          return
+        }
+      }
+
+      // If no match found - Log failed login attempt
+      await AuditLogService.logAuthentication(
+        'Failed Login Attempt',
+        'Unknown',
+        username,
+        false
+      )
+      
+      setIsLoading(false)
+      setMessageWithTimeout("Invalid credentials or account not verified.", false)
+
+    } catch (error) {
+      logger.error("Login error:", error)
+      setIsLoading(false)
+      setMessageWithTimeout("Login failed. Please try again.", false)
     }
   }
 

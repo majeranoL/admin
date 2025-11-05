@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { collection, query, getDocs, where, orderBy, limit } from 'firebase/firestore'
+import { db } from '../../config/firebase'
 import { useData } from '../../contexts/DataContext'
 import '../../css/SuperAdmin/AuditLogs.css'
 import '../../css/EnhancedComponents.css'
 
 function AuditLogs() {
-  const { auditLogs, loading, exportAuditLogs, showNotification } = useData()
+  const { exportAuditLogs, showNotification } = useData()
   
+  const [auditLogs, setAuditLogs] = useState([])
+  const [activeUsersCount, setActiveUsersCount] = useState(0)
+  const [loading, setLoading] = useState({ export: false })
+  const [isLoadingData, setIsLoadingData] = useState(true)
   const [selectedLogs, setSelectedLogs] = useState([])
   const [filterType, setFilterType] = useState('all')
   const [filterSeverity, setFilterSeverity] = useState('all')
@@ -16,6 +22,71 @@ function AuditLogs() {
   const [showModal, setShowModal] = useState(false)
   const [customDateStart, setCustomDateStart] = useState('')
   const [customDateEnd, setCustomDateEnd] = useState('')
+
+  // Fetch audit logs and active users count
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const fetchData = async () => {
+    setIsLoadingData(true)
+    try {
+      // Fetch audit logs from Firestore (if collection exists)
+      const logsQuery = query(
+        collection(db, 'auditLogs'),
+        orderBy('timestamp', 'desc'),
+        limit(500) // Limit to last 500 logs for performance
+      )
+      const logsSnapshot = await getDocs(logsQuery)
+      const logsData = logsSnapshot.docs.map(doc => {
+        const data = doc.data()
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamp to JavaScript Date
+          timestamp: data.timestamp?.toDate ? data.timestamp.toDate().toISOString() : data.timestamp,
+          // Ensure all required fields have defaults
+          type: data.type || 'System',
+          severity: data.severity || 'Info',
+          user: data.user || 'Unknown',
+          userEmail: data.userEmail || 'N/A',
+          action: data.action || 'Unknown Action',
+          details: data.details || 'No details available',
+          ipAddress: data.ipAddress || 'N/A',
+          userAgent: data.userAgent || 'N/A'
+        }
+      })
+      setAuditLogs(logsData)
+
+      // Count active users from all account types
+      let activeCount = 0
+
+      // Count active users
+      const usersQuery = query(collection(db, 'users'), where('status', '==', 'Active'))
+      const usersSnapshot = await getDocs(usersQuery)
+      activeCount += usersSnapshot.size
+
+      // Count active/verified shelters
+      const sheltersQuery = query(collection(db, 'shelters'), where('verified', '==', true))
+      const sheltersSnapshot = await getDocs(sheltersQuery)
+      activeCount += sheltersSnapshot.size
+
+      // Count active rescuers
+      const rescuersQuery = query(collection(db, 'rescuers'), where('status', '==', 'Active'))
+      const rescuersSnapshot = await getDocs(rescuersQuery)
+      activeCount += rescuersSnapshot.size
+
+      setActiveUsersCount(activeCount)
+    } catch (error) {
+      console.error('Error fetching audit logs:', error)
+      // If auditLogs collection doesn't exist yet, that's okay
+      if (error.code !== 'permission-denied') {
+        showNotification('Failed to load some data', 'warning')
+      }
+    } finally {
+      setIsLoadingData(false)
+    }
+  }
 
   // Filter logs based on selected criteria
   const getFilteredLogs = () => {
@@ -66,11 +137,15 @@ function AuditLogs() {
     
     // Search filter
     if (searchTerm) {
-      filtered = filtered.filter(log => 
-        log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.user.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      filtered = filtered.filter(log => {
+        const detailsString = typeof log.details === 'object' 
+          ? JSON.stringify(log.details) 
+          : String(log.details || '')
+        
+        return log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          detailsString.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          log.user.toLowerCase().includes(searchTerm.toLowerCase())
+      })
     }
     
     return filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
@@ -167,7 +242,7 @@ function AuditLogs() {
     warning: filteredLogs.filter(log => log.severity === 'Warning').length,
     error: filteredLogs.filter(log => log.severity === 'Error').length,
     critical: filteredLogs.filter(log => log.severity === 'Critical').length,
-    uniqueUsers: [...new Set(filteredLogs.map(log => log.user))].length
+    activeUsers: activeUsersCount // Use real active users count
   }
 
   // Unique users and types for filtering
@@ -233,7 +308,7 @@ function AuditLogs() {
         <div className="stat-card info">
           <div className="stat-icon"><i className="bi bi-people"></i></div>
           <div className="stat-content">
-            <h3>{stats.uniqueUsers}</h3>
+            <h3>{isLoadingData ? '...' : stats.activeUsers}</h3>
             <p>Active Users</p>
           </div>
         </div>
@@ -342,27 +417,34 @@ function AuditLogs() {
 
       {/* Audit Logs Table */}
       <div className="table-container">
-        <table className="enhanced-table">
-          <thead>
-            <tr>
-              <th>
-                <input
-                  type="checkbox"
-                  checked={selectedLogs.length === filteredLogs.length && filteredLogs.length > 0}
-                  onChange={handleSelectAll}
-                />
-              </th>
-              <th>Timestamp</th>
-              <th>Type</th>
-              <th>Severity</th>
-              <th>User</th>
-              <th>Action</th>
-              <th>Details</th>
-              <th>IP Address</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+        {isLoadingData ? (
+          <div className="no-data">
+            <div className="no-data-icon"><i className="bi bi-hourglass"></i></div>
+            <h3>Loading audit logs...</h3>
+            <p>Please wait while we fetch the data from the database.</p>
+          </div>
+        ) : (
+          <table className="enhanced-table">
+            <thead>
+              <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    checked={selectedLogs.length === filteredLogs.length && filteredLogs.length > 0}
+                    onChange={handleSelectAll}
+                  />
+                </th>
+                <th>Timestamp</th>
+                <th>Type</th>
+                <th>Severity</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Details</th>
+                <th>IP Address</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
             {filteredLogs.map(log => (
               <tr key={log.id} className={`table-row severity-${log.severity.toLowerCase()}`}>
                 <td>
@@ -391,7 +473,12 @@ function AuditLogs() {
                 </td>
                 <td className="details-cell">
                   <div className="details-preview">
-                    {log.details.length > 50 ? `${log.details.substring(0, 50)}...` : log.details}
+                    {(() => {
+                      const detailsText = typeof log.details === 'object' 
+                        ? JSON.stringify(log.details) 
+                        : String(log.details || '')
+                      return detailsText.length > 50 ? `${detailsText.substring(0, 50)}...` : detailsText
+                    })()}
                   </div>
                 </td>
                 <td className="ip-cell">{log.ipAddress}</td>
@@ -408,12 +495,13 @@ function AuditLogs() {
             ))}
           </tbody>
         </table>
+        )}
 
-        {filteredLogs.length === 0 && (
+        {!isLoadingData && filteredLogs.length === 0 && (
           <div className="no-data">
             <div className="no-data-icon"><i className="bi bi-journal-text"></i></div>
             <h3>No audit logs found</h3>
-            <p>No logs match your current filter criteria.</p>
+            <p>{auditLogs.length === 0 ? 'No audit logs have been recorded yet. System activities will be logged here.' : 'No logs match your current filter criteria.'}</p>
           </div>
         )}
       </div>
@@ -495,7 +583,11 @@ function AuditLogs() {
               <div className="detail-section">
                 <h4>Event Details</h4>
                 <div className="detail-full">
-                  <pre className="log-details">{selectedLog.details}</pre>
+                  <pre className="log-details">
+                    {typeof selectedLog.details === 'object' 
+                      ? JSON.stringify(selectedLog.details, null, 2) 
+                      : selectedLog.details}
+                  </pre>
                 </div>
                 
                 {selectedLog.metadata && (

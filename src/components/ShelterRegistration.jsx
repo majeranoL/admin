@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../contexts/ThemeContext'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { auth, db, storage } from '../config/firebase'
+import { db, storage } from '../config/firebase'
+import AuditLogService from '../services/auditLogService'
 import logo from '../assets/animal911logo.png'
 import '../css/ShelterRegistration.css'
 
@@ -156,16 +156,26 @@ function ShelterRegistration() {
     setUploadProgress(0)
 
     try {
-      // Step 1: Create Firebase Auth user
-      setUploadProgress(20)
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
+      // Step 1: Check if email already exists
+      setUploadProgress(10)
+      const emailQuery = query(
+        collection(db, 'shelters'),
+        where('email', '==', formData.email)
       )
-      const userId = userCredential.user.uid
+      const existingUsers = await getDocs(emailQuery)
+      
+      if (!existingUsers.empty) {
+        setSubmitMessage('This email is already registered. Please use a different email.')
+        setSubmitSuccess(false)
+        setIsSubmitting(false)
+        return
+      }
 
-      // Step 2: Upload documents
+      // Step 2: Generate unique ID (timestamp-based)
+      setUploadProgress(20)
+      const userId = `shelter_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+      // Step 3: Upload documents
       setUploadProgress(40)
       const timestamp = Date.now()
       const permitURL = await uploadFile(
@@ -179,7 +189,7 @@ function ShelterRegistration() {
         `shelters/${userId}/id_${timestamp}.${idFile.name.split('.').pop()}`
       )
 
-      // Step 3: Save shelter data to Firestore
+      // Step 4: Save shelter data to Firestore
       setUploadProgress(80)
       const shelterData = {
         userId: userId,
@@ -188,6 +198,7 @@ function ShelterRegistration() {
         address: formData.address,
         contactNumber: formData.contactNumber,
         email: formData.email,
+        password: formData.password, // Store password (Note: In production, consider hashing)
         veterinarian: {
           name: formData.vetName || null,
           contact: formData.vetContact || null,
@@ -206,6 +217,22 @@ function ShelterRegistration() {
 
       await setDoc(doc(db, 'shelters', userId), shelterData)
 
+      // Log the shelter registration
+      await AuditLogService.logSystemEvent(
+        'Shelter Registration',
+        userId,
+        formData.email,
+        'shelter',
+        {
+          shelterName: formData.shelterName,
+          contactPerson: formData.contactPerson,
+          address: formData.address,
+          contactNumber: formData.contactNumber,
+          status: 'pending',
+          documentsUploaded: true
+        }
+      )
+
       setUploadProgress(100)
       setSubmitSuccess(true)
       setSubmitMessage('Registration successful! Your application is pending admin approval.')
@@ -218,14 +245,7 @@ function ShelterRegistration() {
     } catch (error) {
       console.error('Registration error:', error)
       setSubmitSuccess(false)
-      
-      if (error.code === 'auth/email-already-in-use') {
-        setSubmitMessage('This email is already registered. Please use a different email.')
-      } else if (error.code === 'auth/weak-password') {
-        setSubmitMessage('Password is too weak. Please use a stronger password.')
-      } else {
-        setSubmitMessage('Registration failed. Please try again.')
-      }
+      setSubmitMessage('Registration failed. Please try again.')
     } finally {
       setIsSubmitting(false)
     }

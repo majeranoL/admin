@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
+import { useRole } from '../../hooks/useRole'
+import AuditLogService from '../../services/auditLogService'
 import '../../css/Admin/RescueReports.css'
 
 function RescueReports() {
   const { rescueReports, loading, updateRescueReportStatus, showNotification } = useData()
+  const { userId, username } = useRole()
   
   const [selectedReports, setSelectedReports] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
@@ -69,14 +72,35 @@ function RescueReports() {
     setShowConfirm(true)
   }
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     const { id, action, rescueTeam } = actionReport
     try {
+      // Get report details before update for logging
+      const report = rescueReports.find(r => r.id === id)
+      
       updateRescueReportStatus(id, action, rescueTeam)
       const actionText = action === 'assigned' ? 'assigned to rescue team' : 
                         action === 'in_progress' ? 'marked as in progress' :
                         action === 'completed' ? 'marked as completed' : 
                         action === 'cancelled' ? 'cancelled' : 'updated'
+      
+      // Log the rescue operation action
+      await AuditLogService.logRescueOperation(
+        actionText,
+        userId,
+        username || 'admin@animal911.com',
+        report?.animalType || 'Unknown',
+        report?.location || 'Unknown',
+        {
+          reportId: id,
+          reporterName: report?.reporterName,
+          urgency: report?.urgency,
+          oldStatus: report?.status,
+          newStatus: action,
+          rescueTeam: rescueTeam || 'N/A'
+        }
+      )
+      
       showNotification(`Rescue report ${actionText} successfully!`, 'success')
     } catch (error) {
       console.error('Error updating rescue report status:', error)

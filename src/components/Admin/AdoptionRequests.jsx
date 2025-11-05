@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { useData } from '../../contexts/DataContext'
+import { useRole } from '../../hooks/useRole'
+import AuditLogService from '../../services/auditLogService'
 import '../../css/Admin/AdoptionRequests.css'
 
 function AdoptionRequests() {
@@ -10,7 +12,8 @@ function AdoptionRequests() {
     exportToCSV, 
     bulkUpdateStatus,
     showNotification
-  } = useData()  // Component state
+  } = useData()
+  const { userId, username } = useRole()  // Component state
   const [selectedRequests, setSelectedRequests] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
@@ -63,11 +66,31 @@ function AdoptionRequests() {
     setShowConfirm(true)
   }
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     const { id, action } = actionRequest
     try {
+      // Get request details before update for logging
+      const request = adoptionRequests.find(r => r.id === id)
+      
       updateAdoptionStatus(id, action)
       const actionText = action === 'approved' ? 'approved' : action === 'rejected' ? 'rejected' : 'updated'
+      
+      // Log the adoption action
+      await AuditLogService.logAdoptionAction(
+        actionText,
+        userId,
+        username || 'admin@animal911.com',
+        request?.applicantName || 'Unknown',
+        request?.animal || 'Unknown',
+        {
+          requestId: id,
+          applicantEmail: request?.applicantEmail,
+          oldStatus: request?.status,
+          newStatus: action,
+          applicationDate: request?.applicationDate
+        }
+      )
+      
       showNotification(`Adoption request ${actionText} successfully!`, 'success')
     } catch (error) {
       console.error('Error updating adoption status:', error)
@@ -77,11 +100,27 @@ function AdoptionRequests() {
     setActionRequest({ id: null, action: null })
   }
 
-  const handleBulkAction = (action) => {
+  const handleBulkAction = async (action) => {
     if (selectedRequests.length === 0) return
     try {
       bulkUpdateStatus(selectedRequests, action)
       const actionText = action === 'approved' ? 'approved' : action === 'rejected' ? 'rejected' : 'updated'
+      
+      // Log bulk adoption action
+      await AuditLogService.logAdoptionAction(
+        `Bulk ${actionText}`,
+        userId,
+        username || 'admin@animal911.com',
+        'Multiple applicants',
+        'Multiple animals',
+        {
+          requestCount: selectedRequests.length,
+          requestIds: selectedRequests,
+          newStatus: action,
+          bulkAction: true
+        }
+      )
+      
       showNotification(`${selectedRequests.length} adoption requests ${actionText} successfully!`, 'success')
     } catch (error) {
       console.error('Error updating adoption requests:', error)

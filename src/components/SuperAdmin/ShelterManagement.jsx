@@ -1,11 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useData } from '../../contexts/DataContext'
+import { useRole } from '../../hooks/useRole'
+import { collection, query, getDocs, doc, updateDoc } from 'firebase/firestore'
+import { db } from '../../config/firebase'
+import AuditLogService from '../../services/auditLogService'
 import '../../css/SuperAdmin/ShelterManagement.css'
 import '../../css/SuperAdmin/CleanTable.css'
 import '../../css/EnhancedComponents.css'
 
 function ShelterManagement() {
-  const { shelters, loading, updateShelterStatus, showNotification } = useData()
+  const { showNotification } = useData()
+  const { userId, username } = useRole() // Get current admin info
+  const [shelters, setShelters] = useState([])
+  const [loading, setLoading] = useState({})
+  const [isLoadingData, setIsLoadingData] = useState(true)
   
   const [selectedShelters, setSelectedShelters] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
@@ -26,6 +34,96 @@ function ShelterManagement() {
     licenseNumber: '',
     website: ''
   })
+
+  // Fetch shelters from Firestore
+  useEffect(() => {
+    fetchShelters()
+  }, [])
+
+  const fetchShelters = async () => {
+    setIsLoadingData(true)
+    try {
+      const sheltersQuery = query(collection(db, 'shelters'))
+      const snapshot = await getDocs(sheltersQuery)
+      const sheltersData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        // Map Firestore data to expected format
+        name: doc.data().shelterName || 'Unnamed Shelter',
+        manager: doc.data().contactPerson || 'N/A',
+        phone: doc.data().contactNumber || 'N/A',
+        type: 'Animal Shelter', // Default type
+        capacity: doc.data().capacity || 50,
+        currentOccupancy: doc.data().currentOccupancy || 0,
+        licenseNumber: doc.data().licenseNumber || 'N/A',
+        licenseExpiry: doc.data().licenseExpiry || 'N/A',
+        registeredDate: doc.data().registeredAt ? new Date(doc.data().registeredAt).toLocaleDateString() : 'N/A',
+        website: doc.data().website || '',
+        animalsHosted: doc.data().currentOccupancy || 0,
+        totalRescued: doc.data().totalRescued || 0,
+        successfulAdoptions: doc.data().successfulAdoptions || 0,
+        rating: doc.data().rating || 5,
+        // Status mapping
+        status: doc.data().verified === true ? 'Operational' : 
+                doc.data().verified === false ? 'Pending' : 
+                doc.data().status || 'Pending'
+      }))
+      setShelters(sheltersData)
+    } catch (error) {
+      console.error('Error fetching shelters:', error)
+      showNotification('Failed to load shelters', 'error')
+    } finally {
+      setIsLoadingData(false)
+    }
+  }
+
+  const updateShelterStatus = async (shelterId, newStatus) => {
+    setLoading(prev => ({ ...prev, [shelterId]: true }))
+    try {
+      // Get shelter info before update
+      const shelter = shelters.find(s => s.id === shelterId)
+      
+      const shelterRef = doc(db, 'shelters', shelterId)
+      const updateData = {
+        status: newStatus,
+        verified: newStatus === 'Operational' ? true : false,
+        updatedAt: new Date().toISOString()
+      }
+      
+      await updateDoc(shelterRef, updateData)
+      
+      // Log the action
+      const actionText = newStatus === 'Operational' ? 'Approved' : 
+                         newStatus === 'Closed' ? 'Rejected' : 
+                         `Changed status to ${newStatus}`
+      
+      await AuditLogService.logShelterAction(
+        actionText,
+        userId || 'superadmin',
+        'superadmin@animal911.com', // Get from current user
+        shelter?.name || 'Unknown Shelter',
+        shelterId,
+        `Shelter status changed from ${shelter?.status} to ${newStatus}`
+      )
+      
+      // Update local state
+      setShelters(prev => 
+        prev.map(shelter => 
+          shelter.id === shelterId 
+            ? { ...shelter, ...updateData }
+            : shelter
+        )
+      )
+      
+      return true
+    } catch (error) {
+      console.error('Error updating shelter:', error)
+      showNotification('Failed to update shelter status', 'error')
+      return false
+    } finally {
+      setLoading(prev => ({ ...prev, [shelterId]: false }))
+    }
+  }
 
   // Filter and search logic
   const filteredShelters = shelters.filter(shelter => {
@@ -86,15 +184,19 @@ function ShelterManagement() {
     setShowConfirm(true)
   }
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     const { id, action } = actionShelter
-    updateShelterStatus(id, action)
+    const success = await updateShelterStatus(id, action)
     
-    // Show notification based on action
-    const shelter = shelters.find(shelter => shelter.id === id)
-    const shelterName = shelter ? shelter.name : 'Shelter'
-    const actionText = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'suspended'
-    showNotification(`${shelterName} has been ${actionText} successfully!`, 'success')
+    if (success) {
+      // Show notification based on action
+      const shelter = shelters.find(shelter => shelter.id === id)
+      const shelterName = shelter ? shelter.name : 'Shelter'
+      const actionText = action === 'Operational' ? 'approved' : 
+                         action === 'Closed' ? 'rejected' : 
+                         action === 'Maintenance' ? 'set to maintenance' : 'updated'
+      showNotification(`${shelterName} has been ${actionText} successfully!`, 'success')
+    }
     
     setShowConfirm(false)
     setActionShelter({ id: null, action: null })
@@ -233,24 +335,31 @@ function ShelterManagement() {
 
       {/* Shelters Table */}
       <div className="table-wrapper">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th className="col-checkbox">
-                <input
-                  type="checkbox"
-                  checked={selectedShelters.length === filteredShelters.length && filteredShelters.length > 0}
-                  onChange={handleSelectAll}
-                />
-              </th>
-              <th className="col-partner">Partner Information</th>
-              <th className="col-type-status">Type & Status</th>
-              <th className="col-capacity">Capacity Usage</th>
-              <th className="col-contact">Contact & License</th>
-              <th className="col-actions">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+        {isLoadingData ? (
+          <div className="no-data">
+            <div className="no-data-icon"><i className="bi bi-hourglass"></i></div>
+            <h3>Loading shelters...</h3>
+            <p>Please wait while we fetch the data from the database.</p>
+          </div>
+        ) : (
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th className="col-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={selectedShelters.length === filteredShelters.length && filteredShelters.length > 0}
+                    onChange={handleSelectAll}
+                  />
+                </th>
+                <th className="col-partner">Partner Information</th>
+                <th className="col-type-status">Type & Status</th>
+                <th className="col-capacity">Capacity Usage</th>
+                <th className="col-contact">Contact & License</th>
+                <th className="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
             {filteredShelters.map(shelter => (
               <tr key={shelter.id}>
                 <td className="col-checkbox">
@@ -348,8 +457,9 @@ function ShelterManagement() {
             ))}
           </tbody>
         </table>
+        )}
 
-        {filteredShelters.length === 0 && (
+        {!isLoadingData && filteredShelters.length === 0 && (
           <div className="no-data">
             <div className="no-data-icon"><i className="bi bi-house"></i></div>
             <h3>No partners found</h3>
@@ -463,6 +573,66 @@ function ShelterManagement() {
                   </div>
                 </div>
               </div>
+
+              {selectedShelter.documents && (
+                <div className="detail-section">
+                  <h4>Uploaded Documents</h4>
+                  <div className="detail-grid">
+                    {selectedShelter.documents.permit && (
+                      <div className="detail-item full-width">
+                        <label>Shelter Permit:</label>
+                        <a 
+                          href={selectedShelter.documents.permit} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="document-link"
+                        >
+                          <i className="bi bi-file-earmark-pdf"></i> View Permit Document
+                        </a>
+                      </div>
+                    )}
+                    {selectedShelter.documents.validId && (
+                      <div className="detail-item full-width">
+                        <label>Valid ID:</label>
+                        <a 
+                          href={selectedShelter.documents.validId} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="document-link"
+                        >
+                          <i className="bi bi-file-earmark-pdf"></i> View ID Document
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {selectedShelter.veterinarian && (selectedShelter.veterinarian.name || selectedShelter.veterinarian.contact) && (
+                <div className="detail-section">
+                  <h4>Veterinarian Information</h4>
+                  <div className="detail-grid">
+                    {selectedShelter.veterinarian.name && (
+                      <div className="detail-item">
+                        <label>Veterinarian Name:</label>
+                        <span>{selectedShelter.veterinarian.name}</span>
+                      </div>
+                    )}
+                    {selectedShelter.veterinarian.contact && (
+                      <div className="detail-item">
+                        <label>Contact:</label>
+                        <span>{selectedShelter.veterinarian.contact}</span>
+                      </div>
+                    )}
+                    {selectedShelter.veterinarian.license && (
+                      <div className="detail-item">
+                        <label>License Number:</label>
+                        <span>{selectedShelter.veterinarian.license}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="modal-footer">

@@ -8,6 +8,7 @@ import logger from '../utils/logger'
 export const RoleProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(null)
   const [username, setUsername] = useState(null)
+  const [userId, setUserId] = useState(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -17,11 +18,13 @@ export const RoleProvider = ({ children }) => {
       try {
         const storedRole = localStorage.getItem('userRole')
         const storedUsername = localStorage.getItem('adminUsername')
+        const storedUserId = localStorage.getItem('userId')
         const storedAuth = localStorage.getItem('isLoggedIn')
 
         if (storedRole && storedUsername && storedAuth === 'true') {
           setUserRole(storedRole)
           setUsername(storedUsername)
+          setUserId(storedUserId)
           setIsAuthenticated(true)
         } else {
           // Clear any partial auth data
@@ -42,14 +45,16 @@ export const RoleProvider = ({ children }) => {
   const clearAuthData = () => {
     localStorage.removeItem('userRole')
     localStorage.removeItem('adminUsername')
+    localStorage.removeItem('userId')
     localStorage.removeItem('isLoggedIn')
     setUserRole(null)
     setUsername(null)
+    setUserId(null)
     setIsAuthenticated(false)
   }
 
   // Login function
-  const login = (role, user) => {
+  const login = (role, user, userIdParam = null) => {
     try {
       // Validate role
       if (!['admin', 'superadmin'].includes(role)) {
@@ -59,12 +64,16 @@ export const RoleProvider = ({ children }) => {
       // Set state
       setUserRole(role)
       setUsername(user)
+      setUserId(userIdParam)
       setIsAuthenticated(true)
 
       // Persist to localStorage
       localStorage.setItem('userRole', role)
       localStorage.setItem('adminUsername', user)
       localStorage.setItem('isLoggedIn', 'true')
+      if (userIdParam) {
+        localStorage.setItem('userId', userIdParam)
+      }
 
       logger.info(`User logged in: ${user} with role: ${role}`)
     } catch (error) {
@@ -130,6 +139,7 @@ export const RoleProvider = ({ children }) => {
   const value = {
     userRole,
     username,
+    userId,
     isAuthenticated,
     isLoading,
     login,
