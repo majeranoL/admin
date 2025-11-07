@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getAnalytics } from 'firebase/analytics';
 
 // Your web app's Firebase configuration (using environment variables)
 const firebaseConfig = {
@@ -23,9 +24,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// Analytics is optional and often blocked by ad blockers
-// We'll initialize it dynamically only if needed
-let analytics = null;
+// Initialize Analytics
+const analytics = getAnalytics(app);
 
 // Export Firebase services for use in other files
 export { app, analytics, auth, db, storage };

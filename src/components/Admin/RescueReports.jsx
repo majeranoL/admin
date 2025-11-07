@@ -1,13 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { collection, query, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore'
+import { db } from '../../config/firebase'
 import { useData } from '../../contexts/DataContext'
 import { useRole } from '../../hooks/useRole'
 import AuditLogService from '../../services/auditLogService'
 import '../../css/Admin/RescueReports.css'
 
 function RescueReports() {
-  const { rescueReports, loading, updateRescueReportStatus, showNotification } = useData()
+  const { showNotification } = useData()
   const { userId, username } = useRole()
   
+  const [rescueReports, setRescueReports] = useState([])
+  const [loading, setLoading] = useState({})
+  const [isLoadingData, setIsLoadingData] = useState(true)
   const [selectedReports, setSelectedReports] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
   const [filterUrgency, setFilterUrgency] = useState('all')
@@ -17,6 +22,115 @@ function RescueReports() {
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [actionReport, setActionReport] = useState({ id: null, action: null })
+
+  // Fetch reports from Firestore
+  useEffect(() => {
+    fetchReports()
+  }, [])
+
+  const fetchReports = async () => {
+    setIsLoadingData(true)
+    try {
+      const reportsQuery = query(collection(db, 'Reports'))
+      const reportsSnapshot = await getDocs(reportsQuery)
+      
+      const reportsData = await Promise.all(
+        reportsSnapshot.docs.map(async (docSnapshot) => {
+          const data = docSnapshot.data()
+          console.log('Report Document:', docSnapshot.id, data) // Debug log
+          
+          // Fetch user details if userId exists
+          let reporterName = 'Unknown User'
+          if (data.userId) {
+            try {
+              const userDoc = await getDoc(doc(db, 'users', data.userId))
+              if (userDoc.exists()) {
+                const userData = userDoc.data()
+                console.log('User Data:', data.userId, userData) // Debug log
+                reporterName = userData.firstName && userData.lastName 
+                  ? `${userData.firstName} ${userData.lastName}`.trim()
+                  : userData.name || userData.displayName || 'Unknown User'
+              }
+            } catch (error) {
+              console.error('Error fetching user:', data.userId, error)
+            }
+          }
+          
+          return {
+            id: docSnapshot.id,
+            ...data,
+            reporterName: reporterName,
+            reporterPhone: data.contactInfo || 'N/A',
+            reporterEmail: 'N/A', // Not in report, would need to fetch from users collection
+            animalType: data.animalType || 'N/A',
+            location: data.locationAddress || 'N/A',
+            urgency: data.urgencyLevel || 'Medium',
+            status: data.status === 'Submitted' ? 'Pending' : (data.status || 'Pending'),
+            originalStatus: data.status, // Keep original for Firestore updates
+            rescueTeam: data.rescueTeam || data.assignedTeam || 'Unassigned',
+            reportDate: data.timestamp || 'N/A',
+            description: data.emergencyDetails || 'N/A',
+            animalDescription: data.animalDescription || 'N/A',
+            outcome: data.outcome || 'Pending',
+            imageUrls: data.imageUrls || [],
+            latitude: data.latitude || null,
+            longitude: data.longitude || null,
+            userId: data.userId || null
+          }
+        })
+      )
+      
+      // Sort by timestamp (newest first)
+      reportsData.sort((a, b) => {
+        if (a.reportDate && b.reportDate) {
+          return new Date(b.reportDate) - new Date(a.reportDate)
+        }
+        return 0
+      })
+      
+      setRescueReports(reportsData)
+    } catch (error) {
+      console.error('Error fetching reports:', error)
+      showNotification('Failed to load rescue reports', 'error')
+    } finally {
+      setIsLoadingData(false)
+    }
+  }
+
+  // Update report status
+  const updateRescueReportStatus = async (reportId, newStatus, rescueTeam = null) => {
+    setLoading(prev => ({ ...prev, [reportId]: true }))
+    try {
+      const reportRef = doc(db, 'Reports', reportId)
+      const updateData = {
+        status: newStatus,
+        updatedAt: new Date()
+      }
+      
+      if (rescueTeam) {
+        updateData.rescueTeam = rescueTeam
+        updateData.assignedTeam = rescueTeam
+      }
+      
+      await updateDoc(reportRef, updateData)
+      
+      // Update local state
+      setRescueReports(prev => 
+        prev.map(report => 
+          report.id === reportId 
+            ? { ...report, status: newStatus, rescueTeam: rescueTeam || report.rescueTeam }
+            : report
+        )
+      )
+      
+      return true
+    } catch (error) {
+      console.error('Error updating report:', error)
+      throw error
+    } finally {
+      setLoading(prev => ({ ...prev, [reportId]: false }))
+    }
+  }
 
   // Filter and search logic
   const filteredReports = rescueReports.filter(report => {
@@ -78,11 +192,11 @@ function RescueReports() {
       // Get report details before update for logging
       const report = rescueReports.find(r => r.id === id)
       
-      updateRescueReportStatus(id, action, rescueTeam)
+      await updateRescueReportStatus(id, action, rescueTeam)
       const actionText = action === 'assigned' ? 'assigned to rescue team' : 
-                        action === 'in_progress' ? 'marked as in progress' :
-                        action === 'completed' ? 'marked as completed' : 
-                        action === 'cancelled' ? 'cancelled' : 'updated'
+                        action === 'In Progress' ? 'marked as in progress' :
+                        action === 'Completed' ? 'marked as completed' : 
+                        action === 'Cancelled' ? 'cancelled' : 'updated'
       
       // Log the rescue operation action
       await AuditLogService.logRescueOperation(
@@ -182,88 +296,94 @@ function RescueReports() {
 
       {/* Reports Table */}
       <div className="reports-table-container">
-        <table className="reports-table">
-          <thead>
-            <tr>
-              <th>
-                <input
-                  type="checkbox"
-                  checked={selectedReports.length === filteredReports.length && filteredReports.length > 0}
-                  onChange={handleSelectAll}
-                />
-              </th>
-              <th>Report ID</th>
-              <th>Reporter</th>
-              <th>Animal Type</th>
-              <th>Location</th>
-              <th>Urgency</th>
-              <th>Status</th>
-              <th>Team</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredReports.map(report => (
-              <tr key={report.id} className="report-row">
-                <td>
+        {isLoadingData ? (
+          <div className="no-reports">
+            <p>Loading rescue reports...</p>
+          </div>
+        ) : (
+          <table className="reports-table">
+            <thead>
+              <tr>
+                <th>
                   <input
                     type="checkbox"
-                    checked={selectedReports.includes(report.id)}
-                    onChange={() => handleSelectReport(report.id)}
+                    checked={selectedReports.length === filteredReports.length && filteredReports.length > 0}
+                    onChange={handleSelectAll}
                   />
-                </td>
-                <td className="report-id">{report.id}</td>
-                <td className="reporter-name">{report.reporterName}</td>
-                <td className="animal-type">{report.animalType}</td>
-                <td className="location">{report.location}</td>
-                <td>{getUrgencyBadge(report.urgency)}</td>
-                <td>{getStatusBadge(report.status)}</td>
-                <td className="rescue-team">{report.rescueTeam}</td>
-                <td className="actions-cell">
-                  <div className="action-buttons">
-                    <button
-                      className="btn-view"
-                      onClick={() => handleViewDetails(report)}
-                    >
-                      View
-                    </button>
-                    
-                    {report.status === 'Pending' && (
-                      <>
-                        <button
-                          className="btn-assign"
-                          onClick={() => handleAssignTeam(report.id)}
-                          disabled={loading[report.id]}
-                        >
-                          {loading[report.id] ? '...' : 'Assign Team'}
-                        </button>
-                        <button
-                          className="btn-cancel"
-                          onClick={() => handleStatusAction(report.id, 'Cancelled')}
-                          disabled={loading[report.id]}
-                        >
-                          {loading[report.id] ? '...' : 'Cancel'}
-                        </button>
-                      </>
-                    )}
-                    
-                    {report.status === 'In Progress' && (
-                      <button
-                        className="btn-complete"
-                        onClick={() => handleStatusAction(report.id, 'Completed')}
-                        disabled={loading[report.id]}
-                      >
-                        {loading[report.id] ? '...' : 'Mark Complete'}
-                      </button>
-                    )}
-                  </div>
-                </td>
+                </th>
+                <th>Report ID</th>
+                <th>Reporter</th>
+                <th>Animal Type</th>
+                <th>Location</th>
+                <th>Urgency</th>
+                <th>Status</th>
+                <th>Team</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredReports.map(report => (
+                <tr key={report.id} className="report-row">
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedReports.includes(report.id)}
+                      onChange={() => handleSelectReport(report.id)}
+                    />
+                  </td>
+                  <td className="report-id">{report.id}</td>
+                  <td className="reporter-name">{report.reporterName}</td>
+                  <td className="animal-type">{report.animalType}</td>
+                  <td className="location">{report.location}</td>
+                  <td>{getUrgencyBadge(report.urgency)}</td>
+                  <td>{getStatusBadge(report.status)}</td>
+                  <td className="rescue-team">{report.rescueTeam}</td>
+                  <td className="actions-cell">
+                    <div className="action-buttons">
+                      <button
+                        className="btn-view"
+                        onClick={() => handleViewDetails(report)}
+                      >
+                        View
+                      </button>
+                      
+                      {report.status === 'Pending' && (
+                        <>
+                          <button
+                            className="btn-assign"
+                            onClick={() => handleAssignTeam(report.id)}
+                            disabled={loading[report.id]}
+                          >
+                            {loading[report.id] ? '...' : 'Assign Team'}
+                          </button>
+                          <button
+                            className="btn-cancel"
+                            onClick={() => handleStatusAction(report.id, 'Cancelled')}
+                            disabled={loading[report.id]}
+                          >
+                            {loading[report.id] ? '...' : 'Cancel'}
+                          </button>
+                        </>
+                      )}
+                      
+                      {report.status === 'In Progress' && (
+                        <button
+                          className="btn-complete"
+                          onClick={() => handleStatusAction(report.id, 'Completed')}
+                          disabled={loading[report.id]}
+                        >
+                          {loading[report.id] ? '...' : 'Mark Complete'}
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
 
-        {filteredReports.length === 0 && (
+        {!isLoadingData && filteredReports.length === 0 && (
           <div className="no-reports">
             <p>No rescue reports found matching your criteria.</p>
           </div>
@@ -293,16 +413,12 @@ function RescueReports() {
                     <span>{selectedReport.id}</span>
                   </div>
                   <div className="detail-item">
-                    <label>Reporter:</label>
-                    <span>{selectedReport.reporterName}</span>
-                  </div>
-                  <div className="detail-item">
-                    <label>Phone:</label>
+                    <label>Reporter Phone:</label>
                     <span>{selectedReport.reporterPhone}</span>
                   </div>
                   <div className="detail-item">
-                    <label>Email:</label>
-                    <span>{selectedReport.reporterEmail}</span>
+                    <label>User ID:</label>
+                    <span>{selectedReport.userId || 'N/A'}</span>
                   </div>
                   <div className="detail-item">
                     <label>Animal Type:</label>
@@ -320,16 +436,41 @@ function RescueReports() {
                     <label>Report Date:</label>
                     <span>{selectedReport.reportDate}</span>
                   </div>
+                  <div className="detail-item">
+                    <label>Coordinates:</label>
+                    <span>
+                      {selectedReport.latitude && selectedReport.longitude 
+                        ? `${selectedReport.latitude}, ${selectedReport.longitude}`
+                        : 'N/A'}
+                    </span>
+                  </div>
                   <div className="detail-item full-width">
                     <label>Location:</label>
                     <span>{selectedReport.location}</span>
                   </div>
                   <div className="detail-item full-width">
-                    <label>Description:</label>
+                    <label>Animal Description:</label>
+                    <span>{selectedReport.animalDescription}</span>
+                  </div>
+                  <div className="detail-item full-width">
+                    <label>Emergency Details:</label>
                     <span>{selectedReport.description}</span>
                   </div>
                 </div>
               </div>
+
+              {selectedReport.imageUrls && selectedReport.imageUrls.length > 0 && (
+                <div className="detail-section">
+                  <h4>Report Images</h4>
+                  <div className="image-grid">
+                    {selectedReport.imageUrls.map((url, index) => (
+                      <div key={index} className="image-item">
+                        <img src={url} alt={`Report ${index + 1}`} style={{ maxWidth: '100%', borderRadius: '8px' }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="detail-section">
                 <h4>Rescue Operation</h4>

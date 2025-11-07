@@ -37,16 +37,24 @@ function AccountManagement() {
       const usersQuery = query(collection(db, 'users'))
       const usersSnapshot = await getDocs(usersQuery)
       usersSnapshot.docs.forEach(doc => {
+        const userData = doc.data()
+        console.log('User Document:', doc.id, userData) // Debug log
+        const fullName = userData.firstName && userData.lastName
+          ? `${userData.firstName} ${userData.lastName}`.trim()
+          : userData.name || userData.displayName || 'N/A'
+        
+        console.log('Computed fullName:', fullName) // Debug log
+        
         allAccounts.push({
           id: doc.id,
-          ...doc.data(),
+          ...userData,
           accountType: 'User',
           collection: 'users',
-          name: doc.data().name || doc.data().displayName || 'N/A',
-          email: doc.data().email || 'N/A',
-          status: doc.data().status || 'Active',
-          createdAt: doc.data().createdAt || 'N/A',
-          location: doc.data().location || doc.data().address || 'N/A'
+          name: fullName,
+          email: userData.email || 'N/A',
+          status: userData.status || 'Active',
+          createdAt: userData.createdAt || 'N/A',
+          location: userData.location || userData.address || 'N/A'
         })
       })
 

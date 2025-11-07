@@ -5,7 +5,7 @@ import { db } from '../../config/firebase'
 import '../../css/SuperAdmin/SuperAdminDashboard.css'
 import '../../css/EnhancedComponents.css'
 
-function SuperAdminDashboard() {
+function SuperAdminDashboard({ onNavigate }) {
   const { adminUsers, shelters } = useData()
   const [totalAdmins, setTotalAdmins] = useState(0)
   const [totalShelters, setTotalShelters] = useState(0)
@@ -51,7 +51,11 @@ function SuperAdminDashboard() {
       <p>Super Admin specific features will be implemented here.</p>
       
       <div className="dashboard-cards-grid">
-        <div className="dashboard-card">
+        <div 
+          className="dashboard-card clickable" 
+          onClick={() => onNavigate && onNavigate('account-management')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="card-header">
             <h3>Total Admins</h3>
             <span className="card-icon"><i className="bi bi-person-circle"></i></span>
@@ -62,7 +66,11 @@ function SuperAdminDashboard() {
           </div>
         </div>
 
-        <div className="dashboard-card">
+        <div 
+          className="dashboard-card clickable" 
+          onClick={() => onNavigate && onNavigate('shelter-management')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="card-header">
             <h3>Partner Shelters</h3>
             <span className="card-icon"><i className="bi bi-house-heart"></i></span>
@@ -73,7 +81,11 @@ function SuperAdminDashboard() {
           </div>
         </div>
 
-        <div className="dashboard-card">
+        <div 
+          className="dashboard-card clickable" 
+          onClick={() => onNavigate && onNavigate('account-management')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="card-header">
             <h3>Total Users</h3>
             <span className="card-icon"><i className="bi bi-people"></i></span>
@@ -84,7 +96,11 @@ function SuperAdminDashboard() {
           </div>
         </div>
 
-        <div className="dashboard-card">
+        <div 
+          className="dashboard-card clickable" 
+          onClick={() => onNavigate && onNavigate('account-management')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="card-header">
             <h3>Total Rescuers</h3>
             <span className="card-icon"><i className="bi bi-heart-pulse"></i></span>
