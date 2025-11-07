@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { collection, query, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 import { useData } from '../../contexts/DataContext'
 import { useRole } from '../../hooks/useRole'
@@ -11,6 +11,7 @@ function RescueReports() {
   const { userId, username } = useRole()
   
   const [rescueReports, setRescueReports] = useState([])
+  const [rescuers, setRescuers] = useState([])
   const [loading, setLoading] = useState({})
   const [isLoadingData, setIsLoadingData] = useState(true)
   const [selectedReports, setSelectedReports] = useState([])
@@ -23,10 +24,30 @@ function RescueReports() {
   const [showConfirm, setShowConfirm] = useState(false)
   const [actionReport, setActionReport] = useState({ id: null, action: null })
 
-  // Fetch reports from Firestore
+  // Fetch reports and rescuers from Firestore
   useEffect(() => {
     fetchReports()
+    fetchRescuers()
   }, [])
+
+  const fetchRescuers = async () => {
+    try {
+      const rescuersQuery = query(
+        collection(db, 'rescuers'),
+        where('status', '==', 'Active')
+      )
+      const rescuersSnapshot = await getDocs(rescuersQuery)
+      
+      const rescuersData = rescuersSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+      
+      setRescuers(rescuersData)
+    } catch (error) {
+      console.error('Error fetching rescuers:', error)
+    }
+  }
 
   const fetchReports = async () => {
     setIsLoadingData(true)
@@ -67,7 +88,8 @@ function RescueReports() {
             urgency: data.urgencyLevel || 'Medium',
             status: data.status === 'Submitted' ? 'Pending' : (data.status || 'Pending'),
             originalStatus: data.status, // Keep original for Firestore updates
-            rescueTeam: data.rescueTeam || data.assignedTeam || 'Unassigned',
+            assignedRescuer: data.assignedRescuer || data.rescueTeam || data.assignedTeam || null,
+            assignedRescuerName: data.assignedRescuerName || data.rescueTeam || data.assignedTeam || 'Unassigned',
             reportDate: data.timestamp || 'N/A',
             description: data.emergencyDetails || 'N/A',
             animalDescription: data.animalDescription || 'N/A',
@@ -108,8 +130,10 @@ function RescueReports() {
       }
       
       if (rescueTeam) {
-        updateData.rescueTeam = rescueTeam
-        updateData.assignedTeam = rescueTeam
+        updateData.assignedRescuer = rescueTeam.id || null
+        updateData.assignedRescuerName = rescueTeam.name || rescueTeam
+        updateData.assignedTeam = rescueTeam.name || rescueTeam
+        updateData.rescueTeam = rescueTeam.name || rescueTeam
       }
       
       await updateDoc(reportRef, updateData)
@@ -118,7 +142,12 @@ function RescueReports() {
       setRescueReports(prev => 
         prev.map(report => 
           report.id === reportId 
-            ? { ...report, status: newStatus, rescueTeam: rescueTeam || report.rescueTeam }
+            ? { 
+                ...report, 
+                status: newStatus, 
+                assignedRescuer: rescueTeam?.id || report.assignedRescuer,
+                assignedRescuerName: rescueTeam?.name || rescueTeam || report.assignedRescuerName 
+              }
             : report
         )
       )
@@ -157,6 +186,7 @@ function RescueReports() {
   // Urgency badge styling
   const getUrgencyBadge = (urgency) => {
     const urgencyConfig = {
+      'Critical': { class: 'urgency-critical', label: 'Critical' },
       'High': { class: 'urgency-high', label: 'High' },
       'Medium': { class: 'urgency-medium', label: 'Medium' },
       'Low': { class: 'urgency-low', label: 'Low' }
@@ -211,7 +241,7 @@ function RescueReports() {
           urgency: report?.urgency,
           oldStatus: report?.status,
           newStatus: action,
-          rescueTeam: rescueTeam || 'N/A'
+          rescuer: rescueTeam?.name || rescueTeam || 'N/A'
         }
       )
       
@@ -229,17 +259,15 @@ function RescueReports() {
     setShowModal(true)
   }
 
-  const handleAssignTeam = (reportId) => {
+  const handleAssignRescuer = (reportId) => {
     setSelectedReport(rescueReports.find(r => r.id === reportId))
     setShowAssignModal(true)
   }
 
-  const assignTeam = (team) => {
-    handleStatusAction(selectedReport.id, 'In Progress', team)
+  const assignRescuer = (rescuer) => {
+    handleStatusAction(selectedReport.id, 'In Progress', rescuer)
     setShowAssignModal(false)
   }
-
-  const teams = ['Team Alpha', 'Team Beta', 'Team Gamma', 'Emergency Team']
 
   return (
     <div className="rescue-reports">
@@ -287,6 +315,7 @@ function RescueReports() {
             className="filter-select"
           >
             <option value="all">All Urgency</option>
+            <option value="critical">Critical</option>
             <option value="high">High</option>
             <option value="medium">Medium</option>
             <option value="low">Low</option>
@@ -317,7 +346,7 @@ function RescueReports() {
                 <th>Location</th>
                 <th>Urgency</th>
                 <th>Status</th>
-                <th>Team</th>
+                <th>Assigned Rescuer</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -337,7 +366,7 @@ function RescueReports() {
                   <td className="location">{report.location}</td>
                   <td>{getUrgencyBadge(report.urgency)}</td>
                   <td>{getStatusBadge(report.status)}</td>
-                  <td className="rescue-team">{report.rescueTeam}</td>
+                  <td className="rescuer-cell">{report.assignedRescuerName || 'Unassigned'}</td>
                   <td className="actions-cell">
                     <div className="action-buttons">
                       <button
@@ -351,7 +380,7 @@ function RescueReports() {
                         <>
                           <button
                             className="btn-assign"
-                            onClick={() => handleAssignTeam(report.id)}
+                            onClick={() => handleAssignRescuer(report.id)}
                             disabled={loading[report.id]}
                           >
                             {loading[report.id] ? '...' : 'Assign Team'}
@@ -476,8 +505,8 @@ function RescueReports() {
                 <h4>Rescue Operation</h4>
                 <div className="detail-grid">
                   <div className="detail-item">
-                    <label>Assigned Team:</label>
-                    <span>{selectedReport.rescueTeam}</span>
+                    <label>Assigned Rescuer:</label>
+                    <span>{selectedReport.assignedRescuerName || 'Unassigned'}</span>
                   </div>
                   <div className="detail-item full-width">
                     <label>Outcome:</label>
@@ -505,22 +534,32 @@ function RescueReports() {
         </div>
       )}
 
-      {/* Team Assignment Modal */}
+      {/* Rescuer Assignment Modal */}
       {showAssignModal && (
         <div className="modal-overlay">
           <div className="assign-modal">
-            <h3>Assign Rescue Team</h3>
-            <p>Select a team for report {selectedReport?.id}</p>
+            <h3>Assign Rescuer</h3>
+            <p>Select an available rescuer for report {selectedReport?.id}</p>
             <div className="team-options">
-              {teams.map(team => (
-                <button
-                  key={team}
-                  className="btn-team"
-                  onClick={() => assignTeam(team)}
-                >
-                  {team}
-                </button>
-              ))}
+              {rescuers.length === 0 ? (
+                <p className="no-rescuers">No active rescuers available</p>
+              ) : (
+                rescuers.map(rescuer => (
+                  <button
+                    key={rescuer.id}
+                    className="btn-team"
+                    onClick={() => assignRescuer(rescuer)}
+                  >
+                    <div className="rescuer-option">
+                      <span className="rescuer-name">{rescuer.name}</span>
+                      <span className="rescuer-type">{rescuer.type || 'Rescuer'}</span>
+                      {rescuer.location && (
+                        <span className="rescuer-location">{rescuer.location}</span>
+                      )}
+                    </div>
+                  </button>
+                ))
+              )}
             </div>
             <div className="assign-actions">
               <button 

@@ -12,15 +12,17 @@ function AdminDashboard({ userRole, onNavigate }) {
 
   const [pendingReports, setPendingReports] = useState(0)
   const [ongoingRescues, setOngoingRescues] = useState(0)
+  const [pendingRescuers, setPendingRescuers] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchReportsStats()
+    fetchDashboardStats()
   }, [])
 
-  const fetchReportsStats = async () => {
+  const fetchDashboardStats = async () => {
     setLoading(true)
     try {
+      // Fetch reports stats
       const reportsQuery = query(collection(db, 'Reports'))
       const reportsSnapshot = await getDocs(reportsQuery)
       
@@ -41,8 +43,17 @@ function AdminDashboard({ userRole, onNavigate }) {
       
       setPendingReports(pending)
       setOngoingRescues(ongoing)
+
+      // Fetch pending rescuers count
+      const rescuersQuery = query(
+        collection(db, 'rescuers'),
+        where('status', '==', 'Pending')
+      )
+      const rescuersSnapshot = await getDocs(rescuersQuery)
+      setPendingRescuers(rescuersSnapshot.size)
+      
     } catch (error) {
-      console.error('Error fetching reports stats:', error)
+      console.error('Error fetching dashboard stats:', error)
       showNotification('Failed to load dashboard statistics', 'error')
     } finally {
       setLoading(false)
@@ -100,16 +111,16 @@ function AdminDashboard({ userRole, onNavigate }) {
 
         <div 
           className="dashboard-card volunteers clickable" 
-          onClick={() => onNavigate && onNavigate('volunteers')}
+          onClick={() => onNavigate && onNavigate('rescuers')}
           style={{ cursor: 'pointer' }}
         >
           <div className="card-header">
-            <h3>Available Volunteers</h3>
+            <h3>Pending Rescuers</h3>
             <i className="card-icon bi bi-people-fill"></i>
           </div>
           <div className="card-content">
-            <p className="card-number">{availableVolunteers}</p>
-            <p className="card-description">Ready for assignments</p>
+            <p className="card-number">{loading ? '...' : pendingRescuers}</p>
+            <p className="card-description">Awaiting approval</p>
           </div>
         </div>
 

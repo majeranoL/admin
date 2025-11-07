@@ -3,7 +3,7 @@ import { useData } from '../../contexts/DataContext'
 import '../../css/Admin/Notifications.css'
 import '../../css/EnhancedComponents.css'
 
-function Notifications() {
+function Notifications({ onNavigate }) {
   const { notifications, loading, markNotificationAsRead, deleteNotification, showNotification } = useData()
   
   const [selectedNotifications, setSelectedNotifications] = useState([])
@@ -17,46 +17,46 @@ function Notifications() {
   // Filter and search logic
   const filteredNotifications = notifications.filter(notification => {
     const matchesType = filterType === 'all' || notification.type.toLowerCase() === filterType.toLowerCase()
-    const matchesStatus = filterStatus === 'all' || notification.status.toLowerCase() === filterStatus.toLowerCase()
-    const matchesSearch = notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          notification.message.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = filterStatus === 'all' || 
+      (filterStatus === 'unread' && !notification.isRead) ||
+      (filterStatus === 'read' && notification.isRead)
+    const matchesSearch = notification.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (notification.locationAddress && notification.locationAddress.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                          (notification.animalType && notification.animalType.toLowerCase().includes(searchTerm.toLowerCase()))
     return matchesType && matchesStatus && matchesSearch
   })
 
   // Sort notifications by timestamp (newest first)
   const sortedNotifications = [...filteredNotifications].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
 
-  // Priority and type styling
-  const getPriorityBadge = (priority) => {
+  // Priority and type styling - Updated for urgency levels
+  const getPriorityBadge = (urgency) => {
     const priorityConfig = {
+      'Critical': { class: 'priority-critical', label: 'Critical', icon: 'bi bi-exclamation-triangle-fill' },
       'High': { class: 'priority-high', label: 'High', icon: 'bi bi-exclamation-triangle-fill' },
       'Medium': { class: 'priority-medium', label: 'Medium', icon: 'bi bi-exclamation-circle-fill' },
       'Low': { class: 'priority-low', label: 'Low', icon: 'bi bi-info-circle-fill' }
     }
-    const config = priorityConfig[priority] || { class: 'priority-unknown', label: priority, icon: 'bi bi-question-circle-fill' }
+    const config = priorityConfig[urgency] || { class: 'priority-unknown', label: urgency, icon: 'bi bi-question-circle-fill' }
     return <span className={`priority-badge ${config.class}`}><i className={config.icon}></i> {config.label}</span>
   }
 
   const getTypeIcon = (type) => {
     const typeIcons = {
-      'Emergency': 'bi bi-exclamation-triangle-fill',
-      'Adoption': 'bi bi-house-heart-fill',
-      'Rescue': 'bi bi-truck',
-      'System': 'bi bi-gear-fill',
-      'Update': 'bi bi-megaphone-fill',
-      'Alert': 'bi bi-exclamation-circle-fill'
+      'report': 'bi bi-exclamation-triangle-fill',
+      'adoption': 'bi bi-house-heart-fill',
+      'rescue': 'bi bi-truck',
+      'system': 'bi bi-gear-fill',
+      'update': 'bi bi-megaphone-fill',
+      'alert': 'bi bi-exclamation-circle-fill'
     }
-    return typeIcons[type] || 'bi bi-clipboard-check'
+    return typeIcons[type.toLowerCase()] || 'bi bi-clipboard-check'
   }
 
-  const getStatusBadge = (status) => {
-    const statusConfig = {
-      'Unread': { class: 'status-unread', label: 'Unread' },
-      'Read': { class: 'status-read', label: 'Read' },
-      'Archived': { class: 'status-archived', label: 'Archived' }
-    }
-    const config = statusConfig[status] || { class: 'status-unknown', label: status }
-    return <span className={`status-badge ${config.class}`}>{config.label}</span>
+  const getStatusBadge = (isRead) => {
+    return isRead 
+      ? <span className="status-badge status-read">Read</span>
+      : <span className="status-badge status-unread">Unread</span>
   }
 
   const formatTimestamp = (timestamp) => {
@@ -90,7 +90,7 @@ function Notifications() {
   }
 
   const handleNotificationClick = (notification) => {
-    if (notification.status === 'Unread') {
+    if (!notification.isRead) {
       try {
         markNotificationAsRead(notification.id)
         showNotification('Notification marked as read', 'success')
@@ -103,16 +103,37 @@ function Notifications() {
     setShowModal(true)
   }
 
+  const handleNavigateToSource = (notification) => {
+    // Navigate based on notification type
+    if (notification.type === 'report' || notification.type === 'rescue') {
+      // Navigate to Rescue Reports
+      if (onNavigate) {
+        onNavigate('rescue-reports')
+      }
+    } else if (notification.type === 'rescuer' || notification.type === 'account') {
+      // Navigate to Rescuer Management
+      if (onNavigate) {
+        onNavigate('rescuers')
+      }
+    } else if (notification.type === 'adoption') {
+      // Navigate to Adoption Requests
+      if (onNavigate) {
+        onNavigate('adoption')
+      }
+    }
+    setShowModal(false)
+  }
+
   const handleBulkMarkAsRead = () => {
     try {
       const unreadCount = selectedNotifications.filter(id => {
         const notification = notifications.find(n => n.id === id)
-        return notification && notification.status === 'Unread'
+        return notification && !notification.isRead
       }).length
 
       selectedNotifications.forEach(id => {
         const notification = notifications.find(n => n.id === id)
-        if (notification && notification.status === 'Unread') {
+        if (notification && !notification.isRead) {
           markNotificationAsRead(id)
         }
       })
@@ -275,7 +296,7 @@ function Notifications() {
               {sortedNotifications.map(notification => (
                 <tr 
                   key={notification.id} 
-                  className={`${notification.status.toLowerCase()} ${selectedNotifications.includes(notification.id) ? 'selected' : ''}`}
+                  className={`${notification.isRead ? 'read' : 'unread'} ${selectedNotifications.includes(notification.id) ? 'selected' : ''}`}
                 >
                   <td>
                     <input
@@ -291,16 +312,21 @@ function Notifications() {
                   </td>
                   
                   <td>
-                    {getPriorityBadge(notification.priority)}
+                    {getPriorityBadge(notification.urgencyLevel)}
                   </td>
                   
                   <td className="message-cell" onClick={() => handleNotificationClick(notification)}>
-                    <div className="notification-title">{notification.title}</div>
+                    <div className="notification-title">{notification.animalType && `${notification.animalType} Report`}</div>
                     <div className="notification-preview">{notification.message}</div>
+                    {notification.locationAddress && (
+                      <div className="notification-location">
+                        <i className="bi bi-geo-alt-fill"></i> {notification.locationAddress}
+                      </div>
+                    )}
                   </td>
                   
                   <td>
-                    {getStatusBadge(notification.status)}
+                    {getStatusBadge(notification.isRead)}
                   </td>
                   
                   <td className="time-cell">
@@ -317,7 +343,7 @@ function Notifications() {
                         <i className="bi bi-eye"></i>
                       </button>
                       
-                      {notification.status === 'Unread' && (
+                      {!notification.isRead && (
                         <button
                           className="btn-mark-read"
                           onClick={(e) => handleMarkSingleAsRead(notification.id, e)}
@@ -375,30 +401,37 @@ function Notifications() {
                     <span className="type-icon large">{getTypeIcon(selectedNotification.type)}</span>
                     <div className="meta-content">
                       <div className="notification-type">{selectedNotification.type}</div>
-                      {getPriorityBadge(selectedNotification.priority)}
+                      {getPriorityBadge(selectedNotification.urgencyLevel)}
                     </div>
                   </div>
                   <div className="meta-item">
-                    {getStatusBadge(selectedNotification.status)}
+                    {getStatusBadge(selectedNotification.isRead)}
                     <span className="timestamp">{formatTimestamp(selectedNotification.timestamp)}</span>
                   </div>
                 </div>
 
                 <div className="notification-content">
-                  <h4>{selectedNotification.title}</h4>
+                  <h4>{selectedNotification.animalType && `${selectedNotification.animalType} Report`}</h4>
                   <p>{selectedNotification.message}</p>
                   
-                  {selectedNotification.details && (
+                  {selectedNotification.locationAddress && (
                     <div className="additional-details">
-                      <h5>Additional Information:</h5>
-                      <p>{selectedNotification.details}</p>
+                      <h5><i className="bi bi-geo-alt-fill"></i> Location:</h5>
+                      <p>{selectedNotification.locationAddress}</p>
                     </div>
                   )}
                   
-                  {selectedNotification.actionRequired && (
-                    <div className="action-required">
-                      <h5><i className="bi bi-exclamation-triangle-fill"></i> Action Required:</h5>
-                      <p>{selectedNotification.actionRequired}</p>
+                  {selectedNotification.reportId && (
+                    <div className="additional-details">
+                      <h5><i className="bi bi-file-text-fill"></i> Report ID:</h5>
+                      <p>{selectedNotification.reportId}</p>
+                    </div>
+                  )}
+
+                  {selectedNotification.status && (
+                    <div className="additional-details">
+                      <h5><i className="bi bi-clipboard-check-fill"></i> Report Status:</h5>
+                      <p>{selectedNotification.status}</p>
                     </div>
                   )}
                 </div>
@@ -406,7 +439,7 @@ function Notifications() {
             </div>
 
             <div className="modal-footer">
-              {selectedNotification.status === 'Unread' && (
+              {!selectedNotification.isRead && (
                 <button
                   className="btn-primary"
                   onClick={() => {
@@ -414,9 +447,38 @@ function Notifications() {
                     setShowModal(false)
                   }}
                 >
-                  Mark as Read
+                  <i className="bi bi-check-circle"></i> Mark as Read
                 </button>
               )}
+              
+              {/* Show different navigation buttons based on notification type */}
+              {(selectedNotification.type === 'report' || selectedNotification.type === 'rescue') && (
+                <button
+                  className="btn-primary"
+                  onClick={() => handleNavigateToSource(selectedNotification)}
+                >
+                  <i className="bi bi-exclamation-triangle-fill"></i> Go to Rescue Reports
+                </button>
+              )}
+              
+              {(selectedNotification.type === 'rescuer' || selectedNotification.type === 'account') && (
+                <button
+                  className="btn-primary"
+                  onClick={() => handleNavigateToSource(selectedNotification)}
+                >
+                  <i className="bi bi-person-fill-check"></i> Go to Rescuer Management
+                </button>
+              )}
+              
+              {selectedNotification.type === 'adoption' && (
+                <button
+                  className="btn-primary"
+                  onClick={() => handleNavigateToSource(selectedNotification)}
+                >
+                  <i className="bi bi-house-heart-fill"></i> Go to Adoption Requests
+                </button>
+              )}
+              
               <button 
                 className="btn-secondary"
                 onClick={() => setShowModal(false)}

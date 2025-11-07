@@ -398,3 +398,167 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Rescuer Assignment Modal */
+.assign-modal {
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+.assign-modal h3 {
+  margin: 0 0 10px 0;
+  color: var(--text-color);
+  font-size: 22px;
+}
+
+.assign-modal p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.team-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.no-rescuers {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.btn-team {
+  background: var(--card-background);
+  border: 2px solid var(--border-color);
+  padding: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.btn-team:hover {
+  border-color: var(--primary-color);
+  background: var(--hover-background);
+  transform: translateX(5px);
+}
+
+.rescuer-option {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rescuer-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.rescuer-type {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.rescuer-location {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.assign-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: var(--hover-background);
+}
+
+/* Confirmation Modal */
+.confirm-modal {
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  animation: slideUp 0.3s ease;
+}
+
+.confirm-modal h3 {
+  margin: 0 0 15px 0;
+  color: var(--text-color);
+  font-size: 22px;
+}
+
+.confirm-modal p {
+  color: var(--text-secondary);
+  margin-bottom: 25px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn-confirm {
+  padding: 12px 30px;
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+  background: #16a34a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { db } from '../config/firebase'
+import { collection, query, orderBy, onSnapshot, doc, updateDoc } from 'firebase/firestore'
 
 const DataContext = createContext()
 
@@ -27,6 +29,26 @@ export const DataProvider = ({ children }) => {
   // Notifications
   const [popupNotifications, setPopupNotifications] = useState([])
   const [notifications, setNotifications] = useState([])
+
+  // Fetch notifications from Firestore
+  useEffect(() => {
+    const notificationsQuery = query(
+      collection(db, 'notifications'),
+      orderBy('timestamp', 'desc')
+    )
+
+    const unsubscribe = onSnapshot(notificationsQuery, (snapshot) => {
+      const notificationsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+      setNotifications(notificationsData)
+    }, (error) => {
+      console.error('Error fetching notifications:', error)
+    })
+
+    return () => unsubscribe()
+  }, [])
 
   // Statistics
   const getStats = () => {
@@ -86,26 +108,39 @@ export const DataProvider = ({ children }) => {
     removePopupNotification(id)
   }
 
-  const markNotificationAsRead = (id) => {
+  const markNotificationAsRead = async (id) => {
     setLoading(prev => ({ ...prev, [id]: true }))
-    setTimeout(() => {
-      setNotifications(prev => 
-        prev.map(notification => 
-          notification.id === id 
-            ? { ...notification, status: 'Read' }
-            : notification
-        )
-      )
+    try {
+      const notificationRef = doc(db, 'notifications', id)
+      await updateDoc(notificationRef, {
+        isRead: true
+      })
+      // The onSnapshot listener will automatically update the state
+    } catch (error) {
+      console.error('Error marking notification as read:', error)
+      showNotification('Failed to mark notification as read', 'error')
+    } finally {
       setLoading(prev => ({ ...prev, [id]: false }))
-    }, 500)
+    }
   }
 
-  const deleteNotification = (id) => {
+  const deleteNotification = async (id) => {
     setLoading(prev => ({ ...prev, [id]: true }))
-    setTimeout(() => {
+    try {
+      // For now, we'll just mark it as deleted in Firestore
+      // You can implement actual deletion if needed
+      const notificationRef = doc(db, 'notifications', id)
+      await updateDoc(notificationRef, {
+        deleted: true
+      })
+      // Remove from local state immediately for better UX
       setNotifications(prev => prev.filter(notification => notification.id !== id))
+    } catch (error) {
+      console.error('Error deleting notification:', error)
+      showNotification('Failed to delete notification', 'error')
+    } finally {
       setLoading(prev => ({ ...prev, [id]: false }))
-    }, 500)
+    }
   }
 
   const showNotification = (message, type = 'info') => {

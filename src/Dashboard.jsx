@@ -3,7 +3,7 @@ import { useRole } from "./hooks/useRole"
 import { useData } from "./contexts/DataContext"
 import AdminDashboard from "./components/Admin/AdminDashboard"
 import RescueReports from "./components/Admin/RescueReports"
-import Volunteers from "./components/Admin/Volunteers"
+import Rescuers from "./components/Admin/Rescuers"
 import RescuedAnimals from "./components/Admin/RescuedAnimals"
 import AdoptionRequests from "./components/Admin/AdoptionRequests"
 import Settings from "./components/Admin/Settings"
@@ -27,7 +27,7 @@ function Dashboard() {
   }, [])
 
   // Get unread notifications count
-  const unreadCount = notifications.filter(n => n.status === 'Unread').length
+  const unreadCount = notifications.filter(n => !n.isRead).length
 
   // Get recent notifications (last 5)
   const recentNotifications = [...notifications]
@@ -46,10 +46,19 @@ function Dashboard() {
   }
 
   const handleNotificationClick = (notification) => {
-    if (notification.status === 'Unread') {
+    if (!notification.isRead) {
       markNotificationAsRead(notification.id)
     }
     setShowNotifications(false)
+    
+    // Navigate based on notification type
+    if (notification.type === 'report' || notification.type === 'rescue') {
+      setActiveSection('rescue-reports')
+    } else if (notification.type === 'rescuer' || notification.type === 'account') {
+      setActiveSection('rescuers')
+    } else if (notification.type === 'adoption') {
+      setActiveSection('adoption-requests')
+    }
   }
 
   // Menu items based on user role
@@ -69,7 +78,7 @@ function Dashboard() {
       return [
         { id: "dashboard", label: "Dashboard", icon: "bi bi-speedometer2" },
         { id: "rescue-reports", label: "Rescue Reports", icon: "bi bi-exclamation-triangle" },
-        { id: "volunteers", label: "Volunteers", icon: "bi bi-people-fill" },
+        { id: "rescuers", label: "Rescuer Management", icon: "bi bi-people-fill" },
         { id: "rescued-animals", label: "Rescued Animals", icon: "bi bi-heart" },
         { id: "adoption-requests", label: "Adoption Requests", icon: "bi bi-house-heart" },
         { id: "settings", label: "Settings", icon: "bi bi-gear" }
@@ -106,8 +115,8 @@ function Dashboard() {
           return <AdminDashboard userRole={userRole} onNavigate={setActiveSection} />
         case "rescue-reports":
           return <RescueReports />
-        case "volunteers":
-          return <Volunteers />
+        case "rescuers":
+          return <Rescuers />
         case "rescued-animals":
           return <RescuedAnimals />
         case "adoption-requests":
@@ -153,23 +162,35 @@ function Dashboard() {
                     recentNotifications.map(notification => (
                       <div 
                         key={notification.id}
-                        className={`notification-item ${notification.status === 'Unread' ? 'unread' : ''}`}
+                        className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
                         onClick={() => handleNotificationClick(notification)}
                       >
                         <div className="notification-icon">
                           <i className={`bi ${
-                            notification.type === 'Emergency' ? 'bi-exclamation-triangle-fill' :
-                            notification.type === 'Rescue' ? 'bi-truck' :
-                            notification.type === 'Adoption' ? 'bi-house-heart-fill' :
+                            notification.type === 'report' ? 'bi-exclamation-triangle-fill' :
+                            notification.type === 'rescue' ? 'bi-truck' :
+                            notification.type === 'adoption' ? 'bi-house-heart-fill' :
                             'bi-bell-fill'
                           }`}></i>
                         </div>
                         <div className="notification-content">
-                          <div className="notification-title">{notification.title}</div>
+                          <div className="notification-title">
+                            {notification.animalType && `${notification.animalType} Report`}
+                            {notification.urgencyLevel && (
+                              <span className={`urgency-badge urgency-${notification.urgencyLevel.toLowerCase()}`}>
+                                {notification.urgencyLevel}
+                              </span>
+                            )}
+                          </div>
                           <div className="notification-message">{notification.message}</div>
+                          {notification.locationAddress && (
+                            <div className="notification-location">
+                              <i className="bi bi-geo-alt-fill"></i> {notification.locationAddress.substring(0, 50)}...
+                            </div>
+                          )}
                           <div className="notification-time">{formatTimestamp(notification.timestamp)}</div>
                         </div>
-                        {notification.status === 'Unread' && (
+                        {!notification.isRead && (
                           <div className="unread-dot"></div>
                         )}
                       </div>

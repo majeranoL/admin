@@ -417,6 +417,40 @@
   opacity: 0.8;
 }
 
+/* Notification Content Styles */
+.notification-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+
+.notification-preview {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.notification-location {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.notification-location i {
+  font-size: 0.75rem;
+}
+
+/* Priority Badge - Critical */
+.priority-critical {
+  background: rgba(220, 38, 38, 0.2);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.4);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .notifications {
