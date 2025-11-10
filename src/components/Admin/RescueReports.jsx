@@ -32,20 +32,52 @@ function RescueReports() {
 
   const fetchRescuers = async () => {
     try {
+      // Query users collection for rescuers with role='Rescuer' and status='Active' or 'Approved'
       const rescuersQuery = query(
-        collection(db, 'rescuers'),
-        where('status', '==', 'Active')
+        collection(db, 'users'),
+        where('role', '==', 'Rescuer')
       )
       const rescuersSnapshot = await getDocs(rescuersQuery)
       
-      const rescuersData = rescuersSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
+      const rescuersData = rescuersSnapshot.docs
+        .map(doc => {
+          const data = doc.data()
+          // Build full name from firstName, middleName, lastName
+          const fullName = [data.firstName, data.middleName, data.lastName]
+            .filter(part => part && part.trim())
+            .join(' ') || data.email || 'Unknown'
+          
+          // Normalize status
+          const rawStatus = (data.status || '').toString().toLowerCase()
+          const isActiveStatus = rawStatus === 'active' || rawStatus === 'approved'
+          
+          return {
+            id: doc.id,
+            name: fullName,
+            email: data.email || 'N/A',
+            phoneNumber: data.phoneNumber || 'N/A',
+            status: data.status || 'Pending',
+            activeStatus: data.activeStatus || false,
+            verified: data.verified || false,
+            isActiveStatus: isActiveStatus,
+            ...data
+          }
+        })
+        .filter(rescuer => rescuer.isActiveStatus) // Only show Active/Approved rescuers
+        .sort((a, b) => {
+          // Prioritize activeStatus=true rescuers at the top
+          if (a.activeStatus && !b.activeStatus) return -1
+          if (!a.activeStatus && b.activeStatus) return 1
+          // Then sort by name
+          return a.name.localeCompare(b.name)
+        })
       
       setRescuers(rescuersData)
+      console.log('Active rescuers loaded:', rescuersData.length, 
+                  'Available now:', rescuersData.filter(r => r.activeStatus).length)
     } catch (error) {
       console.error('Error fetching rescuers:', error)
+      showNotification('Failed to load rescuers', 'error')
     }
   }
 
@@ -84,6 +116,9 @@ function RescueReports() {
             reporterPhone: data.contactInfo || 'N/A',
             reporterEmail: 'N/A', // Not in report, would need to fetch from users collection
             animalType: data.animalType || 'N/A',
+            breed: data.breed || 'Unknown',
+            age: data.age || 'Unknown', 
+            gender: data.gender || 'Unknown',
             location: data.locationAddress || 'N/A',
             urgency: data.urgencyLevel || 'Medium',
             status: data.status === 'Submitted' ? 'Pending' : (data.status || 'Pending'),
@@ -129,6 +164,11 @@ function RescueReports() {
         updatedAt: new Date()
       }
       
+      // Set outcome when status is Completed
+      if (newStatus === 'Completed') {
+        updateData.outcome = 'Successful'
+      }
+      
       if (rescueTeam) {
         updateData.assignedRescuer = rescueTeam.id || null
         updateData.assignedRescuerName = rescueTeam.name || rescueTeam
@@ -144,7 +184,8 @@ function RescueReports() {
           report.id === reportId 
             ? { 
                 ...report, 
-                status: newStatus, 
+                status: newStatus,
+                outcome: newStatus === 'Completed' ? 'Successful' : report.outcome,
                 assignedRescuer: rescueTeam?.id || report.assignedRescuer,
                 assignedRescuerName: rescueTeam?.name || rescueTeam || report.assignedRescuerName 
               }
@@ -222,11 +263,17 @@ function RescueReports() {
       // Get report details before update for logging
       const report = rescueReports.find(r => r.id === id)
       
+      if (!report) {
+        throw new Error('Report not found')
+      }
+      
       await updateRescueReportStatus(id, action, rescueTeam)
       
       // If status is Completed, create RescuedAnimals entry
       if (action === 'Completed') {
+        console.log('Creating RescuedAnimals entry for report:', report.id)
         await createRescuedAnimalEntry(report, rescueTeam)
+        console.log('RescuedAnimals entry created successfully')
       }
       
       const actionText = action === 'assigned' ? 'assigned to rescue team' : 
@@ -254,7 +301,7 @@ function RescueReports() {
       showNotification(`Rescue report ${actionText} successfully!`, 'success')
     } catch (error) {
       console.error('Error updating rescue report status:', error)
-      showNotification('Failed to update rescue report. Please try again.', 'error')
+      showNotification(`Failed to update rescue report: ${error.message}`, 'error')
     }
     setShowConfirm(false)
     setActionReport({ id: null, action: null, rescueTeam: null })
@@ -594,6 +641,9 @@ function RescueReports() {
           <div className="assign-modal">
             <h3>Assign Rescuer</h3>
             <p>Select an available rescuer for report {selectedReport?.id}</p>
+            <p className="modal-info">
+              <i className="bi bi-info-circle"></i> Rescuers with "Available Now" badge can respond immediately. Others are active but may take longer.
+            </p>
             <div className="team-options">
               {rescuers.length === 0 ? (
                 <p className="no-rescuers">No active rescuers available</p>
@@ -601,15 +651,18 @@ function RescueReports() {
                 rescuers.map(rescuer => (
                   <button
                     key={rescuer.id}
-                    className="btn-team"
+                    className={`btn-team ${rescuer.activeStatus ? 'btn-team-priority' : ''}`}
                     onClick={() => assignRescuer(rescuer)}
                   >
                     <div className="rescuer-option">
-                      <span className="rescuer-name">{rescuer.name}</span>
-                      <span className="rescuer-type">{rescuer.type || 'Rescuer'}</span>
-                      {rescuer.location && (
-                        <span className="rescuer-location">{rescuer.location}</span>
-                      )}
+                      <div className="rescuer-header">
+                        <span className="rescuer-name">{rescuer.name}</span>
+                        {rescuer.activeStatus && (
+                          <span className="available-now-badge">
+                            <i className="bi bi-circle-fill"></i> Available Now
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </button>
                 ))
