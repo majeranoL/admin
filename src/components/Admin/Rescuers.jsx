@@ -29,20 +29,138 @@ function Rescuers() {
   const fetchRescuers = async () => {
     try {
       setLoading(true)
+
+      // Query 1: Users with role='Rescuer'
+      const usersRef = collection(db, 'users')
+      const rescuersQuery = query(usersRef, where('role', '==', 'Rescuer'))
+      const rescuersSnapshot = await getDocs(rescuersQuery)
+
+      const rescuersData = rescuersSnapshot.docs.map(d => {
+        const data = d.data() || {}
+        
+        // Build full name from firstName, middleName, lastName
+        const fullName = [data.firstName, data.middleName, data.lastName]
+          .filter(part => part && part.trim())
+          .join(' ') || data.email || 'Unknown'
+        
+        // Determine status: if no status field exists, treat as Pending (awaiting approval)
+        // Otherwise: Approved/approved/active -> Active, Pending -> Pending, Rejected -> Rejected
+        const rawStatus = (data.status || data.accountStatus || data.approvalStatus || '').toString()
+        const statusLower = rawStatus.toLowerCase()
+        let normalizedStatus = 'Pending' // Default for new registrations
+        
+        if (statusLower === 'approved' || statusLower === 'active') {
+          normalizedStatus = 'Active'
+        } else if (statusLower === 'rejected') {
+          normalizedStatus = 'Rejected'
+        } else if (statusLower === 'suspended') {
+          normalizedStatus = 'Suspended'
+        }
+
+        // Convert createdAt timestamp (number in milliseconds) to date string
+        let registrationDate = 'N/A'
+        if (data.createdAt) {
+          try {
+            registrationDate = new Date(data.createdAt).toLocaleDateString()
+          } catch (e) {
+            registrationDate = 'N/A'
+          }
+        }
+
+        return {
+          id: d.id,
+          name: fullName,
+          email: data.email || '',
+          phoneNumber: data.phoneNumber || '',
+          location: data.address || data.location || '',
+          status: normalizedStatus,
+          verified: data.verified || false,
+          registrationDate: registrationDate,
+          lastActive: data.lastActive?.toDate?.()?.toLocaleDateString?.() || 'N/A',
+          authMethod: data.authMethod || '',
+          type: 'Rescuer', // Mark as Rescuer
+          source: 'users', // Mark this came from users collection
+          raw: data
+        }
+      })
+
+      // Query 2: Users with role='User' AND volunteer=true
+      const volunteersQuery = query(usersRef, where('role', '==', 'User'), where('volunteer', '==', true))
+      const volunteersSnapshot = await getDocs(volunteersQuery)
+
+      const volunteersData = volunteersSnapshot.docs.map(d => {
+        const data = d.data() || {}
+        
+        // Build full name
+        const fullName = [data.firstName, data.middleName, data.lastName]
+          .filter(part => part && part.trim())
+          .join(' ') || data.email || 'Unknown'
+        
+        // Determine status
+        const rawStatus = (data.status || data.accountStatus || data.approvalStatus || '').toString()
+        const statusLower = rawStatus.toLowerCase()
+        let normalizedStatus = 'Pending'
+        
+        if (statusLower === 'approved' || statusLower === 'active') {
+          normalizedStatus = 'Active'
+        } else if (statusLower === 'rejected') {
+          normalizedStatus = 'Rejected'
+        } else if (statusLower === 'suspended') {
+          normalizedStatus = 'Suspended'
+        }
+
+        // Convert createdAt timestamp
+        let registrationDate = 'N/A'
+        if (data.createdAt) {
+          try {
+            registrationDate = new Date(data.createdAt).toLocaleDateString()
+          } catch (e) {
+            registrationDate = 'N/A'
+          }
+        }
+
+        return {
+          id: d.id,
+          name: fullName,
+          email: data.email || '',
+          phoneNumber: data.phoneNumber || '',
+          location: data.address || data.location || '',
+          status: normalizedStatus,
+          verified: data.verified || false,
+          registrationDate: registrationDate,
+          lastActive: data.lastActive?.toDate?.()?.toLocaleDateString?.() || 'N/A',
+          authMethod: data.authMethod || '',
+          type: 'Volunteer', // Mark as Volunteer
+          source: 'users',
+          raw: data
+        }
+      })
+
+      // Combine rescuers and volunteers
+      const usersData = [...rescuersData, ...volunteersData]
+
+      // Fallback: also try the 'rescuers' collection if present and merge (keeps existing behavior)
+
+      // Fallback: also try the 'rescuers' collection if present and merge (keeps existing behavior)
       const rescuersRef = collection(db, 'rescuers')
-      const q = query(rescuersRef)
-      const querySnapshot = await getDocs(q)
-      
-      const rescuersData = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        registrationDate: doc.data().registrationDate?.toDate?.()?.toLocaleDateString() || 'N/A',
-        lastActive: doc.data().lastActive?.toDate?.()?.toLocaleDateString() || 'N/A'
+      const rQuery = query(rescuersRef)
+      const rSnapshot = await getDocs(rQuery)
+      const legacyRescuers = rSnapshot.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
+        registrationDate: d.data().registrationDate?.toDate?.()?.toLocaleDateString() || 'N/A',
+        lastActive: d.data().lastActive?.toDate?.()?.toLocaleDateString() || 'N/A'
       }))
-      
-      setRescuers(rescuersData)
+
+      // Merge usersData and legacyRescuers, avoiding duplicates (prefer usersData)
+      const merged = [...usersData]
+      legacyRescuers.forEach(r => {
+        if (!merged.find(u => u.id === r.id)) merged.push(r)
+      })
+
+      setRescuers(merged)
     } catch (error) {
-      console.error('Error fetching rescuers:', error)
+      console.error('Error fetching rescuers/users:', error)
       showNotification('Failed to load rescuers', 'error')
     } finally {
       setLoading(false)
@@ -59,12 +177,11 @@ function Rescuers() {
   // Filter and search logic
   const filteredRescuers = rescuers.filter(rescuer => {
     const matchesStatus = filterStatus === 'all' || rescuer.status?.toLowerCase() === filterStatus.toLowerCase()
-    const matchesType = filterType === 'all' || rescuer.type?.toLowerCase() === filterType.toLowerCase()
+    const matchesType = filterType === 'all' || rescuer.type === filterType
     const matchesSearch = 
       rescuer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       rescuer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      rescuer.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      rescuer.skills?.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+      rescuer.location?.toLowerCase().includes(searchTerm.toLowerCase())
     return matchesStatus && matchesType && matchesSearch
   })
 
@@ -88,14 +205,13 @@ function Rescuers() {
   // Type badge styling
   const getTypeBadge = (type) => {
     const typeConfig = {
-      'Shelter': { class: 'type-shelter', label: 'Shelter Rescuer' },
-      'Volunteer': { class: 'type-volunteer', label: 'Volunteer' },
-      'Independent': { class: 'type-independent', label: 'Independent' }
+      'Rescuer': { class: 'type-rescuer', label: 'Rescuer', icon: 'bi-shield-fill-check' },
+      'Volunteer': { class: 'type-volunteer', label: 'Volunteer', icon: 'bi-heart-fill' }
     }
-    const config = typeConfig[type] || { class: 'type-unknown', label: type }
+    const config = typeConfig[type] || { class: 'type-unknown', label: type, icon: 'bi-person-fill' }
     return (
       <span className={`type-badge ${config.class}`}>
-        {config.label}
+        <i className={`bi ${config.icon}`}></i> {config.label}
       </span>
     )
   }
@@ -126,9 +242,24 @@ function Rescuers() {
     setActionLoading({ ...actionLoading, [id]: true })
     
     try {
-      const rescuerRef = doc(db, 'rescuers', id)
+      // Find the rescuer to determine which collection to update
+      const rescuer = rescuers.find(r => r.id === id)
+      const isFromUsers = rescuer?.source === 'users'
+      
+      // Determine the status value to write to Firestore
+      // For users collection: 'Approved' or 'Rejected' or 'Suspended'
+      // For rescuers collection: keep as-is (Active/Rejected/Suspended)
+      let statusToWrite = action
+      if (isFromUsers && action === 'Active') {
+        statusToWrite = 'Approved' // Write 'Approved' to users collection
+      }
+      
+      // Update the appropriate collection
+      const collectionName = isFromUsers ? 'users' : 'rescuers'
+      const rescuerRef = doc(db, collectionName, id)
+      
       await updateDoc(rescuerRef, {
-        status: action,
+        status: statusToWrite,
         [`${action.toLowerCase()}Date`]: serverTimestamp(),
         [`${action.toLowerCase()}By`]: username || userId,
         lastModified: serverTimestamp()
@@ -144,8 +275,9 @@ function Rescuers() {
         id,
         { 
           action: action,
-          previousStatus: rescuers.find(r => r.id === id)?.status,
-          newStatus: action
+          previousStatus: rescuer?.status,
+          newStatus: action,
+          collection: collectionName
         }
       )
 
@@ -182,8 +314,8 @@ function Rescuers() {
     total: rescuers.length,
     pending: rescuers.filter(r => r.status === 'Pending').length,
     active: rescuers.filter(r => r.status === 'Active').length,
-    shelter: rescuers.filter(r => r.type === 'Shelter').length,
-    volunteer: rescuers.filter(r => r.type === 'Volunteer').length
+    rescuers: rescuers.filter(r => r.type === 'Rescuer').length,
+    volunteers: rescuers.filter(r => r.type === 'Volunteer').length
   }
 
   return (
@@ -230,20 +362,20 @@ function Rescuers() {
           <div className="stat-icon"><i className="bi bi-check-circle"></i></div>
           <div className="stat-content">
             <div className="stat-value">{stats.active}</div>
-            <div className="stat-label">Active Rescuers</div>
+            <div className="stat-label">Active</div>
           </div>
         </div>
-        <div className="stat-card shelter">
-          <div className="stat-icon"><i className="bi bi-building"></i></div>
+        <div className="stat-card stat-rescuers">
+          <div className="stat-icon"><i className="bi bi-shield-fill-check"></i></div>
           <div className="stat-content">
-            <div className="stat-value">{stats.shelter}</div>
-            <div className="stat-label">Shelter Rescuers</div>
+            <div className="stat-value">{stats.rescuers}</div>
+            <div className="stat-label">Rescuers</div>
           </div>
         </div>
-        <div className="stat-card volunteer">
-          <div className="stat-icon"><i className="bi bi-hand-thumbs-up"></i></div>
+        <div className="stat-card stat-volunteers">
+          <div className="stat-icon"><i className="bi bi-heart-fill"></i></div>
           <div className="stat-content">
-            <div className="stat-value">{stats.volunteer}</div>
+            <div className="stat-value">{stats.volunteers}</div>
             <div className="stat-label">Volunteers</div>
           </div>
         </div>
@@ -255,7 +387,7 @@ function Rescuers() {
           <i className="bi bi-search"></i>
           <input
             type="text"
-            placeholder="Search by name, email, location, or skills..."
+            placeholder="Search by name, email, or location..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -282,9 +414,8 @@ function Rescuers() {
             className="filter-select"
           >
             <option value="all">All Types</option>
-            <option value="shelter">Shelter Rescuers</option>
-            <option value="volunteer">Volunteers</option>
-            <option value="independent">Independent</option>
+            <option value="Rescuer">Rescuers</option>
+            <option value="Volunteer">Volunteers</option>
           </select>
         </div>
       </div>
@@ -332,12 +463,17 @@ function Rescuers() {
                       {rescuer.status === 'Pending' && (
                         <span className="new-badge">NEW</span>
                       )}
+                      {rescuer.verified && (
+                        <span className="verified-badge" title="Verified Account">
+                          <i className="bi bi-patch-check-fill"></i>
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td>{getTypeBadge(rescuer.type)}</td>
                   <td className="contact-info">
                     <div>{rescuer.email}</div>
-                    <div className="phone">{rescuer.phone}</div>
+                    <div className="phone">{rescuer.phoneNumber || rescuer.phone || 'N/A'}</div>
                   </td>
                   <td className="location-cell">{rescuer.location || 'N/A'}</td>
                   <td>{getStatusBadge(rescuer.status)}</td>
@@ -453,7 +589,7 @@ function Rescuers() {
                   </div>
                   <div className="detail-item">
                     <label>Phone:</label>
-                    <span>{selectedRescuer.phone}</span>
+                    <span>{selectedRescuer.phoneNumber || selectedRescuer.phone || 'N/A'}</span>
                   </div>
                   <div className="detail-item">
                     <label>Location:</label>
@@ -463,6 +599,20 @@ function Rescuers() {
                     <label>Status:</label>
                     {getStatusBadge(selectedRescuer.status)}
                   </div>
+                  {selectedRescuer.verified !== undefined && (
+                    <div className="detail-item">
+                      <label>Verified:</label>
+                      <span className={selectedRescuer.verified ? 'text-success' : 'text-warning'}>
+                        {selectedRescuer.verified ? '✓ Verified' : '⚠ Not Verified'}
+                      </span>
+                    </div>
+                  )}
+                  {selectedRescuer.authMethod && (
+                    <div className="detail-item">
+                      <label>Registration Method:</label>
+                      <span>{selectedRescuer.authMethod.replace('_', ' ')}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

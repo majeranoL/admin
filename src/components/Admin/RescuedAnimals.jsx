@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
-import { useData } from '../../contexts/DataContext'
+import React, { useState, useEffect } from 'react'
+import { collection, query, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '../../config/firebase'
 import { useRole } from '../../hooks/useRole'
 import AuditLogService from '../../services/auditLogService'
 import '../../css/Admin/RescuedAnimals.css'
 
 function RescuedAnimals() {
-  const { rescuedAnimals, loading, updateAnimalStatus, showNotification } = useData()
   const { userId, username } = useRole()
   
+  const [rescuedAnimals, setRescuedAnimals] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' })
   const [selectedAnimals, setSelectedAnimals] = useState([])
   const [filterStatus, setFilterStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
@@ -15,6 +18,60 @@ function RescuedAnimals() {
   const [showModal, setShowModal] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [actionAnimal, setActionAnimal] = useState({ id: null, action: null })
+
+  useEffect(() => {
+    fetchRescuedAnimals()
+  }, [])
+
+  const fetchRescuedAnimals = async () => {
+    try {
+      setLoading(true)
+      const rescuedAnimalsRef = collection(db, 'RescuedAnimals')
+      const q = query(rescuedAnimalsRef)
+      const querySnapshot = await getDocs(q)
+      
+      const animals = querySnapshot.docs.map(doc => {
+        const data = doc.data()
+        return {
+          id: doc.id,
+          name: data.animalType || 'Unknown', // Use animalType as name if no name field
+          species: data.animalType || 'Unknown',
+          breed: data.breed || 'Unknown',
+          age: data.age || 'Unknown',
+          gender: data.gender || 'Unknown',
+          status: data.status || 'Medical Care',
+          medicalStatus: data.medicalStatus || 'Under Evaluation',
+          readyForAdoption: data.readyForAdoption || false,
+          rescueDate: data.rescueDate?.toDate?.()?.toLocaleDateString() || 'N/A',
+          rescueLocation: data.rescueLocation || 'N/A',
+          rescuedBy: data.rescuedBy || 'Unknown',
+          reporterName: data.reporterName || 'Anonymous',
+          reporterPhone: data.reporterPhone || 'N/A',
+          emergencyDetails: data.emergencyDetails || 'N/A',
+          animalDescription: data.animalDescription || 'N/A',
+          imageUrls: data.imageUrls || [],
+          rescueReportId: data.rescueReportId || null,
+          urgencyLevel: data.urgencyLevel || 'Medium',
+          createdAt: data.createdAt?.toDate?.()?.toLocaleDateString() || 'N/A',
+          updatedAt: data.updatedAt?.toDate?.()?.toLocaleDateString() || 'N/A'
+        }
+      })
+      
+      setRescuedAnimals(animals)
+    } catch (error) {
+      console.error('Error fetching rescued animals:', error)
+      showNotificationMessage('Failed to load rescued animals', 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const showNotificationMessage = (message, type = 'info') => {
+    setNotification({ show: true, message, type })
+    setTimeout(() => {
+      setNotification({ show: false, message: '', type: '' })
+    }, 3000)
+  }
 
   // Filter and search logic
   const filteredAnimals = rescuedAnimals.filter(animal => {
@@ -35,6 +92,28 @@ function RescuedAnimals() {
     }
     const config = statusConfig[status] || { class: 'status-unknown', label: status }
     return <span className={`status-badge ${config.class}`}>{config.label}</span>
+  }
+
+  // Medical Status badge styling
+  const getMedicalStatusBadge = (medicalStatus) => {
+    const statusConfig = {
+      'Healthy': { class: 'medical-healthy', label: 'Healthy' },
+      'Under Treatment': { class: 'medical-treatment', label: 'Under Treatment' },
+      'Under Evaluation': { class: 'medical-evaluation', label: 'Under Evaluation' },
+      'Critical': { class: 'medical-critical', label: 'Critical' },
+      'Recovering': { class: 'medical-recovering', label: 'Recovering' }
+    }
+    const config = statusConfig[medicalStatus] || { class: 'medical-unknown', label: medicalStatus }
+    return <span className={`medical-badge ${config.class}`}>{config.label}</span>
+  }
+
+  // Ready for Adoption display
+  const getAdoptionReadiness = (ready) => {
+    return ready ? (
+      <span className="adoption-yes"><i className="bi bi-check-circle-fill"></i> Yes</span>
+    ) : (
+      <span className="adoption-no"><i className="bi bi-x-circle-fill"></i> No</span>
+    )
   }
 
   const handleSelectAnimal = (animalId) => {
@@ -64,10 +143,16 @@ function RescuedAnimals() {
       // Get animal details before update for logging
       const animal = rescuedAnimals.find(a => a.id === id)
       
-      updateAnimalStatus(id, action)
-      const actionText = action === 'adopted' ? 'marked as adopted' : 
-                        action === 'available' ? 'marked as available' :
-                        action === 'medical_care' ? 'moved to medical care' : 'updated'
+      const animalRef = doc(db, 'RescuedAnimals', id)
+      await updateDoc(animalRef, {
+        status: action,
+        updatedAt: serverTimestamp()
+      })
+      
+      const actionText = action === 'Adopted' ? 'marked as adopted' : 
+                        action === 'Available' ? 'marked as available' :
+                        action === 'Medical Care' ? 'moved to medical care' : 
+                        action === 'Quarantine' ? 'moved to quarantine' : 'updated'
       
       // Log the animal status change as data access
       await AuditLogService.logDataAccess(
@@ -87,10 +172,11 @@ function RescuedAnimals() {
         }
       )
       
-      showNotification(`Animal ${actionText} successfully!`, 'success')
+      showNotificationMessage(`Animal ${actionText} successfully!`, 'success')
+      fetchRescuedAnimals() // Refresh the list
     } catch (error) {
       console.error('Error updating animal status:', error)
-      showNotification('Failed to update animal status. Please try again.', 'error')
+      showNotificationMessage('Failed to update animal status. Please try again.', 'error')
     }
     setShowConfirm(false)
     setActionAnimal({ id: null, action: null })
@@ -103,6 +189,13 @@ function RescuedAnimals() {
 
   return (
     <div className="rescued-animals">
+      {/* Notification */}
+      {notification.show && (
+        <div className={`notification notification-${notification.type}`}>
+          {notification.message}
+        </div>
+      )}
+
       {/* Header */}
       <div className="animals-header">
         <div className="header-left">
@@ -112,7 +205,9 @@ function RescuedAnimals() {
           </span>
         </div>
         <div className="header-actions">
-          <button className="btn-add">Add New Animal</button>
+          <button className="btn-refresh" onClick={fetchRescuedAnimals} disabled={loading}>
+            <i className="bi bi-arrow-clockwise"></i> Refresh
+          </button>
         </div>
       </div>
 
@@ -160,7 +255,9 @@ function RescuedAnimals() {
               <th>Species/Breed</th>
               <th>Age</th>
               <th>Status</th>
-              <th>Location</th>
+              <th>Medical Status</th>
+              <th>Ready for Adoption</th>
+              <th>Rescue Location</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -174,12 +271,14 @@ function RescuedAnimals() {
                     onChange={() => handleSelectAnimal(animal.id)}
                   />
                 </td>
-                <td className="animal-id">{animal.id}</td>
+                <td className="animal-id">{animal.id.substring(0, 8)}...</td>
                 <td className="animal-name">{animal.name}</td>
                 <td className="animal-species">{animal.species} - {animal.breed}</td>
                 <td className="animal-age">{animal.age}</td>
                 <td>{getStatusBadge(animal.status)}</td>
-                <td className="animal-location">{animal.location}</td>
+                <td>{getMedicalStatusBadge(animal.medicalStatus)}</td>
+                <td className="adoption-ready">{getAdoptionReadiness(animal.readyForAdoption)}</td>
+                <td className="animal-location">{animal.rescueLocation}</td>
                 <td className="actions-cell">
                   <div className="action-buttons">
                     <button
@@ -249,11 +348,7 @@ function RescuedAnimals() {
                 <h4>Basic Information</h4>
                 <div className="detail-grid">
                   <div className="detail-item">
-                    <label>Name:</label>
-                    <span>{selectedAnimal.name}</span>
-                  </div>
-                  <div className="detail-item">
-                    <label>Species:</label>
+                    <label>Animal Type:</label>
                     <span>{selectedAnimal.species}</span>
                   </div>
                   <div className="detail-item">
@@ -273,38 +368,52 @@ function RescuedAnimals() {
                     {getStatusBadge(selectedAnimal.status)}
                   </div>
                   <div className="detail-item">
-                    <label>Rescue Date:</label>
-                    <span>{selectedAnimal.rescueDate}</span>
+                    <label>Medical Status:</label>
+                    {getMedicalStatusBadge(selectedAnimal.medicalStatus)}
                   </div>
                   <div className="detail-item">
-                    <label>Location:</label>
-                    <span>{selectedAnimal.location}</span>
+                    <label>Ready for Adoption:</label>
+                    {getAdoptionReadiness(selectedAnimal.readyForAdoption)}
                   </div>
                 </div>
               </div>
 
               <div className="detail-section">
-                <h4>Health Information</h4>
+                <h4>Rescue Information</h4>
                 <div className="detail-grid">
                   <div className="detail-item">
-                    <label>Condition:</label>
-                    <span>{selectedAnimal.condition}</span>
+                    <label>Rescue Date:</label>
+                    <span>{selectedAnimal.rescueDate}</span>
                   </div>
                   <div className="detail-item">
-                    <label>Vaccinated:</label>
-                    <span>{selectedAnimal.vaccinated ? 'Yes' : 'No'}</span>
+                    <label>Rescue Location:</label>
+                    <span>{selectedAnimal.rescueLocation}</span>
                   </div>
                   <div className="detail-item">
-                    <label>Spayed/Neutered:</label>
-                    <span>{selectedAnimal.spayed ? 'Yes' : 'No'}</span>
+                    <label>Rescued By:</label>
+                    <span>{selectedAnimal.rescuedBy}</span>
+                  </div>
+                  <div className="detail-item">
+                    <label>Urgency Level:</label>
+                    <span className={`urgency-${selectedAnimal.urgencyLevel?.toLowerCase()}`}>
+                      {selectedAnimal.urgencyLevel}
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <label>Reporter Name:</label>
+                    <span>{selectedAnimal.reporterName}</span>
+                  </div>
+                  <div className="detail-item">
+                    <label>Reporter Phone:</label>
+                    <span>{selectedAnimal.reporterPhone}</span>
                   </div>
                   <div className="detail-item full-width">
-                    <label>Medical History:</label>
-                    <span>{selectedAnimal.medicalHistory}</span>
+                    <label>Animal Description:</label>
+                    <span>{selectedAnimal.animalDescription}</span>
                   </div>
                   <div className="detail-item full-width">
-                    <label>Description:</label>
-                    <span>{selectedAnimal.description}</span>
+                    <label>Emergency Details:</label>
+                    <span>{selectedAnimal.emergencyDetails}</span>
                   </div>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { collection, query, where, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, updateDoc, getDoc, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 import { useData } from '../../contexts/DataContext'
 import { useRole } from '../../hooks/useRole'
@@ -223,6 +223,12 @@ function RescueReports() {
       const report = rescueReports.find(r => r.id === id)
       
       await updateRescueReportStatus(id, action, rescueTeam)
+      
+      // If status is Completed, create RescuedAnimals entry
+      if (action === 'Completed') {
+        await createRescuedAnimalEntry(report, rescueTeam)
+      }
+      
       const actionText = action === 'assigned' ? 'assigned to rescue team' : 
                         action === 'In Progress' ? 'marked as in progress' :
                         action === 'Completed' ? 'marked as completed' : 
@@ -252,6 +258,54 @@ function RescueReports() {
     }
     setShowConfirm(false)
     setActionReport({ id: null, action: null, rescueTeam: null })
+  }
+
+  const createRescuedAnimalEntry = async (report, rescueTeam) => {
+    try {
+      const rescuedAnimalsRef = collection(db, 'RescuedAnimals')
+      
+      const animalData = {
+        // Animal Information from Report
+        animalType: report.animalType || 'Unknown',
+        animalDescription: report.animalDescription || 'N/A',
+        breed: report.breed || 'Unknown',
+        age: report.age || 'Unknown',
+        gender: report.gender || 'Unknown',
+        
+        // Rescue Information
+        rescueReportId: report.id,
+        rescueDate: serverTimestamp(),
+        rescueLocation: report.location || 'N/A',
+        rescuedBy: rescueTeam?.name || rescueTeam || 'Unknown',
+        urgencyLevel: report.urgency || 'Medium',
+        
+        // Reporter Information
+        reporterName: report.reporterName || 'Anonymous',
+        reporterPhone: report.reporterPhone || 'N/A',
+        
+        // Medical and Status Information
+        status: 'Medical Care', // Default status for newly rescued animals
+        medicalStatus: 'Under Evaluation', // Default medical status
+        readyForAdoption: false, // Not ready until medical clearance
+        
+        // Additional Details
+        emergencyDetails: report.description || 'N/A',
+        imageUrls: report.imageUrls || [],
+        latitude: report.latitude || null,
+        longitude: report.longitude || null,
+        
+        // Metadata
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        createdBy: userId || 'admin'
+      }
+      
+      await addDoc(rescuedAnimalsRef, animalData)
+      console.log('Rescued animal entry created successfully')
+    } catch (error) {
+      console.error('Error creating rescued animal entry:', error)
+      throw error
+    }
   }
 
   const handleViewDetails = (report) => {
