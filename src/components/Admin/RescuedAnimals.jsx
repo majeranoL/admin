@@ -41,6 +41,7 @@ function RescuedAnimals() {
           gender: data.gender || 'Unknown',
           status: data.status || 'Medical Care',
           medicalStatus: data.medicalStatus || 'Under Evaluation',
+          Adoption: data.Adoption || false,
           readyForAdoption: data.readyForAdoption || false,
           rescueDate: data.rescueDate?.toDate?.()?.toLocaleDateString() || 'N/A',
           rescueLocation: data.rescueLocation || 'N/A',
@@ -144,13 +145,27 @@ function RescuedAnimals() {
       const animal = rescuedAnimals.find(a => a.id === id)
       
       const animalRef = doc(db, 'RescuedAnimals', id)
-      await updateDoc(animalRef, {
+      
+      // Prepare update data
+      const updateData = {
         status: action,
         updatedAt: serverTimestamp()
-      })
+      }
+      
+      // If marking as Available (for adoption), set Adoption and readyForAdoption fields
+      if (action === 'Available') {
+        updateData.Adoption = true
+        updateData.readyForAdoption = true
+      } else if (action === 'Medical Care' || action === 'Quarantine') {
+        // If moving back to medical care or quarantine, set to false
+        updateData.Adoption = false
+        updateData.readyForAdoption = false
+      }
+      
+      await updateDoc(animalRef, updateData)
       
       const actionText = action === 'Adopted' ? 'marked as adopted' : 
-                        action === 'Available' ? 'marked as available' :
+                        action === 'Available' ? 'marked as available for adoption' :
                         action === 'Medical Care' ? 'moved to medical care' : 
                         action === 'Quarantine' ? 'moved to quarantine' : 'updated'
       
@@ -168,6 +183,7 @@ function RescuedAnimals() {
           breed: animal?.breed,
           oldStatus: animal?.status,
           newStatus: action,
+          readyForAdoption: action === 'Available' ? true : (action === 'Medical Care' || action === 'Quarantine' ? false : animal?.readyForAdoption),
           rescueDate: animal?.rescueDate
         }
       )

@@ -212,6 +212,15 @@ function RescueReports() {
     return matchesStatus && matchesUrgency && matchesSearch
   })
 
+  // Separate active and completed reports
+  const activeReports = filteredReports.filter(report => 
+    report.status === 'Pending' || report.status === 'In Progress'
+  )
+  
+  const completedReports = filteredReports.filter(report => 
+    report.status === 'Completed' || report.status === 'Cancelled'
+  )
+
   // Status badge styling
   const getStatusBadge = (status) => {
     const statusConfig = {
@@ -424,100 +433,163 @@ function RescueReports() {
         </div>
       </div>
 
-      {/* Reports Table */}
-      <div className="reports-table-container">
-        {isLoadingData ? (
-          <div className="no-reports">
-            <p>Loading rescue reports...</p>
-          </div>
-        ) : (
-          <table className="reports-table">
-            <thead>
-              <tr>
-                <th>
-                  <input
-                    type="checkbox"
-                    checked={selectedReports.length === filteredReports.length && filteredReports.length > 0}
-                    onChange={handleSelectAll}
-                  />
-                </th>
-                <th>Report ID</th>
-                <th>Reporter</th>
-                <th>Animal Type</th>
-                <th>Location</th>
-                <th>Urgency</th>
-                <th>Status</th>
-                <th>Assigned Rescuer</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredReports.map(report => (
-                <tr key={report.id} className="report-row">
-                  <td>
+      {/* Active Reports Table */}
+      <div className="reports-section">
+        <div className="section-header">
+          <h3>Active Rescues</h3>
+          <span className="section-count">{activeReports.length} active</span>
+        </div>
+        <div className="reports-table-container">
+          {isLoadingData ? (
+            <div className="no-reports">
+              <p>Loading rescue reports...</p>
+            </div>
+          ) : activeReports.length > 0 ? (
+            <table className="reports-table">
+              <thead>
+                <tr>
+                  <th>
                     <input
                       type="checkbox"
-                      checked={selectedReports.includes(report.id)}
-                      onChange={() => handleSelectReport(report.id)}
+                      checked={selectedReports.length === activeReports.length && activeReports.length > 0}
+                      onChange={handleSelectAll}
                     />
-                  </td>
-                  <td className="report-id">{report.id}</td>
-                  <td className="reporter-name">{report.reporterName}</td>
-                  <td className="animal-type">{report.animalType}</td>
-                  <td className="location">{report.location}</td>
-                  <td>{getUrgencyBadge(report.urgency)}</td>
-                  <td>{getStatusBadge(report.status)}</td>
-                  <td className="rescuer-cell">{report.assignedRescuerName || 'Unassigned'}</td>
-                  <td className="actions-cell">
-                    <div className="action-buttons">
-                      <button
-                        className="btn-view"
-                        onClick={() => handleViewDetails(report)}
-                      >
-                        View
-                      </button>
-                      
-                      {report.status === 'Pending' && (
-                        <>
-                          <button
-                            className="btn-assign"
-                            onClick={() => handleAssignRescuer(report.id)}
-                            disabled={loading[report.id]}
-                          >
-                            {loading[report.id] ? '...' : 'Assign Team'}
-                          </button>
-                          <button
-                            className="btn-cancel"
-                            onClick={() => handleStatusAction(report.id, 'Cancelled')}
-                            disabled={loading[report.id]}
-                          >
-                            {loading[report.id] ? '...' : 'Cancel'}
-                          </button>
-                        </>
-                      )}
-                      
-                      {report.status === 'In Progress' && (
-                        <button
-                          className="btn-complete"
-                          onClick={() => handleStatusAction(report.id, 'Completed')}
-                          disabled={loading[report.id]}
-                        >
-                          {loading[report.id] ? '...' : 'Mark Complete'}
-                        </button>
-                      )}
-                    </div>
-                  </td>
+                  </th>
+                  <th>Report ID</th>
+                  <th>Reporter</th>
+                  <th>Animal Type</th>
+                  <th>Location</th>
+                  <th>Urgency</th>
+                  <th>Status</th>
+                  <th>Assigned Rescuer</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {activeReports.map(report => (
+                  <tr key={report.id} className="report-row">
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedReports.includes(report.id)}
+                        onChange={() => handleSelectReport(report.id)}
+                      />
+                    </td>
+                    <td className="report-id">{report.id}</td>
+                    <td className="reporter-name">{report.reporterName}</td>
+                    <td className="animal-type">{report.animalType}</td>
+                    <td className="location">{report.location}</td>
+                    <td>{getUrgencyBadge(report.urgency)}</td>
+                    <td>{getStatusBadge(report.status)}</td>
+                    <td className="rescuer-cell">{report.assignedRescuerName || 'Unassigned'}</td>
+                    <td className="actions-cell">
+                      <div className="action-buttons">
+                        <button
+                          className="btn-view"
+                          onClick={() => handleViewDetails(report)}
+                        >
+                          View
+                        </button>
+                        
+                        {report.status === 'Pending' && (
+                          <>
+                            <button
+                              className="btn-assign"
+                              onClick={() => handleAssignRescuer(report.id)}
+                              disabled={loading[report.id]}
+                            >
+                              {loading[report.id] ? '...' : 'Assign Team'}
+                            </button>
+                            <button
+                              className="btn-cancel"
+                              onClick={() => handleStatusAction(report.id, 'Cancelled')}
+                              disabled={loading[report.id]}
+                            >
+                              {loading[report.id] ? '...' : 'Cancel'}
+                            </button>
+                          </>
+                        )}
+                        
+                        {report.status === 'In Progress' && (
+                          <button
+                            className="btn-complete"
+                            onClick={() => handleStatusAction(report.id, 'Completed')}
+                            disabled={loading[report.id]}
+                          >
+                            {loading[report.id] ? '...' : 'Mark Complete'}
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="no-reports">
+              <p>No active rescue reports.</p>
+            </div>
+          )}
+        </div>
+      </div>
 
-        {!isLoadingData && filteredReports.length === 0 && (
-          <div className="no-reports">
-            <p>No rescue reports found matching your criteria.</p>
-          </div>
-        )}
+      {/* Completed Reports Table */}
+      <div className="reports-section completed-section">
+        <div className="section-header">
+          <h3>Completed Rescues</h3>
+          <span className="section-count">{completedReports.length} completed</span>
+        </div>
+        <div className="reports-table-container">
+          {completedReports.length > 0 ? (
+            <table className="reports-table">
+              <thead>
+                <tr>
+                  <th>
+                    <input type="checkbox" disabled />
+                  </th>
+                  <th>Report ID</th>
+                  <th>Reporter</th>
+                  <th>Animal Type</th>
+                  <th>Location</th>
+                  <th>Urgency</th>
+                  <th>Status</th>
+                  <th>Assigned Rescuer</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {completedReports.map(report => (
+                  <tr key={report.id} className="report-row completed-row">
+                    <td>
+                      <input type="checkbox" disabled />
+                    </td>
+                    <td className="report-id">{report.id}</td>
+                    <td className="reporter-name">{report.reporterName}</td>
+                    <td className="animal-type">{report.animalType}</td>
+                    <td className="location">{report.location}</td>
+                    <td>{getUrgencyBadge(report.urgency)}</td>
+                    <td>{getStatusBadge(report.status)}</td>
+                    <td className="rescuer-cell">{report.assignedRescuerName || 'Unassigned'}</td>
+                    <td className="actions-cell">
+                      <div className="action-buttons">
+                        <button
+                          className="btn-view"
+                          onClick={() => handleViewDetails(report)}
+                        >
+                          View
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="no-reports">
+              <p>No completed rescue reports.</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Details Modal */}
